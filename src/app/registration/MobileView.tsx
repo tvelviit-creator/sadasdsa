@@ -47,7 +47,7 @@ function WelcomeView({ onContinue }: { onContinue: () => void }) {
   return (
     <div className="registration-container flex items-center justify-center">
       <div className="svg-background">
-        <RegistrationWelcomeSVG className="h-full w-full" />
+        <RegistrationWelcomeSVG className="h-full w-full" onContinue={onContinue} />
       </div>
 
       {/* Precise SVG Glow provided by User */}
@@ -63,12 +63,6 @@ function WelcomeView({ onContinue }: { onContinue: () => void }) {
         </svg>
       </div>
 
-      <button
-        type="button"
-        onClick={onContinue}
-        className="svg-button-trigger-welcome pulse-button"
-        aria-label="Продолжить"
-      />
     </div>
   );
 }
