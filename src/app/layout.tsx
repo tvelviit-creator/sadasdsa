@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           __html: `
             (function() {
               try {
-                var theme = localStorage.getItem('app-theme') || 'day';
+                var theme = localStorage.getItem('app-theme') || 'night';
                 var root = document.documentElement;
                 if (theme === 'auto') {
                   var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

@@ -47,7 +47,7 @@ function WelcomeView({ onContinue }: { onContinue: () => void }) {
   return (
     <div className="registration-container flex items-center justify-center">
       <div className="svg-background">
-        <RegistrationWelcomeSVG className="w-full h-auto" />
+        <RegistrationWelcomeSVG className="h-full w-auto" />
       </div>
 
       {/* Precise SVG Glow provided by User */}
@@ -172,9 +172,6 @@ function PhoneEntryView({ onBack }: { onBack: () => void }) {
         </div>
 
         <div className="reg-actions animate-fade-in-up delay-200">
-          <button className="reg-btn-outline" onClick={() => router.push('/client')}>
-            Без авторизации
-          </button>
           <button 
             disabled={!isValid} 
             onClick={handleLogin} 

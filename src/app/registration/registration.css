@@ -89,25 +89,31 @@
 /* Welcome View Content */
 .svg-background {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 100dvh;
+    min-width: 100%;
     z-index: 5;
     opacity: 0;
-    transform: scale(1.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     animation: fadeInScale 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.svg-background img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
+.svg-background svg {
+    height: 100dvh;
+    width: auto;
+    object-fit: contain;
 }
 
 .svg-button-trigger-welcome {
     position: absolute;
-    top: 91.3%;
+    bottom: 4.8%; /* Position from bottom for more robustness on mobile browsers */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     width: 87%;
     height: 7.2%;
     background: transparent;

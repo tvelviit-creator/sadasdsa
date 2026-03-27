@@ -15,7 +15,7 @@ export default function DesktopSidebar() {
     const [userPhone, setUserPhone] = useState<string | null>(null);
     const [userName, setUserName] = useState<string | null>(null);
     const [userAvatar, setUserAvatar] = useState<string | null>(null);
-    const [theme, setTheme] = useState<'day' | 'night' | 'auto'>('day');
+    const [theme, setTheme] = useState<'day' | 'night' | 'auto'>('night');
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [transitionRole, setTransitionRole] = useState<'client' | 'seller' | null>(null);
 
@@ -38,6 +38,8 @@ export default function DesktopSidebar() {
         const savedTheme = localStorage.getItem('app-theme') as 'day' | 'night' | 'auto';
         if (savedTheme) {
             setTheme(savedTheme);
+        } else {
+            setTheme('night');
         }
 
         // Listen for theme changes
