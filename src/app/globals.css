@@ -1,0 +1,303 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root, .night-theme {
+  --bg-color: #0A0A0B;
+  --card-bg: #121214;
+  --accent-cyan: #92FFF4; /* Updated to TVELVI Logo color */
+  --accent-green: #4AC99B;
+  --text-primary: #F5F5F5;
+  --text-secondary: #71717A;
+  --border-color: #1F1F22;
+  --glass-blur: 24px;
+  --nav-bg: #161618;
+  --nav-btn: #202024;
+  --logout-color: #FF8C67;
+  --accent-color: #FF8C67;
+  --accent-glow: rgba(146, 255, 244, 0.15);
+  --accent-cyan-rgb: 146, 255, 244;
+  --devin-grid-opacity: 0.05;
+  --devin-pulse-opacity: 0.2;
+  --tarif-card-bg: #0C0C0E;
+
+  /* Heading Scales */
+  --h1-size: 48px;
+  --h2-size: 40px;
+  --h3-size: 32px;
+  --h4-size: 28px;
+  --h5-size: 24px;
+  --h6-size: 18px;
+  --h7-size: 16px;
+  --h9-size: 11px;
+
+  /* Text Scales */
+  --text-xl: 24px;
+  --text-l: 18px;
+  --text-m: 16px;
+  --text-s: 13px;
+  --text-xs: 11px;
+}
+
+.day-theme {
+  --bg-color: #F8F9FA;
+  --card-bg: #FFFFFF;
+  --tarif-card-bg: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #52525B;
+  --border-color: #E2E4E9;
+  --nav-bg: #F1F3F5;
+  --nav-btn: #E9ECEF;
+  --logout-color: #FF5252;
+  --accent-color: #FF5252;
+  --accent-cyan: #0E7490;
+  --accent-glow: rgba(14, 116, 144, 0.2);
+  --accent-cyan-rgb: 14, 116, 144;
+  --devin-grid-opacity: 0.04;
+  --devin-pulse-opacity: 0.3;
+}
+
+/* Global Scrollbar Hiding (Brute Force Fix for PC) */
+* {
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    scrollbar-width: none !important;  /* Firefox */
+}
+
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden !important;
+    background-color: var(--bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--bg-color)] text-[var(--text-primary)] antialiased;
+    font-size: var(--text-m);
+    line-height: 1.5;
+    font-family: var(--font-gilroy), sans-serif;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Headings */
+  h1, .tvelvi-h1 {
+    font-family: var(--font-cera), sans-serif;
+    font-size: var(--h1-size);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  h2, .tvelvi-h2 {
+    font-family: var(--font-cera), sans-serif;
+    font-size: var(--h2-size);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h3, .tvelvi-h3 {
+    font-family: var(--font-cera), sans-serif;
+    font-size: var(--h3-size);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h6, .tvelvi-h6 {
+    font-family: var(--font-cera), sans-serif;
+    font-size: var(--h6-size);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .tvelvi-h7 {
+    font-family: var(--font-cera), sans-serif;
+    font-size: var(--h7-size);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .tvelvi-h9 {
+    font-family: var(--font-cera), sans-serif;
+    font-size: var(--h9-size);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  p, .tvelvi-m {
+    font-family: var(--font-gilroy), sans-serif;
+    font-size: var(--text-m);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .tvelvi-s {
+    font-family: var(--font-gilroy), sans-serif;
+    font-size: var(--text-s);
+    font-weight: 400;
+    line-height: 1.54;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[24px];
+  }
+
+  .neo-button {
+    @apply h-[56px] rounded-full flex items-center justify-center font-bold transition-all active:scale-95;
+  }
+
+  .neo-button-primary {
+    @apply neo-button bg-[var(--text-primary)] text-[var(--bg-color)];
+  }
+
+  .neo-button-secondary {
+    @apply neo-button bg-[var(--card-bg)] text-[var(--text-primary)] border border-[var(--border-color)];
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent scrollbars during full-screen transitions */
+  .registration-wrapper,
+  .registration-container,
+  .cp-wrapper {
+      overflow: hidden !important;
+      max-height: 100vh;
+  }
+}
+
+/* Custom Animations */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px var(--accent-cyan); }
+  50% { box-shadow: 0 0 20px var(--accent-cyan); }
+  100% { box-shadow: 0 0 5px var(--accent-cyan); }
+}
+
+.glow-cyan {
+  animation: glow 3s infinite;
+}
+
+/* Global Page Transitions */
+@keyframes pageFadeIn {
+    from { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+    to { opacity: 1; filter: blur(0px); transform: translateY(0); }
+}
+
+.animate-page-fade-in {
+    animation: pageFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* TVELF Architectural Arrow Button Style */
+.animated-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 36px;
+  border: 4px solid transparent;
+  font-size: 14px;
+  background-color: transparent;
+  border-radius: 100px;
+  font-weight: 900;
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--text-primary);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.animated-button:disabled {
+  opacity: 0.1;
+  cursor: not-allowed;
+  box-shadow: 0 0 0 2px var(--text-primary);
+}
+
+.animated-button svg {
+  position: absolute;
+  width: 20px;
+  fill: var(--text-primary);
+  z-index: 9;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .arr-1 {
+  right: 20px;
+}
+
+.animated-button .arr-2 {
+  left: -25%;
+}
+
+.animated-button .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background-color: var(--text-primary);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .text {
+  position: relative;
+  z-index: 10;
+  transform: translateX(-10px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button:hover:not(:disabled) {
+  box-shadow: 0 0 0 12px transparent;
+  color: black;
+  border-radius: 24px;
+}
+
+.animated-button:hover:not(:disabled) .arr-1 {
+  right: -25%;
+}
+
+.animated-button:hover:not(:disabled) .arr-2 {
+  left: 20px;
+}
+
+.animated-button:hover:not(:disabled) .text {
+  transform: translateX(10px);
+}
+
+.animated-button:hover:not(:disabled) svg {
+  fill: #000;
+}
+
+.animated-button:active:not(:disabled) {
+  scale: 0.98;
+  box-shadow: 0 0 0 4px var(--text-primary);
+}
+
+.animated-button:hover:not(:disabled) .circle {
+  width: 500px;
+  height: 500px;
+  opacity: 1;
+}

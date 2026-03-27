@@ -1,0 +1,494 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { getCategories, updateCategory, deleteCategory } from "@/utils/categories";
+import { getServices, Service } from "@/utils/services";
+import { DefaultCategoryCover } from "@/components/DefaultCategoryCover";
+import { DefaultCategoryIcon } from "@/components/DefaultCategoryIcon";
+import { getCategoryCover } from "@/components/CategoryCovers";
+import { ChevronLeft, Plus, ImagePlus, Box, Layers, Image as ImageIcon, Sparkles, ArrowUpRight, Layout } from "lucide-react";
+
+export default function EditCategoryPage() {
+  const router = useRouter();
+  const params = useParams();
+  const categoryId = params.id as string;
+
+  const [name, setName] = useState("");
+  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [iconImage, setIconImage] = useState<string | null>(null);
+  const [services, setServices] = useState<Service[]>([]);
+
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const iconInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const categories = getCategories();
+    const cat = categories.find((c) => c.id === categoryId);
+    if (cat) {
+      setName(cat.name);
+      setCoverImage(cat.coverImage || null);
+      setIconImage(cat.iconImage || null);
+      setServices(getServices(categoryId));
+    } else {
+      router.push("/admin/categories");
+    }
+  }, [categoryId, router]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'icon' | 'cover') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        if (type === 'icon') {
+          setIconImage(result);
+          updateCategory(categoryId, { iconImage: result });
+        } else if (type === 'cover') {
+          setCoverImage(result);
+          updateCategory(categoryId, { coverImage: result });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Clear input to allow re-upload of same file
+    e.target.value = "";
+  };
+
+  const handleNameBlur = () => {
+    if (name.trim()) {
+      updateCategory(categoryId, { name: name.trim() });
+    }
+  };
+
+  const handleDeleteCategory = () => {
+    if (confirm("Вы уверены, что хотите удалить эту категорию?")) {
+      deleteCategory(categoryId);
+      router.push("/admin/categories");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans overflow-x-hidden">
+      <style jsx global>{`
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
+      {/* DESKTOP VIEW */}
+      <div className="hidden md:flex flex-col w-full min-h-screen bg-[#0A0A0B] relative z-10 overflow-hidden">
+         {/* Background Architectural Grid */}
+          <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" 
+               style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+          
+          {/* Background Accents */}
+          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#FF8C67]/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
+
+          {/* Modern Slim Header */}
+          <header className="h-20 shrink-0 flex items-center px-12 justify-between border-b border-white/[0.05] bg-[var(--card-bg)] z-[100] relative">
+            <div className="flex items-center gap-10">
+              <button 
+                onClick={() => router.back()}
+                className="w-10 h-10 rounded-xl border border-[var(--border-color)] bg-white/[0.02] flex items-center justify-center hover:bg-white/10 transition-all active:scale-95 group"
+              >
+                <ChevronLeft className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
+              </button>
+              
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#FF8C67] opacity-60">Управление категориями</span>
+                <div className="flex items-center gap-2">
+                   <span className="text-[15px] font-bold text-white/90">Редактирование</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6">
+               <button
+                 onClick={handleDeleteCategory}
+                 className="h-12 px-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-500 hover:bg-red-500/10 text-red-500 border border-transparent hover:border-red-500/20 active:scale-95"
+               >
+                 УДАЛИТЬ КАТЕГОРИЮ
+               </button>
+            </div>
+          </header>
+
+          <main className="flex-1 flex overflow-hidden relative z-10 w-full max-w-[1600px] mx-auto">
+             {/* Left Side: The Editor */}
+             <div className="flex-1 overflow-y-auto no-scrollbar pt-16 pb-32 px-12 xl:px-24">
+                <div className="max-w-[800px] mx-auto flex flex-col gap-24">
+                   
+                   {/* Section 1: Identity */}
+                   <div className="flex flex-col gap-16">
+                      <div className="flex flex-col gap-2">
+                         <h2 className="text-5xl font-black font-cera uppercase tracking-tighter text-white">Основная <br/><span className="text-white/20">Информация</span></h2>
+                      </div>
+
+                      <div className="grid grid-cols-12 gap-12">
+                         {/* Image Drop (Cover) */}
+                         <div className="col-span-12 xl:col-span-5">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mb-4 block">Обложка</span>
+                            <div 
+                              onClick={() => coverInputRef.current?.click()}
+                              className={`aspect-video xl:aspect-[3/4] rounded-[32px] border-2 border-dashed transition-all duration-700 cursor-pointer overflow-hidden group relative flex flex-col items-center justify-center w-full ${
+                                coverImage ? 'border-transparent' : 'border-[var(--border-color)] hover:border-[#FF8C67]/40 hover:bg-[#FF8C67]/[0.02]'
+                              }`}
+                            >
+                              {coverImage ? (
+                                <>
+                                  <img src={coverImage} alt="Cover Preview" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
+                                     <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                                        <Plus className="w-6 h-6 rotate-45" />
+                                     </div>
+                                     <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Заменить</span>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="w-16 h-16 rounded-full bg-white/[0.03] border border-[var(--border-color)] flex items-center justify-center mb-6 group-hover:border-[#FF8C67]/30 transition-colors">
+                                     <ImagePlus className="w-6 h-6 text-white/10 group-hover:text-[#FF8C67]" />
+                                  </div>
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-white/20 group-hover:text-white/40 transition-colors">Загрузить</span>
+                                </>
+                              )}
+                            </div>
+                         </div>
+
+                         <div className="col-span-12 xl:col-span-7 flex flex-col justify-center gap-16 xl:pl-8">
+                            {/* Name Input Group */}
+                            <div className="flex flex-col gap-3 group border-b border-[var(--border-color)] focus-within:border-[#FF8C67] transition-all duration-500 pb-4">
+                               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 group-focus-within:text-[#FF8C67] transition-colors">Название</span>
+                               <input 
+                                 type="text"
+                                 value={name}
+                                 onChange={(e) => setName(e.target.value)}
+                                 onBlur={handleNameBlur}
+                                 placeholder="Например: Мобильные приложения..."
+                                 className="bg-transparent text-2xl font-bold text-white outline-none placeholder:text-white/5 tracking-tight w-full"
+                               />
+                            </div>
+
+                            {/* Icon Input Group */}
+                            <div className="flex flex-col gap-3">
+                               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">SVG Иконка</span>
+                               <div 
+                                  onClick={() => iconInputRef.current?.click()}
+                                  className={`h-24 rounded-2xl border border-dashed transition-all duration-500 cursor-pointer overflow-hidden flex items-center gap-6 px-6 group ${
+                                    iconImage ? 'border-white/10 bg-white/[0.02] hover:bg-white/[0.04]' : 'border-[var(--border-color)] hover:border-[#FF8C67]/40 hover:bg-[#FF8C67]/[0.02]'
+                                  }`}
+                               >
+                                  {iconImage ? (
+                                     <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center shrink-0">
+                                        <img src={iconImage} className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" alt="Icon" />
+                                     </div>
+                                  ) : (
+                                     <div className="w-12 h-12 bg-white/[0.03] rounded-xl flex items-center justify-center shrink-0 border border-[var(--border-color)] group-hover:border-[#FF8C67]/20 transition-colors">
+                                        <Box className="w-5 h-5 text-white/10 group-hover:text-[#FF8C67]" />
+                                     </div>
+                                  )}
+                                  <div className="flex flex-col gap-1">
+                                     <span className="text-[13px] font-bold text-white/80 group-hover:text-white transition-colors">
+                                        {iconImage ? 'Заменить' : 'Загрузить иконку'}
+                                     </span>
+                                     <span className="text-[10px] font-medium text-white/20">Формат SVG без фона</span>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+
+                   {/* Section: Services inside Category */}
+                   <div className="flex flex-col gap-10 mt-10">
+                      <div className="flex items-end justify-between border-b border-[var(--border-color)] pb-8">
+                         <div className="flex flex-col gap-2">
+                            <h2 className="text-4xl font-black font-cera uppercase tracking-tighter text-white">Услуги</h2>
+                         </div>
+                         <button 
+                           onClick={() => router.push(`/admin/categories/${categoryId}/services/add`)}
+                           className="h-12 px-6 rounded-xl border border-white/10 text-white/60 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-widest"
+                         >
+                            <Plus className="w-4 h-4" /> Добавить
+                         </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-6">
+                        {services.length === 0 ? (
+                           <div className="col-span-2 py-12 flex flex-col items-center justify-center border border-dashed border-[var(--border-color)] rounded-3xl opacity-50">
+                              <Layers className="w-10 h-10 mb-4 opacity-50" />
+                              <span className="text-[13px] font-bold">Нет услуг</span>
+                           </div>
+                        ) : (
+                           services.map(s => (
+                              <div
+                                key={s.id}
+                                className="bg-white/[0.02] border border-[var(--border-color)] rounded-3xl p-4 flex gap-6 cursor-pointer hover:bg-white/[0.05] transition-all group"
+                                onClick={() => router.push(`/admin/categories/${categoryId}/services/${s.id}`)}
+                              >
+                                {s.coverImage ? (
+                                   <div className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 border border-[var(--border-color)] bg-black/50">
+                                      <img src={s.coverImage} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                   </div>
+                                ) : (
+                                   <div className="w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 border border-[var(--border-color)] bg-white/[0.02]">
+                                      <ImageIcon className="w-6 h-6 opacity-20" />
+                                   </div>
+                                )}
+                                <div className="flex flex-col justify-center">
+                                   <span className="text-[15px] font-bold text-white mb-2">{s.name}</span>
+                                   <span className="text-[11px] font-black uppercase tracking-widest text-[#FF8C67]">от {Number(s.price).toLocaleString()} ₽</span>
+                                </div>
+                              </div>
+                           ))
+                        )}
+                      </div>
+                   </div>
+
+                </div>
+             </div>
+
+             {/* Right Side: LIVE Preview Shell */}
+             <div className="hidden xl:flex w-[400px] border-l border-white/[0.05] bg-black/20 flex-col p-12 shrink-0">
+                <div className="sticky top-0 flex flex-col gap-10">
+                   {/* Store Card Mimic */}
+                   <div className="flex justify-center pt-8">
+                      <div className="w-full flex flex-col group/preview">
+                          <div className="aspect-square bg-white/[0.03] rounded-[32px] border border-white/[0.08] relative overflow-hidden mb-6 shadow-2xl transition-all duration-700 group-hover/preview:shadow-[0_20px_50px_rgba(255,140,103,0.1)]">
+                              {coverImage ? (
+                                <img src={coverImage} className="w-full h-full object-cover" alt="" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center opacity-10">
+                                   <Sparkles className="w-12 h-12" />
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                              
+                              <div className="absolute top-6 right-6 text-white/40 group-hover/preview:text-[#FF8C67] transition-colors">
+                                 <ArrowUpRight className="w-6 h-6" />
+                              </div>
+
+                              <div className="absolute bottom-6 left-6 right-6 flex items-end gap-4">
+                                 {iconImage && (
+                                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20">
+                                       <img src={iconImage} className="w-6 h-6 object-contain filter invert" alt="" />
+                                    </div>
+                                 )}
+                                 <h3 className="text-xl font-bold font-cera text-white leading-tight drop-shadow-md pb-1">
+                                    {name || "Новая категория"}
+                                 </h3>
+                              </div>
+                          </div>
+                      </div>
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-4 mt-6">
+                      {[
+                        { label: "Название", active: !!name, icon: <Layout className="w-5 h-5" /> },
+                        { label: "Обложка", active: !!coverImage, icon: <ImagePlus className="w-5 h-5" /> },
+                        { label: "Иконка", active: !!iconImage, icon: <Box className="w-5 h-5" /> },
+                        { label: "Услуги", active: services.length > 0, icon: <Layers className="w-5 h-5" /> }
+                      ].map((item, i) => (
+                        <div 
+                          key={i} 
+                          className={`flex flex-col items-center justify-center p-8 rounded-[38px] border transition-all duration-1000 relative group ${
+                            item.active 
+                            ? 'border-[#FF8C67]/30 bg-[#FF8C67]/[0.03] shadow-[0_20px_40px_rgba(255,140,103,0.05)]' 
+                            : 'border-[var(--border-color)] bg-white/[0.01] opacity-20'
+                          }`}
+                        >
+                           <div className={`transition-all duration-700 ${item.active ? 'text-[#FF8C67]' : 'text-white/20'}`}>
+                              {item.icon}
+                           </div>
+                           <span className={`text-[9px] font-black uppercase tracking-[0.2em] mt-4 transition-colors ${item.active ? 'text-white/80' : 'text-white/20'}`}>
+                              {item.label}
+                           </span>
+                           {item.active && (
+                             <div className="absolute top-4 right-4 w-1 h-1 rounded-full bg-[#FF8C67] shadow-[0_0_10px_#FF8C67]" />
+                           )}
+                        </div>
+                      ))}
+                   </div>
+                </div>
+             </div>
+          </main>
+      </div>
+
+      {/* MOBILE VIEW */}
+      <div className="md:hidden relative w-full min-h-screen bg-transparent flex flex-col items-center mx-auto pb-[100px]">
+        {/* Mobile Background Elements */}
+        <div className="fixed inset-0 z-[-1] pointer-events-none opacity-[0.03]" style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+        <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[var(--accent-cyan)]/5 blur-[100px] rounded-full pointer-events-none z-[-1]" />
+        <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-pink-500/5 blur-[100px] rounded-full pointer-events-none z-[-1]" />
+
+        {/* Header - 1:1 SVG Match */}
+        <header className="fixed top-0 w-full max-w-[375px] h-[102px] z-50 bg-black/40 backdrop-blur-3xl border-b border-white/5 shadow-2xl transition-colors duration-300">
+          <svg width="375" height="102" viewBox="0 0 375 102" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full absolute -z-10 left-0 bottom-0 pointer-events-none">
+            <mask id="path-1-inside-1_1559_3780" fill="white">
+              <path d="M0 0H375V102H0V0Z"/>
+            </mask>
+            <path d="M0 0H375V102H0V0Z" fill="transparent"/>
+            <path d="M375 102V101H0V102V103H375V102Z" fill="transparent" mask="url(#path-1-inside-1_1559_3780)"/>
+            <path d="M51 72L29 72M29 72L38.4286 81M29 72L38.4286 63" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M337.5 69.5556V78.1111M332.5 69.5556V78.1111M327.5 64.6667V79.0889C327.5 80.4579 327.5 81.1419 327.772 81.6648C328.012 82.1248 328.394 82.4995 328.865 82.7338C329.399 83 330.099 83 331.496 83H338.504C339.901 83 340.6 83 341.134 82.7338C341.605 82.4995 341.988 82.1248 342.228 81.6648C342.5 81.1425 342.5 80.459 342.5 79.0927V64.6667M327.5 64.6667H330M327.5 64.6667H325M330 64.6667H340M330 64.6667C330 63.5277 330 62.9585 330.19 62.5093C330.444 61.9103 330.93 61.4342 331.543 61.1861C332.002 61 332.585 61 333.75 61H336.25C337.415 61 337.997 61 338.457 61.1861C339.069 61.4342 339.556 61.9103 339.81 62.5093C340 62.9585 340 63.5277 340 64.6667M340 64.6667H342.5M342.5 64.6667H345" stroke="#FF8C67" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M142.135 80H138.223L131.431 71.744V80H128.191V64.16H131.431V71.504L137.479 64.16H141.343L135.271 71.624L142.135 80ZM153.662 72.944V80H150.686V78.848C149.758 79.808 148.55 80.288 147.062 80.288C145.814 80.288 144.814 79.96 144.062 79.304C143.326 78.648 142.958 77.792 142.958 76.736C142.958 75.664 143.358 74.824 144.158 74.216C144.974 73.592 146.07 73.28 147.446 73.28H150.422V72.752C150.422 72.08 150.23 71.568 149.846 71.216C149.478 70.848 148.934 70.664 148.214 70.664C147.622 70.664 147.086 70.792 146.606 71.048C146.126 71.304 145.614 71.72 145.07 72.296L143.39 70.304C144.766 68.672 146.494 67.856 148.574 67.856C150.142 67.856 151.382 68.304 152.294 69.2C153.206 70.08 153.662 71.328 153.662 72.944ZM150.422 75.56V75.416H147.878C146.774 75.416 146.222 75.816 146.222 76.616C146.222 77.016 146.374 77.336 146.678 77.576C146.998 77.8 147.414 77.912 147.926 77.912C148.646 77.912 149.238 77.696 149.702 77.264C150.182 76.816 150.422 76.248 150.422 75.56ZM158.922 80V70.856H155.274V68.12H165.81V70.856H162.138V80H158.922ZM178.669 75.152H170.341C170.533 75.904 170.917 76.488 171.493 76.904C172.085 77.304 172.813 77.504 173.677 77.504C174.845 77.504 175.949 77.104 176.989 76.304L178.333 78.512C176.909 79.696 175.325 80.288 173.581 80.288C171.757 80.32 170.205 79.728 168.925 78.512C167.661 77.28 167.045 75.8 167.077 74.072C167.045 72.36 167.645 70.888 168.877 69.656C170.109 68.424 171.581 67.824 173.293 67.856C174.925 67.856 176.261 68.384 177.301 69.44C178.357 70.496 178.885 71.808 178.885 73.376C178.885 73.952 178.813 74.544 178.669 75.152ZM170.341 72.872H175.741C175.725 72.152 175.469 71.576 174.973 71.144C174.493 70.696 173.893 70.472 173.173 70.472C172.485 70.472 171.885 70.688 171.373 71.12C170.861 71.552 170.517 72.136 170.341 72.872ZM181.485 80V68.12H190.221V70.856H184.701V80H181.485ZM191.288 74.048C191.256 72.352 191.872 70.888 193.136 69.656C194.4 68.424 195.904 67.824 197.648 67.856C199.392 67.824 200.896 68.424 202.16 69.656C203.44 70.888 204.064 72.352 204.032 74.048C204.064 75.744 203.44 77.216 202.16 78.464C200.88 79.696 199.368 80.296 197.624 80.264C195.88 80.296 194.376 79.696 193.112 78.464C191.864 77.216 191.256 75.744 191.288 74.048ZM199.832 76.376C200.424 75.768 200.72 75 200.72 74.072C200.72 73.144 200.424 72.368 199.832 71.744C199.256 71.12 198.528 70.808 197.648 70.808C196.752 70.808 196.016 71.12 195.44 71.744C194.864 72.352 194.576 73.128 194.576 74.072C194.576 75 194.864 75.768 195.44 76.376C196.016 76.984 196.752 77.288 197.648 77.288C198.528 77.288 199.256 76.984 199.832 76.376ZM217.457 69.632C218.561 70.8 219.113 72.272 219.113 74.048C219.113 75.824 218.561 77.312 217.457 78.512C216.369 79.696 215.001 80.288 213.353 80.288C211.865 80.288 210.681 79.808 209.801 78.848V84.32H206.561V68.12H209.537V69.608C210.353 68.44 211.625 67.856 213.353 67.856C215.001 67.856 216.369 68.448 217.457 69.632ZM215.825 74.072C215.825 73.096 215.537 72.304 214.961 71.696C214.385 71.088 213.649 70.784 212.753 70.784C211.889 70.784 211.169 71.072 210.593 71.648C210.033 72.224 209.753 73.024 209.753 74.048C209.753 75.072 210.033 75.88 210.593 76.472C211.169 77.048 211.889 77.336 212.753 77.336C213.633 77.336 214.361 77.032 214.937 76.424C215.529 75.816 215.825 75.032 215.825 74.072ZM231.591 67.856H232.647V80H229.407V73.568L222.783 80.288H221.727V68.12H224.943V74.6L231.591 67.856ZM240.584 68.12H245.96V80H242.744V76.352H241.472L238.544 80H234.896L238.256 75.896C237.456 75.576 236.832 75.096 236.384 74.456C235.952 73.816 235.736 73.072 235.736 72.224C235.736 70.976 236.176 69.984 237.056 69.248C237.936 68.496 239.112 68.12 240.584 68.12ZM242.744 73.736V70.856H240.704C240.192 70.856 239.784 70.984 239.48 71.24C239.176 71.496 239.024 71.84 239.024 72.272C239.024 72.72 239.176 73.08 239.48 73.352C239.784 73.608 240.192 73.736 240.704 73.736H242.744Z" fill="var(--text-primary)"/>
+          </svg>
+
+          {/* Back button hit area */}
+          <button
+            onClick={() => router.back()}
+            className="absolute left-[20px] bottom-[10px] w-[60px] h-[60px] z-10 active:opacity-60 transition-opacity"
+          />
+
+          {/* Delete button hit area */}
+          <button
+            onClick={handleDeleteCategory}
+            className="absolute right-[20px] bottom-[10px] w-[60px] h-[60px] z-10 active:opacity-60 transition-opacity"
+          />
+        </header>
+
+        {/* Form Fields Stack */}
+        <div className="flex flex-col gap-[24px] pt-[150px] md:pt-0 px-[24px] md:px-10 lg:px-12 w-full max-w-[600px] xl:max-w-[800px]">
+          {/* Name Field */}
+          <div className="flex flex-col gap-[4px] w-full">
+            <div className="px-[8px] h-[24px] flex items-end">
+              <span className="text-[16px] leading-[1.2] font-normal text-[var(--text-primary)]">Название</span>
+            </div>
+            <div className="w-full h-[56px] bg-white/5 backdrop-blur-sm border border-white/10 shadow-sm rounded-[16px] flex items-center px-[16px]">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={handleNameBlur}
+                className="w-full bg-transparent border-none outline-none text-[16px] font-bold text-[var(--text-primary)]"
+              />
+            </div>
+          </div>
+
+          {/* Preview Row */}
+          <div className="flex items-center gap-[16px] w-full">
+            {/* Design Replica of Category Card */}
+            <div className="w-[155px] h-[155px] bg-black/40 backdrop-blur-md rounded-[24px] shrink-0 relative overflow-hidden border border-white/5 shadow-lg">
+              {coverImage ? (
+                <>
+                  <img src={coverImage} className="absolute inset-0 w-full h-full object-cover z-0" alt="" />
+                  <div className="absolute inset-0 z-10 p-[16px] flex flex-col justify-between items-end bg-black/20">
+                    <span className="w-full text-left text-[16px] font-bold leading-[1.2] text-[var(--text-primary)] line-clamp-2 drop-shadow-md">
+                      {name || "Название"}
+                    </span>
+                    {/* UI-FIX: Removed icon overlay from the preview because the user finds it confusing/duplicated */}
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full bg-transparent flex items-center justify-center text-white/20">
+                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                     <rect x="3" y="3" width="18" height="18" rx="2" strokeLinecap="round" />
+                     <circle cx="8.5" cy="8.5" r="1.5" />
+                     <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round" />
+                   </svg>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col items-center justify-center w-full h-[155px]">
+              <div 
+                onClick={() => iconInputRef.current?.click()}
+                className="cursor-pointer active:opacity-60 transition-opacity"
+              >
+                <svg width="155" height="72" viewBox="0 0 155 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="51.5" y="4" width="52" height="52" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
+                  {iconImage ? (
+                    <image href={iconImage} x="51.5" y="4" width="52" height="52" preserveAspectRatio="xMidYMid slice" />
+                  ) : (
+                    <path d="M70.5 21.6225V38.3781C70.5 39.996 70.5 40.8038 70.8052 41.4218C71.0736 41.9654 71.5017 42.4085 72.0285 42.6854C72.6269 43 73.4106 43 74.9757 43H80.0243C81.5894 43 82.372 43 82.9704 42.6854C83.4972 42.4085 83.9267 41.9654 84.1951 41.4218C84.5 40.8044 84.5 39.997 84.5 38.3822V21.6178C84.5 20.003 84.5 19.1944 84.1951 18.577C83.9267 18.0335 83.4972 17.5918 82.9704 17.3149C82.3714 17 81.5884 17 80.0203 17H74.9803C73.4121 17 72.6275 17 72.0285 17.3149C71.5017 17.5918 71.0736 18.0335 70.8052 18.577C70.5 19.195 70.5 20.0046 70.5 21.6225Z" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  )}
+                  <path d="M64.4142 60.608H64.9092V68H63.4242V63.501L59.1672 68.132H58.6832V60.74H60.1682V65.195L64.4142 60.608ZM71.8382 68H70.0782L67.9222 65.118V68H66.4482V62.555H67.9222V65.096L69.9792 62.555H71.6622L69.6052 65.041L71.8382 68ZM72.198 65.272C72.1834 64.4947 72.4657 63.8237 73.045 63.259C73.6244 62.6943 74.3137 62.4193 75.113 62.434C75.9124 62.4193 76.6017 62.6943 77.181 63.259C77.7677 63.8237 78.0537 64.4947 78.039 65.272C78.0537 66.0493 77.7677 66.724 77.181 67.296C76.5944 67.8607 75.9014 68.1357 75.102 68.121C74.3027 68.1357 73.6134 67.8607 73.034 67.296C72.462 66.724 72.1834 66.0493 72.198 65.272ZM76.114 66.339C76.3854 66.0603 76.521 65.7083 76.521 65.283C76.521 64.8577 76.3854 64.502 76.114 64.216C75.85 63.93 75.5164 63.787 75.113 63.787C74.7024 63.787 74.365 63.93 74.101 64.216C73.837 64.4947 73.705 64.8503 73.705 65.283C73.705 65.7083 73.837 66.0603 74.101 66.339C74.365 66.6177 74.7024 66.757 75.113 66.757C75.5164 66.757 75.85 66.6177 76.114 66.339ZM79.2314 68V62.555H80.7054V64.546H82.7184V62.555H84.1924V68H82.7184V65.811H80.7054V68H79.2314ZM91.1204 68H89.3604L87.2044 65.118V68H85.7304V62.555H87.2044V65.096L89.2614 62.555H90.9444L88.8874 65.041L91.1204 68ZM96.4607 64.766V68H95.0967V67.472C94.6714 67.912 94.1177 68.132 93.4357 68.132C92.8637 68.132 92.4054 67.9817 92.0607 67.681C91.7234 67.3803 91.5547 66.988 91.5547 66.504C91.5547 66.0127 91.738 65.6277 92.1047 65.349C92.4787 65.063 92.981 64.92 93.6117 64.92H94.9757V64.678C94.9757 64.37 94.8877 64.1353 94.7117 63.974C94.543 63.8053 94.2937 63.721 93.9637 63.721C93.6924 63.721 93.4467 63.7797 93.2267 63.897C93.0067 64.0143 92.772 64.205 92.5227 64.469L91.7527 63.556C92.3834 62.808 93.1754 62.434 94.1287 62.434C94.8474 62.434 95.4157 62.6393 95.8337 63.05C96.2517 63.4533 96.4607 64.0253 96.4607 64.766ZM94.9757 65.965V65.899H93.8097C93.3037 65.899 93.0507 66.0823 93.0507 66.449C93.0507 66.6323 93.1204 66.779 93.2597 66.889C93.4064 66.9917 93.597 67.043 93.8317 67.043C94.1617 67.043 94.433 66.944 94.6457 66.746C94.8657 66.5407 94.9757 66.2803 94.9757 65.965Z" fill="var(--text-primary)"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Cover Section */}
+          <div className="flex flex-col gap-[4px] w-full">
+            <div className="px-[8px] h-[24px] flex items-end">
+              <span className="text-[16px] font-normal text-[var(--text-primary)]">Обложка</span>
+            </div>
+            <div
+              onClick={() => coverInputRef.current?.click()}
+              className="w-full cursor-pointer relative overflow-hidden"
+            >
+              <svg width="100%" height="181" viewBox="0 0 329 181" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+                <rect x="1" y="1" width="327" height="179" rx="24" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="8 16"/>
+                <path d="M164.5 52.4999V37.4999M164.5 37.4999L157.136 42.4999M164.5 37.4999L171.864 42.4999M191.5 49.9999C191.5 44.4771 187.104 39.9999 181.682 39.9999C181.624 39.9999 181.567 40.0004 181.509 40.0015C180.319 31.52 173.156 25 164.5 25C157.635 25 151.712 29.1001 148.96 35.027C142.561 35.4536 137.5 40.8745 137.5 47.4995C137.5 54.403 142.995 60 149.773 60L181.682 59.9998C187.104 59.9998 191.5 55.5227 191.5 49.9999Z" stroke="var(--text-secondary)" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M79.1537 79.504C79.1537 80.258 78.8591 80.8863 78.2697 81.389C77.6804 81.8917 76.9524 82.143 76.0857 82.143C75.3924 82.143 74.7641 81.9783 74.2007 81.649C73.6374 81.311 73.1824 80.8473 72.8357 80.258L73.5767 79.712C74.2354 80.7087 75.0674 81.207 76.0727 81.207C76.6621 81.207 77.1474 81.0467 77.5287 80.726C77.9187 80.3967 78.1137 79.9807 78.1137 79.478C78.1137 79.0013 77.9404 78.6243 77.5937 78.347C77.2557 78.061 76.7617 77.918 76.1117 77.918H75.0977V76.995H76.1637C76.6404 76.995 77.0044 76.8737 77.2557 76.631C77.5157 76.3797 77.6457 76.046 77.6457 75.63C77.6457 75.1967 77.5114 74.8543 77.2427 74.603C76.9741 74.343 76.5884 74.213 76.0857 74.213C75.2277 74.213 74.5301 74.603 73.9927 75.383L73.2647 74.837C73.8887 73.797 74.8291 73.277 76.0857 73.277C76.8744 73.277 77.5071 73.4937 77.9837 73.927C78.4604 74.3603 78.6987 74.9107 78.6987 75.578C78.6987 76.3493 78.3564 76.943 77.6717 77.359C78.1397 77.541 78.5037 77.8227 78.7637 78.204C79.0237 78.5767 79.1537 79.01 79.1537 79.504ZM85.6278 78.1V82H84.6918V81.181C84.2065 81.8223 83.4958 82.143 82.5598 82.143C81.9012 82.143 81.3682 81.9827 80.9608 81.662C80.5535 81.3327 80.3498 80.8993 80.3498 80.362C80.3498 79.8247 80.5578 79.3957 80.9738 79.075C81.3898 78.7543 81.9402 78.594 82.6248 78.594H84.6268V78.048C84.6268 77.5367 84.4882 77.1423 84.2108 76.865C83.9422 76.5877 83.5695 76.449 83.0928 76.449C82.3822 76.449 81.7668 76.787 81.2468 77.463L80.5838 76.917C81.1472 75.9897 82.0052 75.526 83.1578 75.526C83.9205 75.526 84.5228 75.7513 84.9648 76.202C85.4068 76.644 85.6278 77.2767 85.6278 78.1ZM84.6268 79.569V79.413H82.7418C81.8318 79.413 81.3768 79.712 81.3768 80.31C81.3768 80.622 81.4982 80.869 81.7408 81.051C81.9922 81.2243 82.3085 81.311 82.6898 81.311C83.2185 81.311 83.6735 81.142 84.0548 80.804C84.4362 80.466 84.6268 80.0543 84.6268 79.569ZM87.751 82V75.669H92.015V76.566H88.752V82H87.751ZM98.9644 76.475C99.5624 77.1077 99.8614 77.892 99.8614 78.828C99.8614 79.764 99.5581 80.5527 98.9514 81.194C98.3534 81.8267 97.6124 82.143 96.7284 82.143C95.7317 82.143 94.9561 81.792 94.4014 81.09V84.34H93.4004V75.669H94.3364V76.683C94.5791 76.319 94.9127 76.0373 95.3374 75.838C95.7621 75.63 96.2257 75.526 96.7284 75.526C97.6297 75.526 98.3751 75.8423 98.9644 76.475ZM98.1844 80.544C98.6177 80.0933 98.8344 79.5257 98.8344 78.841C98.8344 78.1563 98.6177 77.5887 98.1844 77.138C97.7597 76.6787 97.2267 76.449 96.5854 76.449C95.9787 76.449 95.4587 76.657 95.0254 77.073C94.6007 77.489 94.3884 78.074 94.3884 78.828C94.3884 79.5993 94.5964 80.193 95.0124 80.609C95.4371 81.0163 95.9614 81.22 96.5854 81.22C97.2267 81.22 97.7597 80.9947 98.1844 80.544ZM105.833 75.669H106.899L103.779 82.884C103.311 83.95 102.596 84.483 101.634 84.483C101.296 84.483 100.971 84.4397 100.659 84.353V83.508C101.023 83.5513 101.279 83.573 101.426 83.573C101.773 83.573 102.059 83.495 102.284 83.339C102.509 83.1917 102.7 82.9317 102.856 82.559L103.194 81.805L100.568 75.669H101.647L103.74 80.713L105.833 75.669ZM112.646 80.18C112.646 80.778 112.425 81.2547 111.983 81.61C111.549 81.9653 110.973 82.143 110.254 82.143C109.231 82.143 108.421 81.7357 107.823 80.921L108.499 80.323C108.949 80.921 109.53 81.22 110.241 81.22C110.674 81.22 111.012 81.1203 111.255 80.921C111.497 80.7217 111.619 80.453 111.619 80.115C111.619 79.803 111.497 79.556 111.255 79.374C111.012 79.1833 110.674 79.088 110.241 79.088H109.552V78.204H110.228C110.964 78.204 111.333 77.9093 111.333 77.32C111.333 77.0513 111.233 76.839 111.034 76.683C110.843 76.527 110.566 76.449 110.202 76.449C109.569 76.449 109.04 76.709 108.616 77.229L107.94 76.631C108.477 75.8943 109.244 75.526 110.241 75.526C110.873 75.526 111.376 75.682 111.749 75.994C112.13 76.2973 112.321 76.7177 112.321 77.255C112.321 77.853 112.069 78.308 111.567 78.62C112.286 78.906 112.646 79.426 112.646 80.18ZM119.286 75.526H119.65V82H118.649V77.528L114.788 82.143H114.424V75.669H115.425V80.154L119.286 75.526ZM123.138 82V76.566H121.006V75.669H126.258V76.566H124.126V82H123.138ZM133.217 79.14H128.212C128.273 79.764 128.52 80.2667 128.953 80.648C129.386 81.0293 129.915 81.22 130.539 81.22C131.258 81.22 131.904 80.934 132.476 80.362L133.061 81.038C132.35 81.7747 131.505 82.143 130.526 82.143C129.581 82.143 128.784 81.8267 128.134 81.194C127.493 80.5527 127.172 79.7683 127.172 78.841C127.172 77.9223 127.484 77.1423 128.108 76.501C128.741 75.851 129.508 75.526 130.409 75.526C131.232 75.526 131.917 75.7947 132.463 76.332C133.018 76.8693 133.295 77.554 133.295 78.386C133.295 78.6287 133.269 78.88 133.217 79.14ZM128.251 78.256H132.268C132.259 77.7013 132.077 77.2593 131.722 76.93C131.367 76.6007 130.92 76.436 130.383 76.436C129.854 76.436 129.395 76.605 129.005 76.943C128.615 77.2723 128.364 77.71 128.251 78.256ZM138.775 82V73.42H141.791C142.615 73.42 143.278 73.654 143.78 74.122C144.283 74.5813 144.534 75.175 144.534 75.903C144.534 76.6397 144.283 77.242 143.78 77.71C143.278 78.178 142.615 78.412 141.791 78.412H139.789V82H138.775ZM139.789 77.502H141.765C142.303 77.502 142.723 77.359 143.026 77.073C143.33 76.787 143.481 76.4013 143.481 75.916C143.481 75.4393 143.33 75.058 143.026 74.772C142.723 74.4773 142.303 74.33 141.765 74.33H139.789V77.502ZM152.051 73.42H153.065V82.143H152.701L147.241 75.565V82H146.227V73.277H146.591L152.051 79.868V73.42ZM154.873 77.71C154.855 76.4793 155.284 75.4307 156.16 74.564C157.044 73.6887 158.101 73.2597 159.332 73.277C160.051 73.277 160.714 73.433 161.321 73.745C161.927 74.0483 162.43 74.4773 162.829 75.032L162.062 75.63C161.36 74.6853 160.45 74.213 159.332 74.213C158.361 74.1957 157.546 74.5293 156.888 75.214C156.229 75.8987 155.908 76.7263 155.926 77.697C155.908 78.685 156.233 79.5257 156.901 80.219C157.577 80.9123 158.404 81.2503 159.384 81.233C159.999 81.233 160.554 81.0987 161.048 80.83C161.55 80.5527 161.949 80.1757 162.244 79.699V78.542H159.319V77.632H163.258V79.92C162.876 80.596 162.335 81.1377 161.633 81.545C160.948 81.9437 160.181 82.143 159.332 82.143C158.101 82.1603 157.044 81.7357 156.16 80.869C155.284 79.9937 154.855 78.9407 154.873 77.71ZM172.817 82.143V84.34H171.816V82.143C170.759 82.0997 169.897 81.7833 169.229 81.194C168.571 80.596 168.241 79.8117 168.241 78.841C168.241 77.879 168.575 77.1033 169.242 76.514C169.91 75.916 170.768 75.5953 171.816 75.552V72.25H172.817V75.552C173.875 75.5953 174.733 75.916 175.391 76.514C176.059 77.1033 176.392 77.8833 176.392 78.854C176.392 79.8247 176.059 80.6047 175.391 81.194C174.733 81.7833 173.875 82.0997 172.817 82.143ZM171.829 81.259V76.436C171.041 76.4707 170.417 76.7003 169.957 77.125C169.498 77.5497 169.268 78.126 169.268 78.854C169.268 79.5733 169.498 80.1453 169.957 80.57C170.417 80.9947 171.041 81.2243 171.829 81.259ZM175.365 78.841C175.365 78.1217 175.136 77.5497 174.676 77.125C174.217 76.7003 173.593 76.4707 172.804 76.436V81.259C173.593 81.2243 174.217 80.9947 174.676 80.57C175.136 80.1453 175.365 79.569 175.365 78.841ZM182.887 78.1V82H181.951V81.181C181.465 81.8223 180.755 82.143 179.819 82.143C179.16 82.143 178.627 81.9827 178.22 81.662C177.812 81.3327 177.609 80.8993 177.609 80.362C177.609 79.8247 177.817 79.3957 178.233 79.075C178.649 78.7543 179.199 78.594 179.884 78.594H181.886V78.048C181.886 77.5367 181.747 77.1423 181.47 76.865C181.201 76.5877 180.828 76.449 180.352 76.449C179.641 76.449 179.026 76.787 178.506 77.463L177.843 76.917C178.406 75.9897 179.264 75.526 180.417 75.526C181.179 75.526 181.782 75.7513 182.224 76.202C182.666 76.644 182.887 77.2767 182.887 78.1ZM181.886 79.569V79.413H180.001C179.091 79.413 178.636 79.712 178.636 80.31C178.636 80.622 178.757 80.869 179 81.051C179.251 81.2243 179.567 81.311 179.949 81.311C180.477 81.311 180.932 81.142 181.314 80.804C181.695 80.466 181.886 80.0543 181.886 79.569ZM189.872 75.526H190.236V82H189.235V77.528L185.374 82.143H185.01V75.669H186.011V80.154L189.872 75.526ZM192.931 75.669H197.221V82H196.22V76.566H193.867L193.841 77.346C193.78 79.0533 193.607 80.258 193.321 80.96C193.035 81.662 192.528 82.026 191.8 82.052C191.67 82.052 191.557 82.0347 191.462 82V81.155C191.6 81.1723 191.687 81.181 191.722 81.181C192.12 81.181 192.406 80.8733 192.58 80.258C192.762 79.6427 192.866 78.6633 192.892 77.32L192.931 75.669ZM202.62 78.828C202.603 77.9267 202.924 77.1467 203.582 76.488C204.25 75.8293 205.034 75.5087 205.935 75.526C206.845 75.5087 207.63 75.8293 208.288 76.488C208.947 77.1467 209.268 77.9267 209.25 78.828C209.268 79.7207 208.943 80.5007 208.275 81.168C207.608 81.8267 206.824 82.1473 205.922 82.13C205.021 82.1473 204.241 81.8267 203.582 81.168C202.924 80.5007 202.603 79.7207 202.62 78.828ZM208.223 78.841C208.223 78.165 208.002 77.5973 207.56 77.138C207.127 76.6787 206.585 76.449 205.935 76.449C205.285 76.449 204.739 76.6787 204.297 77.138C203.864 77.5887 203.647 78.1563 203.647 78.841C203.647 79.5083 203.864 80.0717 204.297 80.531C204.739 80.9817 205.281 81.207 205.922 81.207C206.564 81.207 207.105 80.9773 207.547 80.518C207.998 80.0587 208.223 79.4997 208.223 78.841ZM217.25 78.945C217.267 79.8117 216.946 80.5657 216.288 81.207C215.629 81.8397 214.849 82.1473 213.948 82.13C212.977 82.13 212.188 81.8007 211.582 81.142C210.984 80.4833 210.685 79.6253 210.685 78.568V77.463C210.685 76.475 210.78 75.6777 210.971 75.071C211.387 73.771 212.591 72.952 214.585 72.614C215.651 72.4233 216.361 72.2543 216.717 72.107V73.069C216.309 73.2423 215.638 73.3983 214.702 73.537C213.809 73.667 213.137 73.8967 212.687 74.226C212.236 74.5553 211.954 74.9367 211.842 75.37C211.72 75.812 211.66 76.3667 211.66 77.034C211.928 76.6353 212.275 76.3233 212.7 76.098C213.133 75.8727 213.597 75.76 214.091 75.76C214.94 75.7427 215.681 76.059 216.314 76.709C216.955 77.3503 217.267 78.0957 217.25 78.945ZM215.56 80.557C216.002 80.115 216.223 79.5777 216.223 78.945C216.223 78.3123 216.002 77.7793 215.56 77.346C215.126 76.904 214.593 76.683 213.961 76.683C213.337 76.683 212.804 76.904 212.362 77.346C211.92 77.788 211.699 78.321 211.699 78.945C211.699 79.5603 211.92 80.0933 212.362 80.544C212.812 80.986 213.345 81.207 213.961 81.207C214.593 81.207 215.126 80.9903 215.56 80.557ZM219.502 75.669H223.792V82H222.791V76.566H220.438L220.412 77.346C220.351 79.0533 220.178 80.258 219.892 80.96C219.606 81.662 219.099 82.026 218.371 82.052C218.241 82.052 218.128 82.0347 218.033 82V81.155C218.171 81.1723 218.258 81.181 218.293 81.181C218.691 81.181 218.977 80.8733 219.151 80.258C219.333 79.6427 219.437 78.6633 219.463 77.32L219.502 75.669ZM225.548 78.828C225.531 77.9267 225.851 77.1467 226.51 76.488C227.177 75.8293 227.962 75.5087 228.863 75.526C229.773 75.5087 230.557 75.8293 231.216 76.488C231.875 77.1467 232.195 77.9267 232.178 78.828C232.195 79.7207 231.87 80.5007 231.203 81.168C230.536 81.8267 229.751 82.1473 228.85 82.13C227.949 82.1473 227.169 81.8267 226.51 81.168C225.851 80.5007 225.531 79.7207 225.548 78.828ZM231.151 78.841C231.151 78.165 230.93 77.5973 230.488 77.138C230.055 76.6787 229.513 76.449 228.863 76.449C228.213 76.449 227.667 76.6787 227.225 77.138C226.792 77.5887 226.575 78.1563 226.575 78.841C226.575 79.5083 226.792 80.0717 227.225 80.531C227.667 80.9817 228.209 81.207 228.85 81.207C229.491 81.207 230.033 80.9773 230.475 80.518C230.926 80.0587 231.151 79.4997 231.151 78.841ZM233.149 75.669H234.397L237.01 78.568L234.124 82H232.902L235.801 78.568L233.149 75.669ZM237.14 82V75.669H238.141V82H237.14ZM239.493 78.542L242.405 82H241.157L238.271 78.568L240.884 75.669H242.119L239.493 78.542ZM243.789 82V75.669H244.79V82H243.789ZM246.142 78.542L249.119 82H247.858L244.92 78.568L247.585 75.669H248.833L246.142 78.542ZM255.342 75.526H255.706V82H254.705V77.528L250.844 82.143H250.48V75.669H251.481V80.154L255.342 75.526Z" fill="var(--text-secondary)"/>
+                <g transform="translate(25, 112)">
+                  <rect width="279" height="44" rx="22" fill="#5E5E5E"/>
+                  <text x="139.5" y="27" fill="var(--text-primary)" fontSize="16" fontWeight="bold" textAnchor="middle">Выбрать файл</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          {/* Icons Section */}
+          <div className="flex flex-col gap-[4px] w-full">
+            <div className="px-[8px] h-[24px] flex items-end">
+              <span className="text-[16px] font-normal text-[var(--text-primary)]">Иконки</span>
+            </div>
+            <div
+              onClick={() => iconInputRef.current?.click()}
+              className="w-full cursor-pointer relative overflow-hidden"
+            >
+              <svg width="100%" height="181" viewBox="0 0 329 181" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+                <rect x="1" y="1" width="327" height="179" rx="24" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="8 16"/>
+                <path d="M164.5 52.4999V37.4999M164.5 37.4999L157.136 42.4999M164.5 37.4999L171.864 42.4999M191.5 49.9999C191.5 44.4771 187.104 39.9999 181.682 39.9999C181.624 39.9999 181.567 40.0004 181.509 40.0015C180.319 31.52 173.156 25 164.5 25C157.635 25 151.712 29.1001 148.96 35.027C142.561 35.4536 137.5 40.8745 137.5 47.4995C137.5 54.403 142.995 60 149.773 60L181.682 59.9998C187.104 59.9998 191.5 55.5227 191.5 49.9999Z" stroke="var(--text-secondary)" strokeLinecap="round" strokeLinejoin="round"/>
+                {/* Text for Icons */}
+                <text x="164.5" y="90" fill="var(--text-secondary)" fontSize="13" textAnchor="middle">Загрузите SVG файл иконки</text>
+                <g transform="translate(25, 112)">
+                  <rect width="279" height="44" rx="22" fill="#5E5E5E"/>
+                  <text x="139.5" y="27" fill="var(--text-primary)" fontSize="16" fontWeight="bold" textAnchor="middle">Выбрать файл</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          {/* List of Services in this Category */}
+          <div className="mt-[24px] flex flex-col gap-[16px]">
+            <div className="flex items-center justify-between">
+              <span className="text-[24px] font-bold text-[var(--text-primary)]">Услуги</span>
+              <button
+                onClick={() => router.push(`/admin/categories/${categoryId}/services/add`)}
+                className="w-[80px] h-[32px] bg-[var(--text-primary)] rounded-full flex items-center justify-center active:scale-95 transition-transform"
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--bg-color)" strokeWidth="2">
+                  <path d="M9 1V17M1 9H17" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-[16px]">
+              {services.map(s => (
+                <div
+                  key={s.id}
+                  className="flex flex-col gap-[8px] cursor-pointer"
+                  onClick={() => router.push(`/admin/categories/${categoryId}/services/${s.id}`)}
+                >
+                  <div className="w-full aspect-square bg-[var(--card-bg)] rounded-[24px] border border-[#C2C2C2] overflow-hidden relative">
+                    <img src={s.coverImage || '/placeholder.png'} className="w-full h-full object-cover" alt="" />
+                  </div>
+                  <div className="px-[8px] flex flex-col">
+                    <span className="text-[16px] font-bold text-[var(--text-primary)] line-clamp-1">{s.name}</span>
+                    <span className="text-[13px] text-[var(--text-secondary)]">от {Number(s.price).toLocaleString()} ₽</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Hidden Inputs */}
+        <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'cover')} />
+        <input ref={iconInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'icon')} />
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,49 @@
+/* Cleaned up utility-style CSS for Add Service Page - matching premium design */
+
+.add-service-page {
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    color: var(--text-primary);
+    font-family: var(--font-cera), sans-serif;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+.page-wrapper {
+    width: 100%;
+    max-width: 375px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 140px;
+}
+
+/* Specific animations for this page */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: blur(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+.animate-fade {
+    animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Pulse for status indicators */
+@keyframes glow-pulse {
+    0% { box-shadow: 0 0 5px rgba(146, 255, 244, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(146, 255, 244, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(146, 255, 244, 0.2); }
+}
+
+.glow-cyan {
+    animation: glow-pulse 2s infinite;
+}
