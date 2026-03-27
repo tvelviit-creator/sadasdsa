@@ -47,7 +47,7 @@ function WelcomeView({ onContinue }: { onContinue: () => void }) {
   return (
     <div className="registration-container flex items-center justify-center">
       <div className="svg-background">
-        <RegistrationWelcomeSVG className="h-full w-auto" />
+        <RegistrationWelcomeSVG className="h-full w-full" />
       </div>
 
       {/* Precise SVG Glow provided by User */}
