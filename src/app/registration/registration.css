@@ -328,8 +328,8 @@
 /* Code Entry Specifics */
 .code-entry-content {
     padding: 24px;
-    padding-top: 140px;
-    height: 100%;
+    padding-top: 80px; /* Reduced for mobile keyboard space */
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -347,7 +347,7 @@
     align-items: center;
     position: absolute;
     left: 24px;
-    top: 64px;
+    top: 20px;
 }
 
 .code-title {

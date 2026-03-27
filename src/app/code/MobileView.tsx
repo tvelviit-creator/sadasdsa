@@ -81,8 +81,37 @@ export default function MobileView() {
     }
   }, [code, router, phoneNumber]);
 
+  const inputRef = (el: HTMLInputElement | null) => {
+    if (el) el.focus();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+    const newCode = ["", "", "", ""];
+    for (let i = 0; i < val.length; i++) {
+       newCode[i] = val[i];
+    }
+    setCode(newCode);
+  };
+
   return (
-    <div className={`registration-wrapper select-none ${isTransitioning ? 'transition-exit' : ''}`}>
+    <div 
+      className={`registration-wrapper select-none ${isTransitioning ? 'transition-exit' : ''}`}
+      onClick={() => {
+        const input = document.getElementById('hidden-code-input');
+        if (input) input.focus();
+      }}
+    >
+      <input
+        id="hidden-code-input"
+        type="tel"
+        pattern="[0-9]*"
+        inputMode="numeric"
+        autoFocus
+        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', top: 0, left: 0 }}
+        onChange={handleInputChange}
+        value={code.join("")}
+      />
       {/* Background Atmosphere */}
       <div className="reg-bg-glow" />
       <div className="reg-bg-glow-secondary" />
@@ -93,7 +122,7 @@ export default function MobileView() {
       <div className={`registration-container code-entry-content ${isTransitioning ? 'transition-exit-content' : ''}`}>
         <button onClick={() => router.back()} className="code-back-btn hover:text-[var(--text-primary)] transition-colors">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-           
+            <path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
 
@@ -121,7 +150,10 @@ export default function MobileView() {
               </span>
             ) : (
               <button 
-                onClick={() => setTimeLeft(15)} 
+                onClick={(e) => {
+                   e.stopPropagation();
+                   setTimeLeft(15);
+                }} 
                 className="code-resend-btn hover:text-[#70FFFF] transition-colors"
                 style={{ color: '#70FFFF' }}
               >
