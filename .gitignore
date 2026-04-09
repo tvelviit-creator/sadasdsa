@@ -19,6 +19,7 @@
 *.zip
 *.log
 *.bak
+db.json
 
 # debug
 npm-debug.log*
