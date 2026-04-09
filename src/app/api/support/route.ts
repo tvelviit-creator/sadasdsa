@@ -90,11 +90,9 @@ export async function POST(request: Request) {
         }
 
         await db.write();
-        console.log(`✅ [Support] Saved request for ${userPhone}, type: ${type || 'support'}`);
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('❌ [Support] POST Error:', error);
         return NextResponse.json({ error: 'Failed to save support request' }, { status: 500 });
     }
 }
@@ -157,12 +155,10 @@ export async function PATCH(request: Request) {
             }
             
             await db.write();
-            console.log(`✅ [Support] Updated request for ${userPhone || orderId} to status: ${status}`);
         }
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('❌ [Support] PATCH Error:', error);
         return NextResponse.json({ error: 'Failed to update support request' }, { status: 500 });
     }
 }

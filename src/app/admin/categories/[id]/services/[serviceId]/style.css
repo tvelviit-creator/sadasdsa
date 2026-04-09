@@ -55,7 +55,7 @@
     width: 155px;
     height: 160px;
     background: var(--card-bg);
-    border: 1px solid #C2C2C2;
+    border: 1px solid var(--nav-btn);
     border-radius: 24px;
     display: flex;
     align-items: center;
@@ -148,7 +148,7 @@
 }
 
 .btn-select-file {
-    background: #5E5E5E;
+    background: var(--nav-btn);
     border-radius: 22px;
     height: 44px;
     padding: 0 32px;
@@ -252,13 +252,13 @@
 }
 
 .btn-secondary {
-    background: #5E5E5E;
+    background: var(--nav-btn);
     color: var(--text-primary);
 }
 
 .btn-danger {
     background: var(--border-color);
-    color: #FF8C67;
+    color: var(--logout-color);
 }
 
 /* Save Button fixed bottom */

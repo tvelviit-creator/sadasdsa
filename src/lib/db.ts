@@ -96,7 +96,7 @@ export const getDb = async (): Promise<Low<Data>> => {
 
     globalForDb.initPromise = (async () => {
         try {
-            const dbFile = process.env.DB_PATH || 'db.json';
+            const dbFile = 'db.json';
             const adapter = new JSONFile<Data>(dbFile);
             const db = new Low<Data>(adapter, defaultData);
             

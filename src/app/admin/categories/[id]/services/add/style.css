@@ -55,7 +55,7 @@
     width: 155px;
     height: 160px;
     background: var(--card-bg);
-    border: 1px solid #C2C2C2;
+    border: 1px solid var(--border-color);
     border-radius: 24px;
     display: flex;
     align-items: center;
@@ -102,7 +102,7 @@
 }
 
 .form-input-container {
-    background: var(--border-color);
+    background: var(--nav-bg);
     border-radius: 16px;
     height: 56px;
     display: flex;
@@ -148,7 +148,7 @@
 }
 
 .btn-select-file {
-    background: #5E5E5E;
+    background: var(--nav-btn);
     border-radius: 22px;
     height: 44px;
     padding: 0 32px;
@@ -175,7 +175,7 @@
 .btn-add-svg {
     width: 80px;
     height: 32px;
-    background: var(--text-primary);
+    background: var(--nav-btn);
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -197,7 +197,7 @@
 }
 
 .textarea-custom {
-    background: var(--border-color);
+    background: var(--nav-bg);
     border-radius: 24px;
     padding: 16px;
     min-height: 145px;
@@ -252,13 +252,13 @@
 }
 
 .btn-secondary {
-    background: #5E5E5E;
+    background: var(--nav-bg);
     color: var(--text-primary);
 }
 
 .btn-danger {
-    background: var(--border-color);
-    color: #FF8C67;
+    background: var(--nav-btn);
+    color: var(--logout-color);
 }
 
 /* Save Button fixed bottom */

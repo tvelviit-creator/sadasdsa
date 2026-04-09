@@ -38,18 +38,15 @@ export function getServices(categoryId?: string): Service[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(SERVICES_STORAGE_KEY);
-    if (!raw || raw.trim() === "") return [];
-    try {
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return [];
-      const services = parsed as Service[];
-      if (categoryId) {
-        return services.filter(s => s.categoryId === categoryId);
-      }
-      return services;
-    } catch {
-      return [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    const services = parsed as Service[];
+    if (categoryId) {
+      return services.filter(s => s.categoryId === categoryId);
     }
+    return services;
   } catch {
     return [];
   }

@@ -63,57 +63,16 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-[var(--text-primary)] font-sans flex justify-center selection:bg-[var(--accent-cyan)]/30 overflow-x-hidden md:w-full relative">
-       {/* Background Architectural Grid (All Devices) */}
-       <div className="fixed inset-0 z-[-1] pointer-events-none opacity-[0.03]" style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
-       
-       {/* Background Accents (All Devices) */}
-       <div className="fixed top-[-10%] right-[-10%] w-[50%] h-[50%] bg-[var(--accent-cyan)]/5 blur-[120px] rounded-full pointer-events-none z-[-1]" />
-       <div className="fixed bottom-[-10%] left-[20%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none z-[-1]" />
-
-      <div className="w-full relative min-h-screen flex flex-col md:pt-6 z-10 max-w-[1600px] mx-auto">
+    <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans flex justify-center selection:bg-[#1AE8E8]/30 overflow-x-hidden">
+      <div className="w-full max-w-[375px] relative min-h-screen bg-[var(--bg-color)] flex flex-col">
         
-        {/* Desktop Header */}
-        <div className="hidden md:flex flex-col w-full px-10 lg:px-14 pt-10 pb-4">
-          <header className="flex flex-col md:flex-row items-center justify-between w-full bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-[32px] px-8 py-6 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="flex flex-col gap-1 relative z-10">
-            <h1 className="text-3xl font-bold font-cera text-[var(--text-primary)]">Заказы <span className="text-[var(--accent-cyan)] opacity-60 text-xl ml-2 font-black">{filteredOrders.length}</span></h1>
-            <p className="text-sm font-medium text-white/40">Управление заказами</p>
-          </div>
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="flex bg-white/5 p-1 rounded-full border border-white/10 shadow-inner backdrop-blur-md">
-              <button 
-                onClick={() => setActiveTab("ours")} 
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeTab === 'ours' ? 'bg-[var(--accent-cyan)] text-black shadow-[0_0_15px_rgba(26,232,232,0.3)]' : 'text-white/40 hover:text-white/80'}`}
-              >
-                Наши
-              </button>
-              <button 
-                onClick={() => setActiveTab("partners")} 
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${activeTab === 'partners' ? 'bg-[var(--accent-cyan)] text-black shadow-[0_0_15px_rgba(26,232,232,0.3)]' : 'text-white/40 hover:text-white/80'}`}
-              >
-                Партнеров
-              </button>
-            </div>
-            <button 
-              onClick={() => router.push('/admin/orders/add')}
-              className="px-6 py-2 rounded-full text-[14px] font-bold bg-[var(--accent-cyan)] text-[#141414] transition-all hover:bg-[var(--accent-cyan)] shadow-md hover:scale-105"
-            >
-              + Создать
-            </button>
-          </div>
-        </header>
-      </div>
-
-        {/* Mobile Header */}
-        <header className="md:hidden fixed top-0 w-full max-w-[375px] h-[148px] bg-black/40 backdrop-blur-3xl border-b border-white/5 z-[100] px-6 flex items-end pb-[12px] transition-colors duration-300 shadow-2xl">
-          <svg width="375" height="148" viewBox="0 0 375 148" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full absolute -z-10 left-0 bottom-0 pointer-events-none">
+        <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] h-[148px] z-[100]">
+          <svg width="375" height="148" viewBox="0 0 375 148" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             <mask id="path-1-inside-1_1706_3260" fill="white">
               <path d="M0 0H375V148H0V0Z"/>
             </mask>
-            <path d="M0 0H375V148H0V0Z" fill="transparent"/>
-            <path d="M375 148V147H0V148V149H375V148Z" fill="transparent" mask="url(#path-1-inside-1_1706_3260)"/>
+            <path d="M0 0H375V148H0V0Z" fill="var(--bg-color)"/>
+            <path d="M375 148V147H0V148V149H375V148Z" fill="var(--border-color)" mask="url(#path-1-inside-1_1706_3260)"/>
             
             {/* ЗАКАЗЫ Title Paths */}
             <path d="M42.92 71.172C43.64 71.524 44.2 72.012 44.6 72.636C45 73.26 45.2 73.988 45.2 74.82C45.2 75.812 44.952 76.684 44.456 77.436C43.96 78.172 43.256 78.748 42.344 79.164C41.448 79.58 40.392 79.788 39.176 79.788C37.768 79.788 36.52 79.46 35.432 78.804C34.344 78.148 33.512 77.252 32.936 76.116L35.192 74.484C36.216 76.02 37.536 76.788 39.152 76.788C39.968 76.788 40.648 76.596 41.192 76.212C41.736 75.828 42.008 75.308 42.008 74.652C42.008 74.076 41.792 73.612 41.36 73.26C40.928 72.908 40.288 72.732 39.44 72.732H37.352V70.068H39.2C39.872 70.068 40.392 69.9 40.76 69.564C41.128 69.228 41.312 68.788 41.312 68.244C41.312 67.684 41.112 67.236 40.712 66.9C40.328 66.548 39.784 66.372 39.08 66.372C37.688 66.372 36.592 67.06 35.792 68.436L33.536 66.828C34.08 65.74 34.84 64.892 35.816 64.284C36.792 63.676 37.936 63.372 39.248 63.372C40.864 63.372 42.144 63.788 43.088 64.62C44.032 65.436 44.504 66.556 44.504 67.98C44.504 68.62 44.36 69.212 44.072 69.756C43.8 70.3 43.416 70.772 42.92 71.172ZM52.5894 67.356C54.1414 67.356 55.3734 67.796 56.2854 68.676C57.2134 69.54 57.6774 70.796 57.6774 72.444V79.5H54.7014V78.348C54.2694 78.796 53.7414 79.148 53.1174 79.404C52.5094 79.66 51.8294 79.788 51.0774 79.788C49.8134 79.788 48.8134 79.46 48.0774 78.804C47.3414 78.132 46.9734 77.276 46.9734 76.236C46.9734 75.164 47.3734 74.324 48.1734 73.716C48.9894 73.092 50.0854 72.78 51.4614 72.78H54.4374V72.252C54.4374 71.596 54.2454 71.084 53.8614 70.716C53.4934 70.348 52.9494 70.164 52.2294 70.164C51.6214 70.164 51.0774 70.3 50.5974 70.572C50.1174 70.828 49.6134 71.236 49.0854 71.796L47.4054 69.804C48.7814 68.172 50.5094 67.356 52.5894 67.356ZM51.9414 77.412C52.6454 77.412 53.2374 77.196 53.7174 76.764C54.1974 76.316 54.4374 75.748 54.4374 75.06V74.916H51.8934C51.3654 74.916 50.9574 75.02 50.6694 75.228C50.3814 75.42 50.2374 75.716 50.2374 76.116C50.2374 76.516 50.3894 76.836 50.6934 77.076C51.0134 77.3 51.4294 77.412 51.9414 77.412ZM68.7875 79.5L64.0835 73.212V79.5H60.8675V67.62H64.0835V73.164L68.5715 67.62H72.2435L67.7555 73.044L72.6275 79.5H68.7875ZM79.1909 67.356C80.7429 67.356 81.9749 67.796 82.8869 68.676C83.8149 69.54 84.2789 70.796 84.2789 72.444V79.5H81.3029V78.348C80.8709 78.796 80.3429 79.148 79.7189 79.404C79.1109 79.66 78.4309 79.788 77.6789 79.788C76.4149 79.788 75.4149 79.46 74.6789 78.804C73.9429 78.132 73.5749 77.276 73.5749 76.236C73.5749 75.164 73.9749 74.324 74.7749 73.716C75.5909 73.092 76.6869 72.78 78.0629 72.78H81.0389V72.252C81.0389 71.596 80.8469 71.084 80.4629 70.716C80.0949 70.348 79.5509 70.164 78.8309 70.164C78.2229 70.164 77.6789 70.3 77.1989 70.572C76.7189 70.828 76.2149 71.236 75.6869 71.796L74.0069 69.804C75.3829 68.172 77.1109 67.356 79.1909 67.356ZM78.5429 77.412C79.2469 77.412 79.8389 77.196 80.3189 76.764C80.7989 76.316 81.0389 75.748 81.0389 75.06V74.916H78.4949C77.9669 74.916 77.5589 75.02 77.2709 75.228C76.9829 75.42 76.8389 75.716 76.8389 76.116C76.8389 76.516 76.9909 76.836 77.2949 77.076C77.6149 77.3 78.0309 77.412 78.5429 77.412ZM94.8851 73.332C95.4291 73.62 95.8451 74.004 96.1331 74.484C96.4211 74.948 96.5651 75.46 96.5651 76.02C96.5651 77.236 96.1491 78.172 95.3171 78.828C94.4851 79.468 93.2771 79.788 91.6931 79.788C89.4371 79.788 87.7331 79.044 86.5811 77.556L88.4051 75.636C89.2051 76.548 90.2371 77.004 91.5011 77.004C92.1251 77.004 92.5971 76.892 92.9171 76.668C93.2531 76.444 93.4211 76.14 93.4211 75.756C93.4211 75.404 93.2771 75.124 92.9891 74.916C92.7011 74.708 92.2851 74.604 91.7411 74.604H90.2051V72.204H91.5971C92.0131 72.204 92.3331 72.116 92.5571 71.94C92.7971 71.748 92.9171 71.492 92.9171 71.172C92.9171 70.852 92.7891 70.604 92.5331 70.428C92.2931 70.236 91.9331 70.14 91.4531 70.14C90.3171 70.14 89.3811 70.54 88.6451 71.34L86.7971 69.396C87.3571 68.74 88.0531 68.236 88.8851 67.884C89.7171 67.532 90.6371 67.356 91.6451 67.356C93.0371 67.356 94.1171 67.66 94.8851 68.268C95.6691 68.876 96.0611 69.732 96.0611 70.836C96.0611 71.86 95.6691 72.692 94.8851 73.332ZM99.2581 67.62H102.474V71.052H104.634C106.074 71.052 107.258 71.428 108.186 72.18C109.114 72.932 109.578 73.956 109.578 75.252C109.578 76.58 109.114 77.62 108.186 78.372C107.258 79.124 106.074 79.5 104.634 79.5H99.2581V67.62ZM110.922 67.62H114.138V79.5H110.922V67.62ZM104.538 76.764C105.098 76.764 105.53 76.644 105.834 76.404C106.138 76.148 106.29 75.78 106.29 75.3C106.29 74.82 106.13 74.452 105.81 74.196C105.506 73.924 105.082 73.788 104.538 73.788H102.474V76.764H104.538Z" fill="var(--text-primary)"/>
@@ -126,7 +85,7 @@ export default function AdminOrdersPage() {
             <path d="M319.485 72H311M311 72H302.515M311 72V63.5147M311 72V80.4853" stroke="var(--bg-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             
             {/* Tabs Selector Group */}
-            <rect x="24.5" y="104.5" width="326" height="31" rx="15.5" stroke="rgba(255,255,255,0.1)" fill="rgba(255,255,255,0.02)"/>
+            <rect x="24.5" y="104.5" width="326" height="31" rx="15.5" stroke="var(--border-color)"/>
             <rect 
               x={activeTab === 'ours' ? 24.5 : 188} 
               y="104.5" 
@@ -164,180 +123,108 @@ export default function AdminOrdersPage() {
           </div>
         </header>
 
-        <main className="flex-1 pt-[164px] md:pt-4 px-6 md:px-10 lg:px-14 pb-32 space-y-6 w-full">
+        <main className="flex-1 pt-[164px] px-6 pb-32 space-y-6">
           {filteredOrders.length === 0 ? (
-            <div className="py-24 text-center opacity-10 h-full md:min-h-[50vh] flex items-center justify-center">
+            <div className="py-24 text-center opacity-10">
                <p className="text-[15px] font-black uppercase tracking-widest">Пусто</p>
             </div>
           ) : (
-            <>
-              {/* MOBILE CARDS - Hidden on md and up */}
-              <div className="grid grid-cols-1 md:hidden gap-6">
-                {filteredOrders.map((order) => (
-                  <div 
-                    key={order.id}
-                    onClick={() => router.push(`/admin/orders/${order.id}`)}
-                    className="bg-black/40 backdrop-blur-md rounded-[32px] p-6 flex flex-col justify-between active:scale-[0.98] transition-all cursor-pointer border border-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] relative overflow-hidden group min-h-[350px]"
-                  >
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-start">
-                         <h3 className="text-[22px] font-bold leading-[120%] max-w-[210px] group-hover:text-[var(--accent-cyan)] transition-colors">
-                           {order.title || "Без названия"}
-                         </h3>
-                         <span className="text-[22px] font-bold text-[var(--text-secondary)] tabular-nums flex items-center gap-2">
-                           {unreadCounts[order.id] > 0 && (
-                             <div className="w-[10px] h-[10px] bg-[#FF8C67] rounded-full shadow-[0_0_10px_rgba(255,140,103,1)] animate-pulse shrink-0" />
-                           )}
-                           №{order.orderNumber ? String(order.orderNumber).split('-').pop() : order.id.slice(-2)}
-                         </span>
-                      </div>
-
-                      <div className="flex justify-between items-center h-[22px]">
-                         <span className="text-[18px] font-bold text-[var(--text-secondary)] tracking-tight">{order.tariff || "Базовый"}</span>
-                         <span className="text-[18px] font-bold text-[var(--text-secondary)] tabular-nums">
-                           {Number(order.price || 0).toLocaleString()} ₽
-                         </span>
-                      </div>
-
-                      <div className="w-full h-[1px] bg-[var(--border-color)] shrink-0" />
-
-                      <div className="flex flex-wrap gap-2">
-                         {(order.features || ["Общее"]).slice(0, 3).map((f, i) => (
-                           <div key={i} className="bg-white/5 border border-white/10 px-3 py-1 rounded-full flex items-center justify-center shadow-sm">
-                              <span className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-tighter">{f}</span>
-                           </div>
-                         ))}
-                      </div>
-
-                      <div className="space-y-2 pt-2">
-                         {order.partnerName && (
-                            <div className="flex items-center gap-1.5 h-[20px]">
-                               <span className="text-[13px] text-[var(--text-secondary)] shrink-0 font-medium">Партнер</span>
-                               <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[10px] opacity-50" />
-                               <span className="text-[13px] font-medium text-[var(--text-primary)] text-right truncate max-w-[170px]">
-                                 {order.partnerName}
-                               </span>
-                            </div>
-                         )}
-                         <div className="flex items-center gap-1.5 h-[20px]">
-                            <span className="text-[13px] text-[var(--text-secondary)] shrink-0 font-medium">Заказчик</span>
-                            <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[10px] opacity-50" />
-                            <span className="text-[13px] font-medium text-[var(--text-primary)] text-right truncate max-w-[170px]">
-                              {order.clientName || '—'}
-                            </span>
-                         </div>
-                         <div className="flex items-center gap-1.5 h-[20px]">
-                            <span className="text-[13px] text-[var(--text-secondary)] shrink-0 font-medium">Телефон</span>
-                            <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[10px] opacity-50" />
-                            <span className="text-[13px] font-medium text-[var(--text-primary)] text-right tabular-nums">
-                              {formatPhone(order.clientPhone)}
-                            </span>
-                         </div>
-                      </div>
-
-                      <div className="flex gap-10 pt-2 shrink-0">
-                         <div className="flex flex-col">
-                            <span className="text-[12px] text-[var(--text-secondary)] font-medium">Создан</span>
-                            <span className="text-[16px] font-bold text-[var(--text-primary)] mt-0.5">
-                              {new Date(order.createdAt).toLocaleDateString("ru-RU")}
-                            </span>
-                         </div>
-                         <div className="flex flex-col">
-                            <span className="text-[12px] text-[var(--text-secondary)] font-medium">Обновлен</span>
-                            <span className="text-[16px] font-bold text-[var(--text-primary)] mt-0.5">
-                              {order.updatedAt ? new Date(order.updatedAt).toLocaleDateString("ru-RU") : new Date(order.createdAt).toLocaleDateString("ru-RU")}
-                            </span>
-                         </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-auto mt-4 shrink-0">
-                       <div className="flex gap-[4px]">
-                          {[1, 2, 3, 4, 5, 6].map((step) => {
-                            const progress = order.status === 'completed' ? 6 : order.status === 'pending' ? 1 : 4;
-                            return (
-                                <div 
-                                  key={step} 
-                                  className={`h-[10px] w-[20px] sm:w-[30px] rounded-full transition-all duration-700 ${step <= progress ? 'bg-[var(--text-primary)] [html.day-theme_&]:bg-[#141414]' : 'bg-[var(--border-color)]'}`}
-                                />
-                            );
-                          })}
-                       </div>
-                       <div className={`px-[12px] h-[24px] rounded-full flex items-center justify-center border border-[var(--border-color)] ${order.status === 'pending' ? 'bg-[#FFC700]' : (order.status === 'completed' || order.status === 'cancelled') ? 'bg-[#FF8C67]' : 'bg-[#4AC99B]'}`}>
-                          <span className="text-[var(--bg-color)] text-[10px] font-black uppercase tracking-tight">
-                            {order.status === 'pending' ? 'Ожидает' : order.status === 'completed' ? 'Готов' : order.status === 'cancelled' ? 'Отмена' : 'В работе'}
-                          </span>
-                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* DESKTOP TABLE/LIST - Hidden on mobile */}
-              <div className="hidden md:flex flex-col gap-3">
-                {/* Table Header */}
-                <div className="flex items-center px-6 py-3 text-[12px] font-bold text-[var(--text-secondary)] uppercase tracking-wider font-cera border-b border-[var(--border-color)]/30 mb-2">
-                   <div className="w-[80px]">ID</div>
-                   <div className="flex-1 min-w-[200px]">Название</div>
-                   <div className="w-[120px]">Тариф</div>
-                   <div className="w-[160px]">Клиент</div>
-                   {activeTab === 'partners' && <div className="w-[160px]">Партнер</div>}
-                   <div className="w-[120px]">Сумма</div>
-                   <div className="w-[120px]">Статус</div>
-                   <div className="w-[100px]">Дата</div>
+            filteredOrders.map((order) => (
+              <div 
+                key={order.id}
+                onClick={() => router.push(`/admin/orders/${order.id}`)}
+                className="bg-[var(--card-bg)] rounded-[32px] p-6 space-y-4 active:scale-[0.98] transition-all cursor-pointer border border-[var(--border-color)] shadow-xl relative overflow-hidden group"
+              >
+                <div className="flex justify-between items-start">
+                   <h3 className="text-[22px] font-bold leading-[120%] max-w-[210px] group-hover:text-[#1AE8E8] transition-colors">
+                     {order.title || "Без названия"}
+                   </h3>
+                   <span className="text-[22px] font-bold text-[var(--text-secondary)] tabular-nums flex items-center gap-2">
+                     {unreadCounts[order.id] > 0 && (
+                       <div className="w-[10px] h-[10px] bg-[#FF8C67] rounded-full shadow-[0_0_10px_rgba(255,140,103,1)] animate-pulse shrink-0" />
+                     )}
+                     №{order.orderNumber ? String(order.orderNumber).split('-').pop() : order.id.slice(-2)}
+                   </span>
                 </div>
 
-                {/* Table Rows */}
-                {filteredOrders.map((order) => {
-                   const orderIdStr = order.orderNumber ? String(order.orderNumber).split('-').pop() : order.id.slice(-4);
-                   
-                   return (
-                     <div 
-                       key={`desktop-${order.id}`}
-                       onClick={() => router.push(`/admin/orders/${order.id}`)}
-                       className="flex items-center px-6 py-5 bg-[var(--card-bg)] rounded-[20px] border border-[var(--border-color)] hover:border-white/20 hover:shadow-2xl active:scale-[0.99] transition-all cursor-pointer group relative overflow-hidden"
-                     >
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="w-[80px] flex items-center gap-2">
-                           {unreadCounts[order.id] > 0 && <div className="w-2 h-2 rounded-full bg-[#FF8C67] shadow-[0_0_10px_rgba(255,140,103,0.8)] animate-pulse shrink-0" />}
-                           <span className="text-[15px] font-bold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">№{orderIdStr}</span>
-                        </div>
-                        <div className="flex-1 min-w-[200px] pr-4">
-                           <h3 className="text-[16px] font-bold leading-tight group-hover:text-[var(--accent-cyan)] transition-colors line-clamp-1">{order.title || "Без названия"}</h3>
-                           {order.features && order.features.length > 0 && (
-                             <p className="text-[12px] text-[var(--text-secondary)] mt-1 truncate">{order.features.slice(0, 3).join(" • ")}</p>
-                           )}
-                        </div>
-                        <div className="w-[120px]">
-                           <span className="text-[14px] font-bold text-[var(--text-secondary)]">{order.tariff || "Базовый"}</span>
-                        </div>
-                        <div className="w-[160px] flex flex-col pr-4">
-                           <span className="text-[14px] font-medium text-[var(--text-primary)] truncate">{order.clientName || '—'}</span>
-                           <span className="text-[12px] text-[var(--text-secondary)] tabular-nums">{formatPhone(order.clientPhone)}</span>
-                        </div>
-                        {activeTab === 'partners' && (
-                           <div className="w-[160px] pr-4">
-                              <span className="text-[14px] font-medium text-[var(--text-primary)] truncate block">{order.partnerName || '—'}</span>
-                           </div>
-                        )}
-                        <div className="w-[120px]">
-                           <span className="text-[16px] font-bold">{Number(order.price || 0).toLocaleString()} ₽</span>
-                        </div>
-                        <div className="w-[120px]">
-                           <div className={`inline-flex px-[12px] h-[24px] rounded-full items-center justify-center border border-[var(--border-color)] ${order.status === 'pending' ? 'bg-[#FFC700]' : (order.status === 'completed' || order.status === 'cancelled') ? 'bg-[#FF8C67]' : 'bg-[#4AC99B]'}`}>
-                              <span className="text-[var(--bg-color)] text-[10px] font-black uppercase tracking-tight">
-                                {order.status === 'pending' ? 'Ожидает' : order.status === 'completed' ? 'Готов' : order.status === 'cancelled' ? 'Отмена' : 'В работе'}
-                              </span>
-                           </div>
-                        </div>
-                        <div className="w-[100px] flex flex-col">
-                           <span className="text-[13px] font-medium text-[var(--text-primary)]">{new Date(order.createdAt).toLocaleDateString("ru-RU")}</span>
-                        </div>
+                <div className="flex justify-between items-center h-[22px]">
+                   <span className="text-[18px] font-bold text-[var(--text-secondary)] tracking-tight">{order.tariff || "Базовый"}</span>
+                   <span className="text-[18px] font-bold text-[var(--text-secondary)] tabular-nums">
+                     {Number(order.price || 0).toLocaleString()} ₽
+                   </span>
+                </div>
+
+                <div className="w-full h-[1px] bg-[var(--border-color)] shrink-0" />
+
+                <div className="flex flex-wrap gap-2">
+                   {(order.features || ["Общее"]).slice(0, 3).map((f, i) => (
+                     <div key={i} className="bg-[var(--border-color)] px-3 py-1 rounded-full flex items-center justify-center">
+                        <span className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-tighter">{f}</span>
                      </div>
-                   );
-                })}
+                   ))}
+                </div>
+
+                <div className="space-y-2 pt-2">
+                   {order.partnerName && (
+                      <div className="flex items-center gap-1.5 h-[20px]">
+                         <span className="text-[13px] text-[var(--text-secondary)] shrink-0 font-medium">Партнер</span>
+                         <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[10px] opacity-50" />
+                         <span className="text-[13px] font-medium text-[var(--text-primary)] text-right truncate max-w-[170px]">
+                           {order.partnerName}
+                         </span>
+                      </div>
+                   )}
+                   <div className="flex items-center gap-1.5 h-[20px]">
+                      <span className="text-[13px] text-[var(--text-secondary)] shrink-0 font-medium">Заказчик</span>
+                      <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[10px] opacity-50" />
+                      <span className="text-[13px] font-medium text-[var(--text-primary)] text-right truncate max-w-[170px]">
+                        {order.clientName || '—'}
+                      </span>
+                   </div>
+                   <div className="flex items-center gap-1.5 h-[20px]">
+                      <span className="text-[13px] text-[var(--text-secondary)] shrink-0 font-medium">Телефон</span>
+                      <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[10px] opacity-50" />
+                      <span className="text-[13px] font-medium text-[var(--text-primary)] text-right tabular-nums">
+                        {formatPhone(order.clientPhone)}
+                      </span>
+                   </div>
+                </div>
+
+                <div className="flex gap-10 pt-2 shrink-0">
+                   <div className="flex flex-col">
+                      <span className="text-[12px] text-[var(--text-secondary)] font-medium">Создан</span>
+                      <span className="text-[16px] font-bold text-[var(--text-primary)] mt-0.5">
+                        {new Date(order.createdAt).toLocaleDateString("ru-RU")}
+                      </span>
+                   </div>
+                   <div className="flex flex-col">
+                      <span className="text-[12px] text-[var(--text-secondary)] font-medium">Обновлен</span>
+                      <span className="text-[16px] font-bold text-[var(--text-primary)] mt-0.5">
+                        {order.updatedAt ? new Date(order.updatedAt).toLocaleDateString("ru-RU") : new Date(order.createdAt).toLocaleDateString("ru-RU")}
+                      </span>
+                   </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
+                   <div className="flex gap-[4px]">
+                      {[1, 2, 3, 4, 5, 6].map((step) => {
+                        const progress = order.status === 'completed' ? 6 : order.status === 'pending' ? 1 : 4;
+                        return (
+                            <div 
+                              key={step} 
+                              className={`h-[10px] w-[30px] rounded-full transition-all duration-700 ${step <= progress ? 'bg-[var(--text-primary)] [html.day-theme_&]:bg-[#141414]' : 'bg-[var(--border-color)]'}`}
+                            />
+                        );
+                      })}
+                   </div>
+                   <div className={`px-[8px] h-[18px] rounded-full flex items-center justify-center border border-[var(--border-color)] ${order.status === 'pending' ? 'bg-[#FFC700]' : (order.status === 'completed' || order.status === 'cancelled') ? 'bg-[#FF8C67]' : 'bg-[#4AC99B]'}`}>
+                      <span className="text-[var(--bg-color)] text-[9px] font-black uppercase tracking-tight">
+                        {order.status === 'pending' ? 'Ожидает' : order.status === 'completed' ? 'Готов' : order.status === 'cancelled' ? 'Отмена' : 'В работе'}
+                      </span>
+                   </div>
+                </div>
               </div>
-            </>
+            ))
           )}
         </main>
       </div>

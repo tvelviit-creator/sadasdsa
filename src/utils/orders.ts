@@ -1,13 +1,11 @@
-// Утилита для работы с заказами
-
-
-// Утилита для работы с заказами (API version)
-
 export interface Order {
   id: string;
   title: string;
   orderNumber: number;
   tariff: string;
+  tariffPrice?: number;
+  design?: string;
+  designPrice?: number;
   price: number;
   status: "pending" | "in_progress" | "completed" | "cancelled";
   createdAt: string;
@@ -29,11 +27,14 @@ const API_URL = '/api/orders';
 
 export async function saveOrder(order: Order): Promise<void> {
   try {
-    await fetch(API_URL, {
+    const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
     });
+    if (!res.ok) {
+      console.error("Server returned error", await res.text());
+    }
   } catch (error) {
     console.error("Ошибка при сохранении заказа:", error);
   }
@@ -97,4 +98,3 @@ export async function deleteOrder(orderId: string): Promise<void> {
     console.error("Ошибка при удалении заказа:", error);
   }
 }
-

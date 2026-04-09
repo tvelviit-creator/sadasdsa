@@ -91,54 +91,59 @@ function PayContent() {
   if (!selectedPackages) return <div className="min-h-screen bg-[var(--bg-color)]" />;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] flex flex-col items-center transition-colors duration-300 overflow-hidden relative z-10 mx-auto w-full max-w-[375px]">
+    <div className="h-screen bg-[var(--bg-color)] text-[var(--text-primary)] flex flex-col items-center transition-colors duration-300 overflow-hidden">
 
-      {/* Header - Match backup style */}
+      {/* Header - Precise match to sbp.css line 311 (Top Bar) */}
       <header className="w-full h-[102px] border-b border-[var(--border-color)] flex items-center justify-between px-[24px] pt-[56px] pb-[14px] relative shrink-0 transition-colors duration-300">
         <button
           onClick={() => router.back()}
-          className="w-[32px] h-[32px] flex items-center justify-center active:scale-95 transition-all z-10 text-[var(--text-primary)]"
+          className="w-[32px] h-[32px] flex items-center justify-center active:scale-90 transition-transform z-10 text-[var(--text-primary)]"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19L5 12L12 5" />
           </svg>
         </button>
-        <span className="absolute left-1/2 -translate-x-1/2 top-[56px] text-[24px] font-bold text-[var(--text-primary)] h-[29px] flex items-center tracking-tight transition-colors duration-300">
+        <span className="absolute left-1/2 -translate-x-1/2 top-[56px] text-[24px] font-bold text-[var(--text-primary)] h-[29px] flex items-center transition-colors duration-300">
           Оплата
         </span>
         <div className="w-[32px]" />
       </header>
 
-      {/* Main Content Area - Centered layout from backup */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full px-[24px] gap-[32px] pb-10">
+      {/* Main Content Area - Center aligned vertically like "QR и кнопка" frame */}
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-[375px] px-[24px] gap-[32px]">
 
-        {/* QR Section */}
-        <div className="flex flex-col items-center gap-[26px] w-full">
-          <h2 className="text-[24px] font-bold text-[var(--text-primary)] text-center leading-[120%] tracking-tight transition-colors duration-300">
+        {/* QR Section - gap 26px */}
+        <div className="flex flex-col items-center gap-[26px]">
+          <h2 className="text-[24px] font-bold text-[var(--text-primary)] text-center leading-[120%] transition-colors duration-300">
             Отсканируйте QR код
           </h2>
 
-          <div className="w-[277px] h-[277px] bg-white rounded-[24px] p-4 flex items-center justify-center shadow-lg">
-            <img src="/sbp_qr.jpg" alt="SBP QR Code" className="w-full h-full object-contain" />
+          {/* QR Code Container with white background for scannability in all themes */}
+          <div className="bg-white p-4 rounded-[24px] shadow-sm">
+            <img 
+              src="/sbp_qr.png" 
+              alt="SBP QR Code" 
+              className="w-[245px] h-[245px] object-contain transition-opacity duration-300"
+            />
           </div>
         </div>
 
-        {/* Price Section */}
+        {/* Price Section - sbp.css line 156 (32px bold) */}
         <div className="w-full flex flex-col items-center">
           <span className="text-[32px] font-bold text-[var(--text-primary)] leading-[120%] tracking-tight h-[38px] flex items-center transition-colors duration-300">
             {totalPrice.toLocaleString()} ₽
           </span>
         </div>
 
-        {/* Action Button Section */}
+        {/* Action Button Section - sbp.css "Кнопка банка" */}
         <div className="w-full flex flex-col items-center gap-[12px]">
           <span className="text-[var(--text-secondary)] text-[16px] font-normal leading-[150%] h-[24px] flex items-center transition-colors duration-300">или</span>
           <button
             onClick={handlePay}
             disabled={isProcessing}
-            className="w-full h-[56px] bg-[var(--text-primary)] text-[var(--bg-color)] rounded-full flex items-center justify-center active:scale-95 transition-all shadow-xl disabled:opacity-70"
+            className="w-full h-[56px] bg-[var(--text-primary)] rounded-full flex items-center justify-center active:scale-95 transition-all"
           >
-            <span className="text-[16px] font-bold leading-[120%] h-[19px] flex items-center">
+            <span className="text-[var(--bg-color)] text-[16px] font-bold leading-[120%] h-[19px] flex items-center transition-colors duration-300">
               {isProcessing ? "Обработка..." : "Перейти в приложение банка"}
             </span>
           </button>

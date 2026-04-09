@@ -43,6 +43,4 @@ tmp_line.txt
 start_app.bat
 *.txt
 !public/**/*.txt
-# database
-db.json
-
+!src/**/*.txt

@@ -3,32 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCategories, Category } from "@/utils/categories";
+import { getActiveRole } from "@/utils/userData"
 import { DefaultCategoryCover } from "@/components/DefaultCategoryCover";
 import { getCategoryCover } from "@/components/CategoryCovers";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ArrowRight, Sparkles, Settings, User } from "lucide-react";
-import { getCurrentUserPhone, getUserData, getActiveRole } from "@/utils/userData";
 
 export default function CatigoriyPage() {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [role, setRole] = useState<"client" | "seller">("client");
     const [services, setServices] = useState<any[]>([]);
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
-
-    const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
     useEffect(() => {
         setCategories(getCategories());
-        const activeRole = getActiveRole();
-        setRole(activeRole);
-        
-        const phone = getCurrentUserPhone();
-        if (phone) {
-            const data = getUserData(phone);
-            if (data?.avatar) setUserAvatar(data.avatar);
-        }
-
+        setRole(getActiveRole());
+        // Load all services to count them per category
         const allServices = (typeof window !== "undefined") ? JSON.parse(localStorage.getItem("services") || "[]") : [];
         setServices(allServices);
     }, []);
@@ -112,185 +100,69 @@ export default function CatigoriyPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans transition-colors duration-300">
-            
-            {/* PC VERSION - Premium Desktop Layout */}
-            <div className="hidden md:flex flex-col w-full relative z-10">
-                {/* Premium Massive Typography Header */}
-                <div className="px-12 mt-16 mb-12 w-full flex items-end justify-between">
-                    <h1 className="text-4xl md:text-5xl font-black font-cera text-[var(--text-primary)] tracking-tight leading-none uppercase">
-                        ВЫБЕРИТЕ<br/>
-                        <span className="text-[var(--text-secondary)] opacity-70">КАТЕГОРИЮ</span>
-                    </h1>
-                </div>
+        <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans pb-32 flex justify-center overflow-x-hidden transition-colors duration-300">
+            <div className="w-full max-w-[375px] flex flex-col relative">
+                
+                {/* Unified Header - Stylized SVG */}
+                <header className="fixed top-0 w-full max-w-[375px] h-[102px] z-50 transition-colors duration-300">
+                    <svg width="375" height="102" viewBox="0 0 375 102" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                        <mask id="path-1-inside-1_1919_16665" fill="white">
+                            <path d="M0 0H375V102H0V0Z"/>
+                        </mask>
+                        <path d="M0 0H375V102H0V0Z" fill="var(--bg-color)"/>
+                        <path d="M375 102V101H0V102V103H375V102Z" fill="var(--border-color)" mask="url(#path-1-inside-1_1919_16665)"/>
+                        
+                        {/* Back Button Group */}
+                        <g 
+                            onClick={handleBack}
+                            className="cursor-pointer active:opacity-50 transition-opacity pointer-events-auto"
+                            style={{ pointerEvents: 'all' }}
+                        >
+                            <rect x="20" y="55" width="40" height="40" fill="transparent" />
+                            <path d="M51 72L29 72M29 72L38.4286 81M29 72L38.4286 63" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </g>
 
-                <main className="px-12 pb-20 w-full">
-                    {isSeller ? (
-                        <div className="flex gap-20 items-start min-h-[600px]">
-                            {/* Left: Interactive Category List */}
-                            <div className="flex-1 flex flex-col">
-                                {categories.map((cat, idx) => (
-                                    <motion.div
-                                        key={cat.id}
-                                        onMouseEnter={() => setHoveredId(cat.id)}
-                                        onMouseLeave={() => setHoveredId(null)}
-                                        onClick={() => router.push(`/catigoriy/${cat.id}/add`)}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: idx * 0.05 }}
-                                        className="group relative flex items-center py-6 border-b border-[var(--border-color)]/20 cursor-pointer transition-all duration-500 hover:pl-6 active:scale-[0.99]"
-                                    >
-                                        <div className="flex items-baseline gap-10 w-full">
-                                            <span className="text-sm font-black text-[var(--accent-cyan)] opacity-50 font-cera tabular-nums w-8 group-hover:opacity-100 transition-opacity">
-                                                {(idx + 1).toString().padStart(2, '0')}
-                                            </span>
-                                            
-                                            <div className="flex flex-col flex-1">
-                                                <h2 className="text-4xl font-black uppercase tracking-tighter leading-none text-[var(--text-primary)] group-hover:text-[var(--accent-cyan)] transition-colors duration-500">
-                                                    {cat.name}
-                                                </h2>
-                                                <div className="flex items-center gap-3 mt-3 opacity-0 group-hover:opacity-50 transition-all duration-700 translate-y-1 group-hover:translate-y-0">
-                                                    <span className="text-[9px] font-black uppercase tracking-[0.4em]">Доступно для размещения</span>
-                                                    <div className="h-[1px] w-12 bg-[var(--text-primary)]" />
-                                                </div>
-                                            </div>
+                        <path d="M138.243 80L131.451 71.744V80H128.211V64.16H131.451V71.504L137.499 64.16H141.363L135.291 71.624L142.155 80H138.243ZM148.593 67.856C150.145 67.856 151.377 68.296 152.289 69.176C153.217 70.04 153.681 71.296 153.681 72.944V80H150.705V78.848C150.273 79.296 149.745 79.648 149.121 79.904C148.513 80.16 147.833 80.288 147.081 80.288C145.817 80.288 144.817 79.96 144.081 79.304C143.345 78.632 142.977 77.776 142.977 76.736C142.977 75.664 143.377 74.824 144.177 74.216C144.993 73.592 146.089 73.28 147.465 73.28H150.441V72.752C150.441 72.096 150.249 71.584 149.865 71.216C149.497 70.848 148.953 70.664 148.233 70.664C147.625 70.664 147.081 70.8 146.601 71.072C146.121 71.328 145.617 71.736 145.089 72.296L143.409 70.304C144.785 68.672 146.513 67.856 148.593 67.856ZM147.945 77.912C148.649 77.912 149.241 77.696 149.721 77.264C150.201 76.816 150.441 76.248 150.441 75.56V75.416H147.897C147.369 75.416 146.961 75.52 146.673 75.728C146.385 75.92 146.241 76.216 146.241 76.616C146.241 77.016 146.393 77.336 146.697 77.576C147.017 77.8 147.433 77.912 147.945 77.912ZM158.941 70.856H155.293V68.12H165.829V70.856H162.157V80H158.941V70.856ZM178.688 75.152H170.36C170.552 75.904 170.936 76.488 171.512 76.904C172.104 77.304 172.832 77.504 173.696 77.504C174.864 77.504 175.968 77.104 177.008 76.304L178.352 78.512C176.944 79.696 175.36 80.288 173.6 80.288C172.368 80.288 171.256 80.016 170.264 79.472C169.272 78.928 168.496 78.184 167.936 77.24C167.376 76.28 167.096 75.224 167.096 74.072C167.096 72.92 167.368 71.872 167.912 70.928C168.456 69.968 169.2 69.216 170.144 68.672C171.104 68.128 172.16 67.856 173.312 67.856C174.4 67.856 175.368 68.104 176.216 68.6C177.064 69.08 177.72 69.744 178.184 70.592C178.664 71.424 178.904 72.352 178.904 73.376C178.904 73.952 178.832 74.544 178.688 75.152ZM173.192 70.472C172.504 70.472 171.904 70.688 171.392 71.12C170.88 71.552 170.536 72.136 170.36 72.872H175.76C175.744 72.136 175.488 71.552 174.992 71.12C174.496 70.688 173.896 70.472 173.192 70.472ZM181.504 68.12H190.24V70.856H184.72V80H181.504V68.12ZM197.643 80.264C196.475 80.264 195.403 79.992 194.427 79.448C193.467 78.888 192.707 78.136 192.147 77.192C191.587 76.232 191.307 75.184 191.307 74.048C191.307 72.912 191.587 71.872 192.147 70.928C192.707 69.968 193.475 69.216 194.451 68.672C195.427 68.128 196.499 67.856 197.667 67.856C198.835 67.856 199.907 68.136 200.883 68.696C201.859 69.24 202.627 69.984 203.187 70.928C203.763 71.872 204.051 72.912 204.051 74.048C204.051 75.184 203.763 76.232 203.187 77.192C202.627 78.136 201.851 78.888 200.859 79.448C199.883 79.992 198.811 80.264 197.643 80.264ZM197.667 77.288C198.547 77.288 199.275 76.984 199.851 76.376C200.443 75.768 200.739 75 200.739 74.072C200.739 73.144 200.443 72.368 199.851 71.744C199.275 71.12 198.547 70.808 197.667 70.808C196.771 70.808 196.035 71.12 195.459 71.744C194.883 72.352 194.595 73.128 194.595 74.072C194.595 75 194.883 75.768 195.459 76.376C196.035 76.984 196.771 77.288 197.667 77.288ZM213.373 67.856C214.477 67.856 215.461 68.128 216.325 68.672C217.205 69.2 217.893 69.936 218.389 70.88C218.885 71.808 219.133 72.864 219.133 74.048C219.133 75.232 218.885 76.296 218.389 77.24C217.893 78.184 217.205 78.928 216.325 79.472C215.461 80.016 214.477 80.288 213.373 80.288C212.653 80.288 211.989 80.168 211.381 79.928C210.773 79.672 210.253 79.312 209.821 78.848V84.32H206.581V68.12H209.557V69.608C209.957 69.048 210.485 68.616 211.141 68.312C211.813 68.008 212.557 67.856 213.373 67.856ZM212.773 77.336C213.637 77.336 214.365 77.04 214.957 76.448C215.549 75.84 215.845 75.048 215.845 74.072C215.845 73.08 215.549 72.288 214.957 71.696C214.381 71.088 213.653 70.784 212.773 70.784C211.957 70.784 211.253 71.064 210.661 71.624C210.069 72.168 209.773 72.976 209.773 74.048C209.773 75.104 210.061 75.92 210.637 76.496C211.229 77.056 211.941 77.336 212.773 77.336ZM232.666 67.856V80H229.426V73.568L222.802 80.288H221.746V68.12H224.962V74.6L231.61 67.856H232.666ZM246.94 67.856V80H243.7V73.568L237.076 80.288H236.02V68.12H239.236V74.6L245.884 67.856H246.94Z" fill="var(--text-primary)"/>
+                    </svg>
+                </header>
 
-                                            <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 -translate-x-6 group-hover:translate-x-0">
-                                                <div className="w-14 h-14 rounded-full border border-[var(--accent-cyan)] flex items-center justify-center shadow-[0_0_20px_rgba(26,232,232,0.15)]">
-                                                    <Plus className="w-5 h-5 text-[var(--accent-cyan)]" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Hover Line Accent */}
-                                        <motion.div 
-                                            className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-cyan)] opacity-0 group-hover:opacity-100 transition-opacity"
-                                            layoutId="hoverLine"
-                                        />
-                                    </motion.div>
-                                ))}
-                            </div>
-
-                            {/* Right: Architectural Preview Shell */}
-                            <div className="w-[420px] sticky top-20 h-[600px] flex flex-col gap-6">
-                                <AnimatePresence mode="wait">
-                                    {hoveredId ? (
-                                        <motion.div
-                                            key={hoveredId}
-                                            initial={{ opacity: 0, scale: 0.98, filter: 'blur(15px)' }}
-                                            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                                            exit={{ opacity: 0, scale: 1.02, filter: 'blur(15px)' }}
-                                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                                            className="relative flex-1 rounded-[40px] overflow-hidden border border-[var(--border-color)]/20 bg-[var(--nav-bg)] shadow-xl dark:shadow-2xl"
-                                        >
-                                            {/* Preview Image/Cover */}
-                                            <div className="absolute inset-0 z-0 bg-[var(--bg-color)]">
-                                              {categories.find(c => c.id === hoveredId)?.coverImage ? (
-                                                  <img src={categories.find(c => c.id === hoveredId)?.coverImage} className="w-full h-full object-cover opacity-20 dark:opacity-30 mix-blend-luminosity hover:mix-blend-normal transition-all duration-1000" alt="" />
-                                              ) : (
-                                                  <div className="w-full h-full opacity-10 dark:opacity-15">
-                                                      {getCategoryCover(categories.find(c => c.id === hoveredId)?.name || "", "w-full h-full")}
-                                                  </div>
-                                              )}
-                                              <div className="absolute inset-0 bg-gradient-to-t from-[var(--nav-bg)] via-transparent to-transparent" />
-                                            </div>
-
-                                            <div className="relative z-10 h-full p-10 flex flex-col justify-end">
-                                                <div className="mb-6">
-                                                    <div className="w-10 h-10 rounded-xl bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/20 flex items-center justify-center text-[var(--accent-cyan)]">
-                                                        {getCategoryIcon(categories.find(c => c.id === hoveredId)?.name || "")}
-                                                    </div>
-                                                </div>
-                                                
-                                                <h3 className="text-3xl font-black uppercase tracking-tight text-[var(--text-primary)] mb-3 leading-none">
-                                                    {categories.find(c => c.id === hoveredId)?.name}
-                                                </h3>
-                                                
-                                                <p className="text-[12px] text-[var(--text-secondary)]/70 font-medium leading-relaxed mb-6 max-w-[280px]">
-                                                    Разместите свои услуги в этой категории. {getServicesCount(hoveredId)} партнеров уже здесь.
-                                                </p>
-
-                                                <button className="w-full h-14 rounded-[20px] bg-[var(--text-primary)] text-[var(--bg-color)] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 overflow-hidden group/btn relative">
-                                                    <span className="relative z-10">Начать размещение</span>
-                                                    <ArrowRight className="w-3.5 h-3.5 relative z-10 group-hover/btn:translate-x-2 transition-transform" />
-                                                    <div className="absolute inset-0 bg-[var(--accent-cyan)] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div
-                                            key="default"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            className="flex-1 flex flex-col items-center justify-center rounded-[40px] border border-dashed border-[var(--border-color)] bg-[var(--card-bg)]/30 backdrop-blur-sm"
-                                        >
-                                            <Sparkles className="w-10 h-10 text-[var(--text-primary)]/10 mb-4" />
-                                            <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[var(--text-primary)]/20">Выберите направление</p>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-6">
+                {isSeller ? (
+                    /* Partner View - List */
+                    <main className="pt-[121px] px-6 pb-20">
+                        <div className="flex flex-col gap-4">
                             {categories.map((cat) => (
                                 <div
                                     key={cat.id}
                                     onClick={() => router.push(`/catigoriy/${cat.id}`)}
-                                    className="w-full aspect-[3/4.2] bg-[var(--card-bg)] rounded-[24px] relative overflow-hidden active:scale-[0.98] transition-all cursor-pointer border border-[var(--border-color)] shadow-sm hover:shadow-xl hover:-translate-y-2 group"
+                                    className="w-full h-[88px] bg-[var(--card-bg)] rounded-[24px] px-4 flex items-center cursor-pointer active:scale-[0.98] transition-all border border-[var(--border-color)] transition-colors duration-300"
                                 >
-                                    {cat.coverImage ? (
-                                        <img src={cat.coverImage} className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-1000 group-hover:scale-110" alt="" />
-                                    ) : (
-                                        <div className="absolute inset-0 z-0 transition-transform duration-1000 group-hover:scale-110">
-                                            {getCategoryCover(cat.name, "w-full h-full") || <DefaultCategoryCover className="w-full h-full opacity-60" />}
-                                        </div>
-                                    )}
+                                    {/* Icon Container (56x56) */}
+                                    <div className="w-[56px] h-[56px] bg-[var(--border-color)] rounded-[8px] flex items-center justify-center text-[var(--text-primary)] transition-colors duration-300">
+                                        {getCategoryIcon(cat.name)}
+                                    </div>
 
-                                    <div className="absolute inset-0 z-10 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-                                        <span className="text-2xl font-black leading-[1.1] text-white font-cera uppercase tracking-tighter transition-all duration-500 group-hover:text-[var(--accent-cyan)]">
+                                    {/* Content */}
+                                    <div className="flex-1 ml-4 flex flex-col justify-center">
+                                        <h2 className="text-[16px] font-bold text-[var(--text-primary)] leading-tight transition-colors duration-300" style={{ fontFamily: 'var(--font-cera)' }}>
                                             {cat.name}
-                                        </span>
-                                        <div className="h-1 w-0 bg-[var(--accent-cyan)] mt-2 transition-all duration-500 group-hover:w-12 shadow-[0_0_15px_var(--accent-cyan)]" />
+                                        </h2>
+                                        
+                                        <div className="flex items-center mt-2">
+                                            <span className="text-[13px] font-medium text-[var(--text-secondary)] transition-colors duration-300" style={{ fontFamily: 'var(--font-cera)' }}>
+                                                Услуг
+                                            </span>
+                                            <div className="flex-1 border-b border-dashed border-[var(--border-color)] mx-3 mb-1 transition-colors duration-300" />
+                                            <span className="text-[14px] font-bold text-[var(--text-primary)] tabular-nums transition-colors duration-300" style={{ fontFamily: 'var(--font-cera)' }}>
+                                                {getServicesCount(cat.id)}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    )}
-                </main>
-            </div>
-
-            {/* PHONE VERSION - Exact Legacy Restore from Backup */}
-            <div className="md:hidden min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans flex justify-center overflow-x-hidden transition-colors duration-300 w-full relative z-10 pb-32">
-                <div className="w-full max-w-[375px] flex flex-col relative">
-                    
-                    {/* Unified Header - Stylized SVG from Backup */}
-                    <header className="fixed top-0 w-full max-w-[375px] h-[97px] bg-[var(--bg-color)] z-50 transition-colors duration-300">
-                        <svg width="375" height="97" viewBox="0 0 375 97" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full relative z-10 pointer-events-none">
-                            <mask id="path-1-inside-1_1725_6563" fill="white">
-                                <path d="M0 0H375V97H0V0Z"/>
-                            </mask>
-                            <path d="M0 0H375V97H0V0Z" fill="var(--bg-color)"/>
-                            <path d="M375 97V96H0V97V98H375V97Z" fill="var(--border-color)" mask="url(#path-1-inside-1_1725_6563)"/>
-                            
-                            {/* Word "КАТЕГОРИИ" centered by translation */}
-                            <g transform="translate(94.3, 0)">
-                                <path d="M47.768 78H43.856L37.064 69.744V78H33.824V62.16H37.064V69.504L43.112 62.16H46.976L40.904 69.624L47.768 78ZM59.2946 70.944V78H56.3186V76.848C55.3906 77.808 54.1826 78.288 52.6946 78.288C51.4466 78.288 50.4466 77.96 49.6946 77.304C48.9586 76.648 48.5906 75.792 48.5906 74.736C48.5906 73.664 48.9906 72.824 49.7906 72.216C50.6066 71.592 51.7026 71.28 53.0786 71.28H56.0546V70.752C56.0546 70.08 55.8626 69.568 55.4786 69.216C55.1106 68.848 54.5666 68.664 53.8466 68.664C53.2546 68.664 52.7186 68.792 52.2386 69.048C51.7586 69.304 51.2466 69.72 50.7026 70.296L49.0226 68.304C50.3986 66.672 52.1266 65.856 54.2066 65.856C55.7746 65.856 57.0146 66.304 57.9266 67.2C58.8386 68.08 59.2946 69.328 59.2946 70.944ZM56.0546 73.56V73.416H53.5106C52.4066 73.416 51.8546 73.816 51.8546 74.616C51.8546 75.016 52.0066 75.336 52.3106 75.576C52.6306 75.8 53.0466 75.912 53.5586 75.912C54.2786 75.912 54.8706 75.696 55.3346 75.264C55.8146 74.816 56.0546 74.248 56.0546 73.56ZM64.5543 78V68.856H60.9063V66.12H71.4423V68.856H67.7703V78H64.5543ZM84.3014 73.152H75.9734C76.1654 73.904 76.5494 74.488 77.1254 74.904C77.7174 75.304 78.4454 75.504 79.3094 75.504C80.4774 75.504 81.5814 75.104 82.6214 74.304L83.9654 76.512C82.5414 77.696 80.9574 78.288 79.2134 78.288C77.3894 78.32 75.8374 77.728 74.5574 76.512C73.2934 75.28 72.6774 73.8 72.7094 72.072C72.6774 70.36 73.2774 68.888 74.5094 67.656C75.7414 66.424 77.2134 65.824 78.9254 65.856C80.5574 65.856 81.8934 66.384 82.9334 67.44C83.9894 68.496 84.5174 69.808 84.5174 71.376C84.5174 71.952 84.4454 72.544 84.3014 73.152ZM75.9734 70.872H81.3734C81.3574 70.152 81.1014 69.576 80.6054 69.144C80.1254 68.696 79.5254 68.472 78.8054 68.472C78.1174 68.472 77.5174 68.688 77.0054 69.12C76.4934 69.552 76.1494 70.136 75.9734 70.872ZM87.1175 78V66.12H95.8535V68.856H90.3335V78H87.1175ZM96.9204 72.048C96.8884 70.352 97.5044 68.888 98.7684 67.656C100.032 66.424 101.536 65.824 103.28 65.856C105.024 65.824 106.528 66.424 107.792 67.656C109.072 68.888 109.696 70.352 109.664 72.048C109.696 73.744 109.072 75.216 107.792 76.464C106.512 77.696 105 78.296 103.256 78.264C101.512 78.296 100.008 77.696 98.7444 76.464C97.4964 75.216 96.8884 73.744 96.9204 72.048ZM105.464 74.376C106.056 73.768 106.352 73 106.352 72.072C106.352 71.144 106.056 70.368 105.464 69.744C104.888 69.12 104.16 68.808 103.28 68.808C102.384 68.808 101.648 69.12 101.072 69.744C100.496 70.352 100.208 71.128 100.208 72.072C100.208 73 100.496 73.768 101.072 74.376C101.648 74.984 102.384 75.288 103.28 75.288C104.16 75.288 104.888 74.984 105.464 74.376ZM123.09 67.632C124.194 68.8 124.746 70.272 124.746 72.048C124.746 73.824 124.194 75.312 123.09 76.512C122.002 77.696 120.634 78.288 118.986 78.288C117.498 78.288 116.314 77.808 115.434 76.848V82.32H112.194V66.12H115.17V67.608C115.986 66.44 117.258 65.856 118.986 65.856C120.634 65.856 122.002 66.448 123.09 67.632ZM121.458 72.072C121.458 71.096 121.17 70.304 120.594 69.696C120.018 69.088 119.282 68.784 118.386 68.784C117.522 68.784 116.802 69.072 116.226 69.648C115.666 70.224 115.386 71.024 115.386 72.048C115.386 73.072 115.666 73.88 116.226 74.472C116.802 75.048 117.522 75.336 118.386 75.336C119.266 75.336 119.994 75.032 120.57 74.424C121.162 73.816 121.458 73.032 121.458 72.072ZM137.224 65.856H138.28V78H135.04V71.568L128.416 78.288H127.36V66.12H130.576V72.6L137.224 65.856ZM151.497 65.856H152.553V78H149.313V71.568L142.689 78.288H141.633V66.12H144.849V72.6L151.497 65.856Z" fill="var(--text-primary)"/>
-                            </g>
-                        </svg>
-                        
-                        {/* Back Button */}
-                        <button 
-                            onClick={handleBack} 
-                            className="absolute left-6 bottom-[18px] flex items-center justify-center active:scale-90 transition-all text-[var(--text-primary)] z-20 pointer-events-auto"
-                        >
-                            <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M22 9L0 9M0 9L9.4286 18M0 9L9.4286 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                        </button>
-                    </header>
-
-                    {/* Unified Mobile View - Client Grid for all roles */}
+                    </main>
+                ) : (
+                    /* Client View - Grid */
                     <main className="pt-[134px] px-[24px] pb-20">
                         <div className="grid grid-cols-2 gap-[16px]">
                             {categories.map((cat) => (
@@ -323,13 +195,13 @@ export default function CatigoriyPage() {
                             ))}
                         </div>
                     </main>
+                )}
 
-                    {categories.length === 0 && (
-                        <div className="py-20 text-center text-[var(--text-secondary)] text-[13px] font-bold opacity-60 uppercase tracking-widest transition-colors duration-300 w-full">
-                            Нет данных
-                        </div>
-                    )}
-                </div>
+                {categories.length === 0 && (
+                    <div className="py-20 text-center text-[var(--text-secondary)] text-[13px] font-bold opacity-30 uppercase tracking-widest transition-colors duration-300">
+                        Нет данных
+                    </div>
+                )}
             </div>
         </div>
     );

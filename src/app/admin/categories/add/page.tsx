@@ -6,7 +6,6 @@ import { saveCategory } from "@/utils/categories";
 import { DefaultCategoryCover } from "@/components/DefaultCategoryCover";
 import { DefaultCategoryIcon } from "@/components/DefaultCategoryIcon";
 import { getCategoryCover } from "@/components/CategoryCovers";
-import { ChevronLeft, Plus, ImagePlus, Box, Layers, Image as ImageIcon, Sparkles, ArrowUpRight, Layout } from "lucide-react";
 
 export default function AddCategoryPage() {
   const router = useRouter();
@@ -75,241 +74,23 @@ export default function AddCategoryPage() {
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* DESKTOP VIEW */}
-      <div className="hidden md:flex flex-col w-full min-h-screen bg-[#0A0A0B] relative z-10 overflow-hidden">
-         {/* Background Architectural Grid */}
-          <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" 
-               style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
-          
-          {/* Background Accents */}
-          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#FF8C67]/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
+      {/* Main Container 375px */}
+      <div className="relative w-full max-w-[375px] min-h-screen mx-auto bg-[var(--bg-color)] flex flex-col pt-[150px] pb-[100px] px-[24px]">
 
-          {/* Modern Slim Header */}
-          <header className="h-20 shrink-0 flex items-center px-12 justify-between border-b border-white/[0.05] bg-[var(--card-bg)] z-[100] relative">
-            <div className="flex items-center gap-10">
-              <button 
-                onClick={() => router.back()}
-                className="w-10 h-10 rounded-xl border border-[var(--border-color)] bg-white/[0.02] flex items-center justify-center hover:bg-white/10 transition-all active:scale-95 group"
-              >
-                <ChevronLeft className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
-              </button>
-              
-              <div className="flex flex-col">
-                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#FF8C67] opacity-60">Управление категориями</span>
-                <div className="flex items-center gap-2">
-                   <span className="text-[15px] font-bold text-white/90">Создание</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-6">
-               <button
-                 onClick={handleSaveAndAddService}
-                 disabled={!isFormValid}
-                 className="h-12 px-10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-500 hover:bg-[#FF8C67] hover:text-black text-white/80 border border-white/10 hover:border-[#FF8C67] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
-               >
-                 СОХРАНИТЬ И ДОБАВИТЬ УСЛУГИ
-               </button>
-            </div>
-          </header>
-
-          <main className="flex-1 flex overflow-hidden relative z-10 w-full max-w-[1600px] mx-auto">
-             {/* Left Side: The Editor */}
-             <div className="flex-1 overflow-y-auto no-scrollbar pt-16 pb-32 px-12 xl:px-24">
-                <div className="max-w-[800px] mx-auto flex flex-col gap-24">
-                   
-                   {/* Section 1: Identity */}
-                   <div className="flex flex-col gap-16">
-                      <div className="flex flex-col gap-2">
-                         <h2 className="text-5xl font-black font-cera uppercase tracking-tighter text-white">Основная <br/><span className="text-white/20">Информация</span></h2>
-                      </div>
-
-                      <div className="grid grid-cols-12 gap-12">
-                         {/* Image Drop (Cover) */}
-                         <div className="col-span-12 xl:col-span-5">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mb-4 block">Обложка</span>
-                            <div 
-                              onClick={() => coverInputRef.current?.click()}
-                              className={`aspect-video xl:aspect-[3/4] rounded-[32px] border-2 border-dashed transition-all duration-700 cursor-pointer overflow-hidden group relative flex flex-col items-center justify-center w-full ${
-                                coverImage ? 'border-transparent' : 'border-[var(--border-color)] hover:border-[#FF8C67]/40 hover:bg-[#FF8C67]/[0.02]'
-                              }`}
-                            >
-                              {coverImage ? (
-                                <>
-                                  <img src={coverImage} alt="Cover Preview" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
-                                     <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                                        <Plus className="w-6 h-6 rotate-45" />
-                                     </div>
-                                     <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Заменить</span>
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <div className="w-16 h-16 rounded-full bg-white/[0.03] border border-[var(--border-color)] flex items-center justify-center mb-6 group-hover:border-[#FF8C67]/30 transition-colors">
-                                     <ImagePlus className="w-6 h-6 text-white/10 group-hover:text-[#FF8C67]" />
-                                  </div>
-                                  <span className="text-[10px] font-black uppercase tracking-widest text-white/20 group-hover:text-white/40 transition-colors">Загрузить</span>
-                                </>
-                              )}
-                            </div>
-                         </div>
-
-                         <div className="col-span-12 xl:col-span-7 flex flex-col justify-center gap-16 xl:pl-8">
-                            {/* Name Input Group */}
-                            <div className="flex flex-col gap-3 group border-b border-[var(--border-color)] focus-within:border-[#FF8C67] transition-all duration-500 pb-4">
-                               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 group-focus-within:text-[#FF8C67] transition-colors">Название</span>
-                               <input 
-                                 type="text"
-                                 value={name}
-                                 onChange={(e) => setName(e.target.value)}
-                                 onBlur={handleNameBlur}
-                                 placeholder="Например: Мобильные приложения..."
-                                 className="bg-transparent text-2xl font-bold text-white outline-none placeholder:text-white/5 tracking-tight w-full"
-                               />
-                            </div>
-
-                            {/* Icon Input Group */}
-                            <div className="flex flex-col gap-3">
-                               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">SVG Иконка</span>
-                               <div 
-                                  onClick={() => iconInputRef.current?.click()}
-                                  className={`h-24 rounded-2xl border border-dashed transition-all duration-500 cursor-pointer overflow-hidden flex items-center gap-6 px-6 group ${
-                                    iconImage ? 'border-white/10 bg-white/[0.02] hover:bg-white/[0.04]' : 'border-[var(--border-color)] hover:border-[#FF8C67]/40 hover:bg-[#FF8C67]/[0.02]'
-                                  }`}
-                               >
-                                  {iconImage ? (
-                                     <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center shrink-0">
-                                        <img src={iconImage} className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" alt="Icon" />
-                                     </div>
-                                  ) : (
-                                     <div className="w-12 h-12 bg-white/[0.03] rounded-xl flex items-center justify-center shrink-0 border border-[var(--border-color)] group-hover:border-[#FF8C67]/20 transition-colors">
-                                        <Box className="w-5 h-5 text-white/10 group-hover:text-[#FF8C67]" />
-                                     </div>
-                                  )}
-                                  <div className="flex flex-col gap-1">
-                                     <span className="text-[13px] font-bold text-white/80 group-hover:text-white transition-colors">
-                                        {iconImage ? 'Заменить' : 'Загрузить иконку'}
-                                     </span>
-                                     <span className="text-[10px] font-medium text-white/20">Формат SVG без фона</span>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-
-                   {/* Section: Services inside Category */}
-                   <div className="flex flex-col gap-10 mt-10 opacity-50 select-none">
-                      <div className="flex items-end justify-between border-b border-[var(--border-color)] pb-8">
-                         <div className="flex flex-col gap-2">
-                            <h2 className="text-4xl font-black font-cera uppercase tracking-tighter text-white">Услуги</h2>
-                         </div>
-                         <button 
-                           disabled
-                           className="h-12 px-6 rounded-xl border border-white/10 text-white/60 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest cursor-not-allowed"
-                         >
-                            <Plus className="w-4 h-4" /> Добавить
-                         </button>
-                      </div>
-
-                      <div className="py-12 flex flex-col items-center justify-center border border-dashed border-[var(--border-color)] rounded-3xl">
-                          <Layers className="w-10 h-10 mb-4 opacity-50 text-white/20" />
-                          <span className="text-[13px] font-bold text-white/40 text-center">Сначала сохраните категорию, <br/>чтобы добавлять услуги</span>
-                      </div>
-                   </div>
-
-                </div>
-             </div>
-
-             {/* Right Side: LIVE Preview Shell */}
-             <div className="hidden xl:flex w-[400px] border-l border-white/[0.05] bg-black/20 flex-col p-12 shrink-0">
-                <div className="sticky top-0 flex flex-col gap-10">
-                   {/* Store Card Mimic */}
-                   <div className="flex justify-center pt-8">
-                      <div className="w-full flex flex-col group/preview">
-                          <div className="aspect-square bg-white/[0.03] rounded-[32px] border border-white/[0.08] relative overflow-hidden mb-6 shadow-2xl transition-all duration-700 group-hover/preview:shadow-[0_20px_50px_rgba(255,140,103,0.1)]">
-                              {coverImage ? (
-                                <img src={coverImage} className="w-full h-full object-cover" alt="" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center opacity-10">
-                                   <Sparkles className="w-12 h-12" />
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                              
-                              <div className="absolute top-6 right-6 text-white/40 group-hover/preview:text-[#FF8C67] transition-colors">
-                                 <ArrowUpRight className="w-6 h-6" />
-                              </div>
-
-                              <div className="absolute bottom-6 left-6 right-6 flex items-end gap-4">
-                                 {iconImage && (
-                                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20">
-                                       <img src={iconImage} className="w-6 h-6 object-contain filter invert" alt="" />
-                                    </div>
-                                 )}
-                                 <h3 className="text-xl font-bold font-cera text-white leading-tight drop-shadow-md pb-1">
-                                    {name || "Новая категория"}
-                                 </h3>
-                              </div>
-                          </div>
-                      </div>
-                   </div>
-
-                   <div className="grid grid-cols-2 gap-4 mt-6">
-                      {[
-                        { label: "Название", active: !!name, icon: <Layout className="w-5 h-5" /> },
-                        { label: "Обложка", active: !!coverImage, icon: <ImagePlus className="w-5 h-5" /> },
-                        { label: "Иконка", active: !!iconImage, icon: <Box className="w-5 h-5" /> },
-                        { label: "Готовность", active: (!!name && !!coverImage && !!iconImage), icon: <Sparkles className="w-5 h-5" /> }
-                      ].map((item, i) => (
-                        <div 
-                          key={i} 
-                          className={`flex flex-col items-center justify-center p-8 rounded-[38px] border transition-all duration-1000 relative group ${
-                            item.active 
-                            ? 'border-[#FF8C67]/30 bg-[#FF8C67]/[0.03] shadow-[0_20px_40px_rgba(255,140,103,0.05)]' 
-                            : 'border-[var(--border-color)] bg-white/[0.01] opacity-20'
-                          }`}
-                        >
-                           <div className={`transition-all duration-700 ${item.active ? 'text-[#FF8C67]' : 'text-white/20'}`}>
-                              {item.icon}
-                           </div>
-                           <span className={`text-[9px] font-black uppercase tracking-[0.2em] mt-4 transition-colors ${item.active ? 'text-white/80' : 'text-white/20'}`}>
-                              {item.label}
-                           </span>
-                           {item.active && (
-                             <div className="absolute top-4 right-4 w-1 h-1 rounded-full bg-[#FF8C67] shadow-[0_0_10px_#FF8C67]" />
-                           )}
-                        </div>
-                      ))}
-                   </div>
-                </div>
-             </div>
-          </main>
-      </div>
-
-      {/* MOBILE VIEW */}
-      <div className="md:hidden relative w-full min-h-screen bg-transparent flex flex-col items-center mx-auto pb-[100px]">
-        {/* Mobile Background Elements */}
-        <div className="fixed inset-0 z-[-1] pointer-events-none opacity-[0.03]" style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
-        <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[var(--accent-cyan)]/5 blur-[100px] rounded-full pointer-events-none z-[-1]" />
-        <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-pink-500/5 blur-[100px] rounded-full pointer-events-none z-[-1]" />
-
-        {/* Header - 1:1 SVG Match */}
-        <header className="fixed top-0 w-full max-w-[375px] h-[102px] z-50 bg-black/40 backdrop-blur-3xl border-b border-white/5 shadow-2xl transition-colors duration-300">
-          <svg width="375" height="102" viewBox="0 0 375 102" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full absolute -z-10 left-0 bottom-0 pointer-events-none">
+        {/* Top Bar - Exact 1:1 SVG match from prompt */}
+        <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] h-[102px] z-50">
+          <svg width="375" height="102" viewBox="0 0 375 102" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             <mask id="path-1-inside-1_1311_3780_add" fill="white">
               <path d="M0 0H375V102H0V0Z" />
             </mask>
-            <path d="M0 0H375V102H0V0Z" fill="transparent" />
-            <path d="M375 102V101H0V102V103H375V102Z" fill="transparent" mask="url(#path-1-inside-1_1311_3780_add)" />
+            <path d="M0 0H375V102H0V0Z" fill="var(--bg-color)" />
+            <path d="M375 102V101H0V102V103H375V102Z" fill="var(--border-color)" mask="url(#path-1-inside-1_1311_3780_add)" />
 
             {/* Back Arrow */}
             <path d="M51 72L29 72M29 72L38.4286 81M29 72L38.4286 63" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
             {/* Trash Icon (Decorative to match design exactly) */}
-            <path d="M337.5 69.5556V78.1111M332.5 69.5556V78.1111M327.5 64.6667V79.0889C327.5 80.4579 327.5 81.1419 327.772 81.6648C328.012 82.1248 328.394 82.4995 328.865 82.7338C329.399 83 330.099 83 331.496 83H338.504C339.901 83 340.6 83 341.134 82.7338C341.605 82.4995 341.988 82.1248 342.228 81.6648C342.5 81.1425 342.5 80.459 342.5 79.0927V64.6667M327.5 64.6667H330M327.5 64.6667H325M330 64.6667H340M330 64.6667C330 63.5277 330 62.9585 330.19 62.5093C330.444 61.9103 330.93 61.4342 331.543 61.1861C332.002 61 332.585 61 333.75 61H336.25C337.415 61 337.997 61 338.457 61.1861C339.069 61.4342 339.556 61.9103 339.81 62.5093C340 62.9585 340 63.5277 340 64.6667M340 64.6667H342.5M342.5 64.6667H345" stroke="#FF8C67" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M337.5 69.5556V78.1111M332.5 69.5556V78.1111M327.5 64.6667V79.0889C327.5 80.4579 327.5 81.1419 327.772 81.6648C328.012 82.1248 328.394 82.4995 328.865 82.7338C329.399 83 330.099 83 331.496 83H338.504C339.901 83 340.6 83 341.134 82.7338C341.605 82.4995 341.988 82.1248 342.228 81.6648C342.5 81.1425 342.5 80.459 342.5 79.0927V64.6667M327.5 64.6667H330M327.5 64.6667H325M330 64.6667H340M330 64.6667C330 63.5277 330 62.9585 330.19 62.5093C330.444 61.9103 330.93 61.4342 331.543 61.1861C332.002 61 332.585 61 333.75 61H336.25C337.415 61 337.997 61 338.457 61.1861C339.069 61.4342 339.556 61.9103 339.81 62.5093C340 62.9585 340 63.5277 340 64.6667M340 64.6667H342.5M342.5 64.6667H345" stroke="var(--logout-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
             {/* Категория (Decorative Title Paths) */}
             <path d="M142.135 80H138.223L131.431 71.744V80H128.191V64.16H131.431V71.504L137.479 64.16H141.343L135.271 71.624L142.135 80ZM153.662 72.944V80H150.686V78.848C149.758 79.808 148.55 80.288 147.062 80.288C145.814 80.288 144.814 79.96 144.062 79.304C143.326 78.648 142.958 77.792 142.958 76.736C142.958 75.664 143.358 74.824 144.158 74.216C144.974 73.592 146.07 73.28 147.446 73.28H150.422V72.752C150.422 72.08 150.23 71.568 149.846 71.216C149.478 70.848 148.934 70.664 148.214 70.664C147.622 70.664 147.086 70.792 146.606 71.048C146.126 71.304 145.614 71.72 145.07 72.296L143.39 70.304C144.766 68.672 146.494 67.856 148.574 67.856C150.142 67.856 151.382 68.304 152.294 69.2C153.206 70.08 153.662 71.328 153.662 72.944ZM150.422 75.56V75.416H147.878C146.774 75.416 146.222 75.816 146.222 76.616C146.222 77.016 146.374 77.336 146.678 77.576C146.998 77.8 147.414 77.912 147.926 77.912C148.646 77.912 149.238 77.696 149.702 77.264C150.182 76.816 150.422 76.248 150.422 75.56ZM158.922 80V70.856H155.274V68.12H165.81V70.856H162.138V80H158.922ZM178.669 75.152H170.341C170.533 75.904 170.917 76.488 171.493 76.904C172.085 77.304 172.813 77.504 173.677 77.504C174.845 77.504 175.949 77.104 176.989 76.304L178.333 78.512C176.909 79.696 175.325 80.288 173.581 80.288C171.757 80.32 170.205 79.728 168.925 78.512C167.661 77.28 167.045 75.8 167.077 74.072C167.045 72.36 167.645 70.888 168.877 69.656C170.109 68.424 171.581 67.824 173.293 67.856C174.925 67.856 176.261 68.384 177.301 69.44C178.357 70.496 178.885 71.808 178.885 73.376C178.885 73.952 178.813 74.544 178.669 75.152ZM170.341 72.872H175.741C175.725 72.152 175.469 71.576 174.973 71.144C174.493 70.696 173.893 70.472 173.173 70.472C172.485 70.472 171.885 70.688 171.373 71.12C170.861 71.552 170.517 72.136 170.341 72.872ZM181.485 80V68.12H190.221V70.856H184.701V80H181.485ZM191.288 74.048C191.256 72.352 191.872 70.888 193.136 69.656C194.4 68.424 195.904 67.824 197.648 67.856C199.392 67.824 200.896 68.424 202.16 69.656C203.44 70.888 204.064 72.352 204.032 74.048C204.064 75.744 203.44 77.216 202.16 78.464C200.88 79.696 199.368 80.296 197.624 80.264C195.88 80.296 194.376 79.696 193.112 78.464C191.864 77.216 191.256 75.744 191.288 74.048ZM199.832 76.376C200.424 75.768 200.72 75 200.72 74.072C200.72 73.144 200.424 72.368 199.832 71.744C199.256 71.12 198.528 70.808 197.648 70.808C196.752 70.808 196.016 71.12 195.44 71.744C194.864 72.352 194.576 73.128 194.576 74.072C194.576 75 194.864 75.768 195.44 76.376C196.016 76.984 196.752 77.288 197.648 77.288C198.528 77.288 199.256 76.984 199.832 76.376ZM217.457 69.632C218.561 70.8 219.113 72.272 219.113 74.048C219.113 75.824 218.561 77.312 217.457 78.512C216.369 79.696 215.001 80.288 213.353 80.288C211.865 80.288 210.681 79.808 209.801 78.848V84.32H206.561V68.12H209.537V69.608C210.353 68.44 211.625 67.856 213.353 67.856C215.001 67.856 216.369 68.448 217.457 69.632ZM215.825 74.072C215.825 73.096 215.537 72.304 214.961 71.696C214.385 71.088 213.649 70.784 212.753 70.784C211.889 70.784 211.169 71.072 210.593 71.648C210.033 72.224 209.753 73.024 209.753 74.048C209.753 75.072 210.033 75.88 210.593 76.472C211.169 77.048 211.889 77.336 212.753 77.336C213.633 77.336 214.361 77.032 214.937 76.424C215.529 75.816 215.825 75.032 215.825 74.072ZM231.591 67.856H232.647V80H229.407V73.568L222.783 80.288H221.727V68.12H224.943V74.6L231.591 67.856ZM240.584 68.12H245.96V80H242.744V76.352H241.472L238.544 80H234.896L238.256 75.896C237.456 75.576 236.832 75.096 236.384 74.456C235.952 73.816 235.736 73.072 235.736 72.224C235.736 70.976 236.176 69.984 237.056 69.248C237.936 68.496 239.112 68.12 240.584 68.12ZM242.744 73.736V70.856H240.704C240.192 70.856 239.784 70.984 239.48 71.24C239.176 71.496 239.024 71.84 239.024 72.272C239.024 72.72 239.176 73.08 239.48 73.352C239.784 73.608 240.192 73.736 240.704 73.736H242.744Z" fill="var(--text-primary)" />
@@ -323,21 +104,21 @@ export default function AddCategoryPage() {
         </header>
 
         {/* Form Fields Stack */}
-        <div className="flex flex-col gap-[24px] pt-[150px] md:pt-0 px-[24px] md:px-10 lg:px-12 w-full max-w-[600px] xl:max-w-[800px]">
+        <div className="flex flex-col gap-[24px]">
 
           {/* Text Field: Name */}
           <div className="flex flex-col gap-[4px] w-full">
             <div className="px-[8px] h-[24px] flex items-end">
               <span className="text-[16px] leading-[24px] font-normal text-[var(--text-primary)]">Название</span>
             </div>
-            <div className="w-full h-[56px] bg-white/5 backdrop-blur-sm border border-white/10 shadow-sm rounded-[16px] flex items-center px-[16px]">
+            <div className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] flex items-center px-[16px]">
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onBlur={handleNameBlur}
                 placeholder="Приложения"
-                className="w-full bg-transparent border-none outline-none text-[16px] leading-[24px] font-bold text-[var(--text-primary)] placeholder:text-[var(--text-primary)]/40"
+                className="w-full bg-transparent border-none outline-none text-[16px] leading-[24px] text-[var(--text-primary)] placeholder:text-[var(--text-primary)]/40"
               />
             </div>
           </div>
@@ -345,7 +126,7 @@ export default function AddCategoryPage() {
           {/* Icon/Preview Row */}
           <div className="flex items-center gap-[16px] w-full">
             {/* Category Card Preview */}
-            <div className="w-[155px] h-[155px] bg-black/40 backdrop-blur-md rounded-[24px] shrink-0 relative overflow-hidden border border-white/5 shadow-lg">
+            <div className="w-[155px] h-[155px] bg-[var(--card-bg)] rounded-[24px] shrink-0 relative overflow-hidden">
               {coverImage ? (
                 <>
                   <img src={coverImage} className="absolute inset-0 w-full h-full object-cover z-0" alt="" />
@@ -357,7 +138,7 @@ export default function AddCategoryPage() {
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full bg-transparent flex items-center justify-center text-white/20">
+                <div className="w-full h-full bg-[var(--card-bg)] flex items-center justify-center text-[var(--border-color)]">
                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                      <rect x="3" y="3" width="18" height="18" rx="2" strokeLinecap="round" />
                      <circle cx="8.5" cy="8.5" r="1.5" />
@@ -398,15 +179,20 @@ export default function AddCategoryPage() {
 
             <div
               onClick={() => coverInputRef.current?.click()}
-              className="w-full h-[179px] border-2 border-dashed border-[var(--text-secondary)] rounded-[24px] flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--border-color)] transition-colors relative overflow-hidden p-[24px] gap-[24px]"
+              className="w-full h-[181px] relative flex items-center justify-center cursor-pointer transition-all active:scale-[0.99] group overflow-hidden"
             >
-              <div className="flex flex-col items-center gap-[8px] w-full">
-                <span className="text-[13px] leading-[20px] font-normal text-[var(--text-secondary)] text-center">
-                  Загрузите файл обложки
-                </span>
-              </div>
-              <div className="w-full h-[44px] bg-[var(--border-color)] rounded-full flex items-center justify-center active:scale-95 transition-transform">
-                <span className="text-[16px] font-bold text-[var(--text-primary)]">Выбрать файл</span>
+              {/* SVG Background/Frame */}
+              <svg width="329" height="181" viewBox="0 0 329 181" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full">
+                <rect x="1" y="1" width="327" height="179" rx="24" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="8 16"/>
+                <path d="M164.5 52.4999V37.4999M164.5 37.4999L157.136 42.4999M164.5 37.4999L171.864 42.4999M191.5 49.9999C191.5 44.4771 187.104 39.9999 181.682 39.9999C181.624 39.9999 181.567 40.0004 181.509 40.0015C180.319 31.52 173.156 25 164.5 25C157.635 25 151.712 29.1001 148.96 35.027C142.561 35.4536 137.5 40.8745 137.5 47.4995C137.5 54.403 142.995 60 149.773 60L181.682 59.9998C187.104 59.9998 191.5 55.5227 191.5 49.9999Z" stroke="var(--text-secondary)" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+
+              {/* Functional Center Content */}
+              <div className="relative z-10 flex flex-col items-center gap-[20px] pt-[40px]">
+                 <span className="text-[14px] font-medium text-[var(--text-secondary)] opacity-60">Загрузите файл обложки</span>
+                  <button className="w-[279px] h-[44px] bg-[var(--nav-btn)] rounded-full flex items-center justify-center text-[var(--text-primary)] text-[16px] font-bold active:scale-95 transition-all shadow-lg">
+                    Выбрать файл
+                 </button>
               </div>
             </div>
           </div>
@@ -419,19 +205,20 @@ export default function AddCategoryPage() {
 
             <div
               onClick={() => iconInputRef.current?.click()}
-              className="w-full h-[179px] border-2 border-dashed border-[var(--text-secondary)] rounded-[24px] flex flex-col items-center justify-center p-[24px] gap-[24px] cursor-pointer hover:bg-[var(--border-color)] transition-colors"
+              className="w-full h-[181px] relative flex items-center justify-center cursor-pointer transition-all active:scale-[0.99] group overflow-hidden"
             >
-              <div className="flex flex-col items-center gap-[8px] w-full">
-                <svg width="54" height="35" viewBox="0 0 54 35" fill="none" stroke="var(--text-secondary)" strokeWidth="2">
-                  <path d="M27 5V25M17 15L27 5L37 15" strokeLinecap="round" strokeLinejoin="round" />
-                  <rect x="2" y="30" width="50" height="2" rx="1" fill="var(--text-secondary)" stroke="none" />
-                </svg>
-                <span className="text-[13px] leading-[20px] font-normal text-[var(--text-secondary)] text-center">
-                  Загрузите файл иконки
-                </span>
-              </div>
-              <div className="w-full h-[44px] bg-[var(--border-color)] rounded-full flex items-center justify-center active:scale-95 transition-transform">
-                <span className="text-[16px] font-bold text-[var(--text-primary)]">Выбрать файл</span>
+              {/* SVG Background/Frame */}
+              <svg width="329" height="181" viewBox="0 0 329 181" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full">
+                <rect x="1" y="1" width="327" height="179" rx="24" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="8 16"/>
+                <path d="M164.5 52.4999V37.4999M164.5 37.4999L157.136 42.4999M164.5 37.4999L171.864 42.4999M191.5 49.9999C191.5 44.4771 187.104 39.9999 181.682 39.9999C181.624 39.9999 181.567 40.0004 181.509 40.0015C180.319 31.52 173.156 25 164.5 25C157.635 25 151.712 29.1001 148.96 35.027C142.561 35.4536 137.5 40.8745 137.5 47.4995C137.5 54.403 142.995 60 149.773 60L181.682 59.9998C187.104 59.9998 191.5 55.5227 191.5 49.9999Z" stroke="var(--text-secondary)" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+
+              {/* Functional Center Content */}
+              <div className="relative z-10 flex flex-col items-center gap-[20px] pt-[40px]">
+                 <span className="text-[14px] font-medium text-[var(--text-secondary)] opacity-60">Загрузите файл иконки</span>
+                  <button className="w-[279px] h-[44px] bg-[var(--nav-btn)] rounded-full flex items-center justify-center text-[var(--text-primary)] text-[16px] font-bold active:scale-95 transition-all shadow-lg">
+                    Выбрать файл
+                 </button>
               </div>
             </div>
           </div>

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { getCategories, Category } from "@/utils/categories";
 import { getServices } from "@/utils/services";
 import { getCurrentUserPhone, getUserData, setActiveRole, getActiveRole } from "@/utils/userData";
-import { motion, AnimatePresence } from "framer-motion";
 
 import { CategoryIcon } from "@/components/CategoryIcon";
 
@@ -16,7 +15,7 @@ export default function SellerPage() {
   const [allServices, setAllServices] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [userName, setUserName] = useState("Друг");
+  const [userName, setUserName] = useState("Friend");
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
 
@@ -28,7 +27,10 @@ export default function SellerPage() {
       const srvs = getServices();
       setAllServices(srvs);
 
-      setSelectedCategoryId(prev => prev);
+      setSelectedCategoryId(prev => {
+        if (!prev && cats.length > 0) return cats[0].id;
+        return prev;
+      });
     };
 
     loadData();
@@ -119,7 +121,7 @@ export default function SellerPage() {
     <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] pb-32 relative overflow-hidden animate-page-fade-in transition-colors duration-300">
       {/* Background Decor removed */}
 
-      <header className="px-6 pt-12 pb-6 flex items-center justify-between w-full md:hidden">
+      <header className="px-6 pt-12 pb-6 flex items-center justify-between w-full">
         {/* Greeting section */}
         <div className="flex-shrink-0">
           <svg width="112" height="28" viewBox="9 16 112 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -129,12 +131,7 @@ export default function SellerPage() {
 
         {/* Icons section */}
         <div className="flex items-center gap-2">
-          <button onClick={() => router.push("/setting-new")} className="w-[43px] h-[43px] rounded-full border border-[var(--border-color)] flex items-center justify-center transition-all active:scale-95 transition-colors duration-300">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19.5179 9.0626L19.1881 8.86812C19.1369 8.83792 19.1118 8.82276 19.087 8.80705C18.8412 8.65089 18.6339 8.43512 18.4827 8.17698C18.4675 8.15101 18.4531 8.12377 18.4238 8.06994C18.3945 8.01617 18.3797 7.98892 18.366 7.96195C18.2304 7.69339 18.157 7.39411 18.1526 7.08949C18.1522 7.05886 18.1523 7.02757 18.1533 6.96537L18.1597 6.55939C18.17 5.90974 18.1752 5.5839 18.0891 5.29148C18.0126 5.03173 17.8846 4.79249 17.7138 4.58946C17.5206 4.35997 17.2533 4.19624 16.718 3.8692L16.2734 3.59755C15.7397 3.27142 15.4727 3.1083 15.1893 3.04611C14.9386 2.9911 14.6799 2.99365 14.4301 3.0531C14.1482 3.12021 13.8845 3.28758 13.3576 3.62213L13.3546 3.62365L13.036 3.8259C12.9857 3.85788 12.9602 3.874 12.9349 3.88888C12.6844 4.03658 12.4047 4.11826 12.1181 4.12801C12.0893 4.12899 12.0599 4.12899 12.0012 4.12899C11.9428 4.12899 11.9122 4.12899 11.8833 4.12801C11.5962 4.11821 11.3159 4.0361 11.065 3.88779C11.0397 3.87284 11.0147 3.85659 10.9642 3.82446L10.6436 3.62039C10.1131 3.28267 9.84738 3.11355 9.56388 3.04611C9.31307 2.98644 9.05347 2.98479 8.80186 3.04052C8.51775 3.10344 8.25072 3.26777 7.71664 3.59643L7.71427 3.59755L7.2752 3.86774L7.27034 3.87089C6.74108 4.1966 6.47581 4.35984 6.28429 4.5884C6.11434 4.79122 5.98731 5.03009 5.91127 5.28914C5.82533 5.58197 5.82991 5.9085 5.84027 6.56122L5.8467 6.96662C5.84768 7.02801 5.84936 7.05852 5.84894 7.08871C5.84468 7.39395 5.77033 7.69385 5.63428 7.96289C5.62082 7.98949 5.60633 8.0161 5.57737 8.06925C5.5484 8.12243 5.53437 8.14888 5.51934 8.17455C5.36743 8.43406 5.15925 8.65109 4.91183 8.80752C4.88735 8.82299 4.86156 8.83787 4.81088 8.86765L4.48535 9.05893C3.94373 9.37718 3.67298 9.53644 3.47597 9.76309C3.30169 9.96359 3.17003 10.2014 3.08966 10.4604C2.99881 10.7532 2.99889 11.0815 3.0003 11.7381L3.00145 12.2747C3.00284 12.9269 3.00476 13.2528 3.09581 13.5436C3.17636 13.8009 3.30706 14.0373 3.48037 14.2366C3.67626 14.4618 3.94432 14.6201 4.48183 14.9372L4.80446 15.1275C4.85937 15.1599 4.887 15.1759 4.91348 15.1928C5.15866 15.3493 5.36521 15.5657 5.51583 15.8238C5.5321 15.8516 5.54772 15.8806 5.57895 15.9384C5.6098 15.9956 5.62559 16.0241 5.63985 16.0528C5.77191 16.3179 5.84262 16.6124 5.84744 16.9122C5.84796 16.9446 5.84751 16.9773 5.84646 17.0432L5.84027 17.4322C5.82984 18.0872 5.8253 18.415 5.91175 18.7086C5.98823 18.9684 6.11605 19.2076 6.28693 19.4107C6.48007 19.6402 6.74784 19.8038 7.28311 20.1308L7.72762 20.4024C8.2614 20.7286 8.52819 20.8915 8.81156 20.9537C9.06226 21.0087 9.32112 21.0065 9.57092 20.9471C9.85325 20.8799 10.1178 20.7119 10.6462 20.3764L10.9648 20.1742C11.0152 20.1422 11.0407 20.1261 11.066 20.1113C11.3165 19.9636 11.5959 19.8815 11.8825 19.8717C11.9113 19.8707 11.9407 19.8707 11.9994 19.8707C12.0583 19.8707 12.0877 19.8707 12.1166 19.8717C12.4037 19.8815 12.6849 19.9639 12.9358 20.1122C12.9579 20.1252 12.98 20.1393 13.0188 20.1641L13.3575 20.3797C13.8881 20.7174 14.1532 20.886 14.4368 20.9535C14.6876 21.0131 14.9474 21.0156 15.199 20.9599C15.483 20.897 15.7506 20.7323 16.2844 20.4038L16.73 20.1296C17.2596 19.8036 17.5252 19.6402 17.7168 19.4116C17.8867 19.2088 18.0139 18.97 18.09 18.711C18.1753 18.4203 18.1701 18.0962 18.1599 17.4529L18.1533 17.0334C18.1523 16.972 18.1522 16.9414 18.1526 16.9112C18.1569 16.606 18.23 16.3059 18.366 16.0369C18.3795 16.0103 18.3941 15.9835 18.4229 15.9305C18.4519 15.8773 18.4669 15.8508 18.4819 15.8252C18.6338 15.5656 18.8422 15.3484 19.0897 15.192C19.1138 15.1767 19.1387 15.1621 19.1882 15.133L19.1899 15.1322L19.5154 14.9409C20.057 14.6227 20.3283 14.4632 20.5253 14.2366C20.6996 14.0361 20.8311 13.7986 20.9115 13.5396C21.0018 13.2485 21.0011 12.9221 20.9997 12.2732L20.9985 11.725C20.9971 11.0729 20.9964 10.747 20.9053 10.4562C20.8248 10.199 20.6933 9.96253 20.52 9.76323C20.3243 9.53819 20.0559 9.37986 19.5194 9.06342L19.5179 9.0626Z" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M8.39888 12.0001C8.39888 14.109 10.0113 15.8186 12.0003 15.8186C13.9893 15.8186 15.6017 14.109 15.6017 12.0001C15.6017 9.89113 13.9893 8.1815 12.0003 8.1815C10.0113 8.1815 8.39888 9.89113 8.39888 12.0001Z" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+
           <button onClick={() => {
             const role = getActiveRole();
             router.push(role === 'seller' ? "/lkseller" : "/profile");
@@ -151,7 +148,7 @@ export default function SellerPage() {
       </header>
 
       {/* Search Input - Refined Split Pill Matches SVG */}
-      <div className="px-6 mb-10 md:hidden">
+      <div className="px-6 mb-10">
         <div className="flex items-center gap-2 h-[44px] w-full group">
           {/* Input Pill */}
           <div 
@@ -195,7 +192,7 @@ export default function SellerPage() {
       </div>
 
       {/* Categories Matches SVG */}
-      <div className="md:hidden mb-6">
+      <div className="mb-6">
         <div className="px-6 mb-4">
           <div className="flex items-center justify-between h-8 relative w-full">
             <svg width="327" height="32" viewBox="9 0 327 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
@@ -239,239 +236,48 @@ export default function SellerPage() {
         </div>
       </div>
 
-      {/* Desktop Layout - PC VERSION - Ultra-Minimalist Architectural Layout */}
-      <div className="hidden md:flex flex-col w-full min-h-screen relative z-10 overflow-hidden bg-[var(--bg-color)]">
-        <div className="max-w-[1400px] mx-auto w-full px-12 pt-20 pb-32 flex flex-col items-start">
-          
-          {/* 1. Header - Match settings style */}
-          {/* 1. Header - Match settings style */}
-          <header className="flex flex-col mb-16 shrink-0">
-            <h1 className="text-4xl md:text-5xl font-black font-cera text-[var(--text-primary)] tracking-tight leading-none uppercase">
-              КАТАЛОГ<br/>
-              <span className="text-[var(--text-secondary)] opacity-50">Услуг</span>
-            </h1>
-          </header>
-
-          {/* 2. Minimalist Category Navigation (Text Only) */}
-          <nav className="w-full mb-12 flex items-center justify-start gap-10 overflow-x-auto hide-scrollbar pb-4 border-b border-[var(--border-color)]/20">
-            <motion.button 
-              whileHover={{ x: 2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedCategoryId(null)} 
-              className={`relative text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-300
-                ${!selectedCategoryId 
-                  ? 'text-[var(--text-primary)] opacity-100' 
-                  : 'text-[var(--text-secondary)] opacity-30 hover:opacity-100'
-                }`}
-            >
-              Все услуги
-              {!selectedCategoryId && (
-                <motion.div 
-                  layoutId="nav-underline-seller" 
-                  className="absolute -bottom-4 left-0 right-0 h-[2px] bg-[var(--text-primary)]"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-            </motion.button>
-            
-            {categories.map((cat) => {
-              const isActive = selectedCategoryId === cat.id;
-              return (
-                <motion.button 
-                  key={cat.id} 
-                  whileHover={{ x: 2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setSelectedCategoryId(cat.id)} 
-                  className={`relative text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-300
-                    ${isActive
-                      ? 'text-[var(--text-primary)] opacity-100' 
-                      : 'text-[var(--text-secondary)] opacity-30 hover:opacity-100'
-                    }`}
-                >
-                  {cat.name}
-                  {isActive && (
-                    <motion.div 
-                      layoutId="nav-underline-seller" 
-                      className="absolute -bottom-4 left-0 right-0 h-[2px] bg-[var(--text-primary)]"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
-          </nav>
-
-          {/* 3. Content Section */}
-          <div className="w-full">
-            <AnimatePresence mode="wait">
-              {filteredServices.length === 0 ? (
-                <motion.div 
-                   key="empty"
-                   initial={{ opacity: 0, scale: 0.98 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   exit={{ opacity: 0, scale: 0.98 }}
-                   className="relative w-full h-[500px] flex flex-col items-center justify-center overflow-hidden border border-[var(--border-color)]/10 rounded-[48px] bg-[var(--card-bg)]/5 group/empty"
-                >
-                   {/* Minimalist Central Content */}
-                   <div className="relative z-10 flex flex-col items-center">
-                     {/* Geometric Decor */}
-                     <div className="w-12 h-[1px] bg-[var(--text-primary)] mb-8 opacity-20 group-hover:w-24 transition-all duration-700 ease-out" />
-                     
-                     <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[var(--text-secondary)] mb-4 opacity-40">
-                       КАТЕГОРИЯ: <span className="text-[var(--text-primary)] opacity-100 uppercase">{categories.find(c => c.id === selectedCategoryId)?.name || 'КАТАЛОГ'}</span>
-                     </h2>
-                     
-                     <h3 className="text-3xl md:text-4xl font-black font-cera text-[var(--text-primary)] mb-8 tracking-tight uppercase text-center leading-tight">
-                       В ЭТОМ РАЗДЕЛЕ<br/>
-                       <span className="text-[var(--text-secondary)] opacity-50">ПОКА НЕТ</span><br/>
-                       ДОСТУПНЫХ УСЛУГ
-                     </h3>
-                     
-                     <div className="w-12 h-[1px] bg-[var(--text-primary)] mt-8 opacity-20 group-hover:w-6 transition-all duration-700 ease-out" />
-                   </div>
-                   
-                   {/* Edge Accents */}
-                   <div className="absolute top-8 left-8 w-4 h-4 border-t border-l border-[var(--border-color)]/20" />
-                   <div className="absolute bottom-8 right-8 w-4 h-4 border-b border-r border-[var(--border-color)]/20" />
-                </motion.div>
-              ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-6 gap-x-4 gap-y-10">
-                  {filteredServices.map((service, index) => (
-                    <motion.div
-                      key={service.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                      className="group flex flex-col cursor-pointer transition-all duration-300"
-                      onClick={() => router.push(`/tarif?id=${service.id}`)}
-                    >
-                    {/* Image Card - Vertical Focus */}
-                    <div className="w-full aspect-[3/4.2] bg-[var(--card-bg)] rounded-[20px] relative overflow-hidden mb-3 transition-all duration-500 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)]">
-                      <img src={service.coverImage || service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                      
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      
-                      {/* Heart Overlay */}
-                      <div className="absolute top-3 right-3 z-10 opacity-40 group-hover:opacity-100 transition-opacity">
-                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                      </div>
-
-                      {/* Partner Badge */}
-                      {!!service.partnerName && (
-                        <div className="absolute top-3 left-3 h-[20px] px-2.5 bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center rounded-full">
-                          <span className="text-[8px] font-black uppercase tracking-widest text-white">ПАРТНЕР</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content Info - WB STYLE */}
-                    <div className="flex flex-col px-1 overflow-hidden">
-                      {/* Brand & Name */}
-                      <div className="flex flex-col mb-1.5">
-                        {(() => {
-                          const isAdmin = service.sellerPhone === "79999999999" || !service.sellerPhone || service.partnerName === "OFFICIAL" || !service.partnerName;
-                          const name = isAdmin ? "TVELV OFFICIAL" : (service.partnerName || "OFFICIAL");
-                          
-                          return (
-                            <div className="flex flex-col gap-0.5">
-                              <span className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-tight opacity-40">
-                                {name}
-                              </span>
-                              <span className="text-[16px] text-[var(--text-primary)] line-clamp-2 font-bold opacity-90 leading-tight">
-                                {service.name || service.title}
-                              </span>
-                            </div>
-                          );
-                        })()}
-                      </div>
-
-                      {/* Price Section */}
-                      <div className="flex items-end gap-1.5 flex-wrap">
-                        <span className="text-[15px] font-black text-[var(--text-primary)] font-cera leading-none whitespace-nowrap">
-                          {Number(service.price).toLocaleString('ru-RU')} ₽
-                        </span>
-                        <span className="text-[10px] text-[var(--text-secondary)] line-through opacity-20 font-bold mb-[2px] whitespace-nowrap">
-                          {Math.round(Number(service.price) * 1.2).toLocaleString('ru-RU')} ₽
-                        </span>
-                      </div>
-                    </div>
-                    </motion.div>
-                ))}
-                </div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Services Grid - Original Designer Version */}
-      <div className="px-6 md:hidden mt-4 pb-24">
+      {/* Services Grid */}
+      <div className="px-6">
         <div className="mb-4">
           <svg width="90" height="18" viewBox="8.3 5 70 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.838 5.12H19.43L15.38 14.012C14.816 15.188 14.276 16.01 13.76 16.478C13.244 16.934 12.476 17.174 11.456 17.198C11.012 17.198 10.562 17.132 10.106 17V14.93C10.406 14.966 10.724 14.984 11.06 14.984C11.78 14.984 12.338 14.732 12.734 14.228L8.306 5.12H11.024L14.048 11.582L16.838 5.12ZM19.3016 12.536C19.3016 11.24 19.7636 10.142 20.6876 9.242C21.6116 8.342 22.7396 7.892 24.0716 7.892C25.8236 7.892 27.1136 8.624 27.9416 10.088L26.2496 11.402C25.6496 10.538 24.9356 10.106 24.1076 10.106C23.4236 10.106 22.8596 10.34 22.4156 10.808C21.9836 11.264 21.7676 11.84 21.7676 12.536C21.7676 13.244 21.9836 13.832 22.4156 14.3C22.8596 14.756 23.4236 14.984 24.1076 14.984C24.9356 14.984 25.6496 14.558 26.2496 13.706L27.9416 15.002C27.5456 15.698 27.0116 16.244 26.3396 16.64C25.6796 17.024 24.9236 17.216 24.0716 17.216C22.7636 17.24 21.6356 16.79 20.6876 15.866C19.7396 14.93 19.2776 13.82 19.3016 12.536ZM30.5293 8.09H37.6033V17H35.1913V10.142H32.7973L32.7793 10.826C32.7193 13.142 32.4613 14.774 32.0053 15.722C31.5613 16.658 30.7873 17.138 29.6833 17.162C29.3473 17.162 29.0413 17.108 28.7653 17V15.002C28.8853 15.026 28.9993 15.038 29.1073 15.038C29.5993 15.038 29.9473 14.672 30.1513 13.94C30.3673 13.208 30.4873 11.966 30.5113 10.214L30.5293 8.09ZM46.1572 8.09H48.7132L44.4472 17.774C44.0392 18.698 43.5532 19.376 42.9892 19.808C42.4252 20.24 41.7292 20.456 40.9012 20.456C40.3972 20.456 39.8752 20.384 39.3352 20.24V18.206C39.8272 18.254 40.1752 18.278 40.3792 18.278C40.8352 18.278 41.2072 18.188 41.4952 18.008C41.7832 17.828 42.0292 17.516 42.2332 17.072L42.5032 16.46L39.0832 8.09H41.6572L43.8352 13.94L46.1572 8.09ZM50.1819 17V8.09H56.7339V10.142H52.5939V17H50.1819ZM65.7361 7.892H66.5281V17H64.0981V12.176L59.1301 17.216H58.3381V8.09H60.7501V12.95L65.7361 7.892Z" fill="var(--text-secondary)"/>
+            <path d="M16.838 5.12H19.43L15.38 14.012C14.816 15.188 14.276 16.01 13.76 16.478C13.244 16.934 12.476 17.174 11.456 17.198C11.012 17.198 10.562 17.132 10.106 17V14.93C10.406 14.966 10.724 14.984 11.06 14.984C11.78 14.984 12.338 14.732 12.734 14.228L8.306 5.12H11.024L14.048 11.582L16.838 5.12ZM19.3016 12.536C19.3016 11.24 19.7636 10.142 20.6876 9.242C21.6116 8.342 22.7396 7.892 24.0716 7.892C25.8236 7.892 27.1136 8.624 27.9416 10.088L26.2496 11.402C25.6496 10.538 24.9356 10.106 24.1076 10.106C23.4236 10.106 22.8596 10.34 22.4156 10.808C21.9836 11.264 21.7676 11.84 21.7676 12.536C21.7676 13.244 21.9836 13.832 22.4156 14.3C22.8596 14.756 23.4236 14.984 24.1076 14.984C24.9356 14.984 25.6496 14.558 26.2496 13.706L27.9416 15.002C27.5456 15.698 27.0116 16.244 26.3396 16.64C25.6796 17.024 24.9236 17.216 24.0716 17.216C22.7636 17.24 21.6356 16.79 20.6876 15.866C19.7396 14.93 19.2776 13.82 19.3016 12.536ZM30.5293 8.09H37.6033V17H35.1913V10.142H32.7973L32.7793 10.826C32.7193 13.142 32.4613 14.774 32.0053 15.722C31.5613 16.658 30.7873 17.138 29.6833 17.162C29.3473 17.162 29.0413 17.108 28.7653 17V15.002C28.8853 15.026 28.9993 15.038 29.1073 15.038C29.5993 15.038 29.9473 14.672 30.1513 13.94C30.3673 13.208 30.4873 11.966 30.5113 10.214L30.5293 8.09ZM46.1572 8.09H48.7132L44.4472 17.774C44.0392 18.698 43.5532 19.376 42.9892 19.808C42.4252 20.24 41.7292 20.456 40.9012 20.456C40.3972 20.456 39.8752 20.384 39.3352 20.24V18.206C39.8272 18.254 40.1752 18.278 40.3792 18.278C40.8352 18.278 41.2072 18.188 41.4952 18.008C41.7832 17.828 42.0292 17.516 42.2332 17.072L42.5032 16.46L39.0832 8.09H41.6572L43.8352 13.94L46.1572 8.09ZM50.1819 17V8.09H56.7339V10.142H52.5939V17H50.1819ZM65.7361 7.892H66.5281V17H64.0981V12.176L59.1301 17.216H58.3381V8.09H60.7501V12.95L65.7361 7.892Z" fill="#999999"/>
           </svg>
         </div>
-        <AnimatePresence mode="wait">
-          {filteredServices.length === 0 ? (
-            <motion.div 
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center py-20 px-6 text-center space-y-8"
-            >
-              <div className="relative">
-                <div className="absolute inset-0 bg-[var(--accent-cyan)] opacity-10 blur-[40px] rounded-full animate-pulse" />
-                <div className="relative w-20 h-20 bg-white/[0.03] backdrop-blur-3xl rounded-[32px] flex items-center justify-center border border-[var(--border-color)] shadow-2xl overflow-hidden">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z" stroke="var(--accent-cyan)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M12 2V12L20.66 7M12 12L3.34 7M12 12L12 22" stroke="var(--accent-cyan)" strokeWidth="1" strokeOpacity="0.4" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="12" cy="12" r="2.5" stroke="var(--accent-cyan)" strokeWidth="1.2" strokeOpacity="0.3" />
-                  </svg>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-[16px] font-black uppercase tracking-[0.1em] text-[var(--text-primary)] font-cera leading-none">
-                  Услуг пока нет
-                </h2>
-                <p className="text-[12px] text-[var(--text-secondary)] max-w-[200px] mx-auto opacity-40 leading-relaxed font-medium">
-                  {selectedCategoryId 
-                    ? `Категория «${categories.find(c => c.id === selectedCategoryId)?.name}» пуста. Загляните позже.`
-                    : "Каталог сейчас наполняется новыми предложениями."}
-                </p>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="grid grid-cols-2 gap-x-[19px] gap-y-10">
-              {filteredServices.map((service) => (
-                <div key={service.id} className="flex flex-col group cursor-pointer" onClick={() => router.push(`/tarif?id=${service.id}`)}>
-                  {/* Image Container matches SVG 153.5x159 */}
-                  <div className="w-full aspect-[153.5/159] rounded-[23.5px] overflow-hidden bg-[var(--card-bg)] mb-4 relative border border-[var(--border-color)] transition-colors duration-300">
-                    <img src={service.coverImage || service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    
-                    {/* Partner Badge - Matching SVG exact style */}
-                    {(service.id === 'foodtech' || !!service.partnerName) && (
-                      <div className="absolute top-2.5 right-2.5 h-[24px] min-w-[76px] px-3 bg-[var(--bg-color)] flex items-center justify-center rounded-full transition-colors duration-300 shadow-sm border border-[var(--border-color)]">
-                        <span className="text-[11px] font-medium text-[var(--text-primary)] whitespace-nowrap pt-[1px]">Партнер</span>
-                      </div>
-                    )}
-                  </div>
+        {filteredServices.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-[14px] text-[var(--text-secondary)] font-medium">Услуг в этой категории пока нет</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-x-[19px] gap-y-10">
+            {filteredServices.map((service) => (
+              <div key={service.id} className="flex flex-col group cursor-pointer" onClick={() => router.push(`/tarif?id=${service.id}`)}>
+                {/* Image Container matches SVG 153.5x159 */}
+                <div className="w-full aspect-[153.5/159] rounded-[23.5px] overflow-hidden bg-[var(--card-bg)] mb-4 relative border border-[var(--border-color)] transition-colors duration-300">
+                  <img src={service.coverImage || service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   
-                  {/* Text elements match SVG labels */}
-                  <div className="flex flex-col gap-1.5 pl-1">
-                    <h3 className="text-[14px] font-bold text-[var(--text-primary)] leading-tight line-clamp-2 transition-colors duration-300">
-                      {service.name || service.title}
-                    </h3>
-                    <p className="text-[12px] text-[var(--text-secondary)] font-bold uppercase tracking-wider transition-colors duration-300">
-                      от {Number(service.price).toLocaleString('ru-RU')} ₽
-                    </p>
-                  </div>
+                  {/* Partner Badge - Matching SVG exact style */}
+                  {(service.id === 'foodtech' || !!service.partnerName) && (
+                    <div className="absolute top-2.5 right-2.5 h-[24px] min-w-[76px] px-3 bg-[var(--bg-color)] flex items-center justify-center rounded-full transition-colors duration-300 shadow-sm border border-[var(--border-color)]">
+                      <span className="text-[11px] font-medium text-[var(--text-primary)] whitespace-nowrap pt-[1px]">Партнер</span>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
-        </AnimatePresence>
+                
+                {/* Text elements match SVG labels */}
+                <div className="flex flex-col gap-1.5 pl-1">
+                  <h3 className="text-[14px] font-bold text-[var(--text-primary)] leading-tight line-clamp-2 transition-colors duration-300">
+                    {service.name || service.title}
+                  </h3>
+                  <p className="text-[13px] text-[var(--text-secondary)] font-medium uppercase tracking-[0.05em] transition-colors duration-300">
+                    от {Number(service.price).toLocaleString('ru-RU')} ₽
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
 
     </div>
   );

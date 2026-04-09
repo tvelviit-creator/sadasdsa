@@ -5,7 +5,6 @@ import { useRouter, useParams } from "next/navigation";
 import { getOrderById, saveOrder, deleteOrder, Order } from "@/utils/orders";
 import { ChatMessage, getChatMessages, sendChatMessage } from "@/utils/chat";
 import { getCurrentUserPhone } from "@/utils/userData";
-import { ChevronLeft } from "lucide-react";
 
 export default function OrderDetailsPage() {
   const router = useRouter();
@@ -23,6 +22,11 @@ export default function OrderDetailsPage() {
   const [features, setFeatures] = useState<string[]>([]);
   const [partnerName, setPartnerName] = useState("");
   const [clientName, setClientName] = useState("");
+  const [tariff, setTariff] = useState("");
+  const [tariffPrice, setTariffPrice] = useState(0);
+  const [design, setDesign] = useState("");
+  const [designPrice, setDesignPrice] = useState(0);
+  const [price, setPrice] = useState(0);
   const [newFeature, setNewFeature] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [focusedFeatureIdx, setFocusedFeatureIdx] = useState<number | null>(null);
@@ -61,7 +65,7 @@ export default function OrderDetailsPage() {
   }, [messages]);
 
   const connectToChat = async () => {
-    if (isConnected || !orderId || !currentPhone) return;
+    if (isConnected || !orderId || !currentPhone || order?.sellerPhone !== 'ADMIN') return;
 
     const systemMsg: ChatMessage = {
       id: `msg_sys_${Date.now()}`,
@@ -99,6 +103,11 @@ export default function OrderDetailsPage() {
           setFeatures(orderData.features || []);
           setPartnerName(orderData.partnerName || "");
           setClientName(orderData.clientName || "");
+          setTariff(orderData.tariff || "");
+          setTariffPrice(orderData.tariffPrice || 0);
+          setDesign(orderData.design || "");
+          setDesignPrice(orderData.designPrice || 0);
+          setPrice(orderData.price || 0);
         }
       } catch (err) {
         console.error("Error fetching order:", err);
@@ -178,6 +187,11 @@ export default function OrderDetailsPage() {
       features, 
       partnerName, 
       clientName, 
+      tariff,
+      tariffPrice,
+      design,
+      designPrice,
+      price,
       ...updates,
       updatedAt: new Date().toISOString() 
     };
@@ -280,42 +294,10 @@ export default function OrderDetailsPage() {
   if (loading || !order) return <div className="min-h-screen bg-[var(--bg-color)]" />;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-[var(--text-primary)] font-sans relative overflow-hidden">
-      {/* Background Architectural Grid */}
-      <div className="hidden md:block absolute inset-0 z-0 pointer-events-none opacity-[0.03]" 
-           style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
-      
-      {/* Background Accents */}
-      <div className="hidden md:block absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-[var(--accent-cyan)]/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="hidden md:block absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-500/5 blur-[120px] rounded-full pointer-events-none" />
-
-      <div className="w-full relative min-h-screen flex flex-col md:max-w-none md:w-full z-10">
-        {/* Desktop Header */}
-        <div className="hidden md:flex flex-col w-full max-w-[1600px] mx-auto px-12 xl:px-24 pt-12 pb-4">
-          <header className="flex flex-col md:flex-row items-center justify-between w-full bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-[32px] px-8 py-6 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="flex flex-col gap-1 cursor-pointer group w-fit relative z-10" onClick={() => router.back()}>
-              <div className="flex items-center gap-3 text-[var(--accent-cyan)] opacity-60 hover:opacity-100 transition-opacity">
-                 <ChevronLeft className="w-5 h-5" />
-                 <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Назад к списку</span>
-              </div>
-              <h1 className="text-3xl font-bold font-cera text-[var(--text-primary)] mt-2">
-                Заказ <span className="text-[var(--accent-cyan)] opacity-40">#{order.orderNumber || order.id.slice(-2)}</span>
-              </h1>
-            </div>
-            <div className="flex items-center gap-4 mt-4 md:mt-0 relative z-10">
-               <button 
-                onClick={handleDelete}
-                className="h-12 px-8 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white"
-               >
-                 Удалить заказ
-               </button>
-            </div>
-          </header>
-        </div>
-
+    <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] flex justify-center selection:bg-[#FF8C67]/30 overflow-x-hidden">
+      <div className="w-full max-w-[375px] relative min-h-screen flex flex-col">
         {/* Header - EXACT matching layout from client/seller orders */}
-        <header className="md:hidden fixed top-0 w-full max-w-[375px] h-[160px] bg-black/40 backdrop-blur-3xl border-b border-white/5 shadow-2xl z-50 px-[24px] pt-[64px] pb-[16px] flex flex-col justify-between left-1/2 -translate-x-1/2">
+        <header className="fixed top-0 w-full max-w-[375px] h-[160px] bg-[var(--bg-color)] z-50 px-[24px] pt-[64px] pb-[16px] flex flex-col justify-between left-1/2 -translate-x-1/2 border-b border-[var(--border-color)]">
           <div className="relative flex items-center justify-center w-full h-[32px]">
             <button 
               onClick={() => router.back()} 
@@ -325,7 +307,10 @@ export default function OrderDetailsPage() {
                 <path d="M51 72L29 72M29 72L38.4286 81M29 72L38.4286 63" stroke="var(--text-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <h1 className="text-[20px] font-bold text-[var(--text-primary)] tracking-tight">
+            <h1 
+              className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2]"
+              style={{ fontFamily: 'var(--font-cera)' }}
+            >
               Заказ № {order.orderNumber || order.id.slice(-2)}
             </h1>
             <button 
@@ -338,7 +323,7 @@ export default function OrderDetailsPage() {
             </button>
           </div>
 
-          <div className="relative flex bg-white/5 backdrop-blur-md rounded-full border border-white/10 h-[56px] w-full p-[4px] mt-[24px] shadow-sm">
+          <div className="relative flex bg-[var(--bg-color)] rounded-full border border-[#FFF]/10 h-[56px] w-full p-[4px] mt-[24px]">
             <div
               className={`absolute top-[4px] bottom-[4px] ${(status === 'completed' || status === 'cancelled') ? 'w-[calc(100%-8px)]' : 'w-[calc(50%-4px)]'} rounded-full transition-all duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] border border-white ${activeTab === 'details' || (status === 'completed' || status === 'cancelled') ? 'left-[4px]' : 'left-[50%]'}`}
             />
@@ -362,12 +347,16 @@ export default function OrderDetailsPage() {
           </div>
         </header>
 
-        <main className="flex-1 relative overflow-hidden h-full md:overflow-visible md:px-8 md:px-10 lg:px-12 md:pb-12">
+        <main className="flex-1 relative overflow-hidden h-full">
           <div
-            className={`flex h-full will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] w-[200%] md:w-full md:grid md:grid-cols-2 md:gap-10 md:!transform-none ${activeTab === 'details' ? 'translate-x-0' : '-translate-x-1/2'}`}
+            className="flex h-full transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] will-change-transform"
+            style={{
+              transform: activeTab === 'details' ? 'translateX(0%)' : 'translateX(-50%)',
+              width: '200%'
+            }}
           >
             {/* Details Tab */}
-            <div className="w-1/2 md:w-full h-full shrink-0 overflow-y-auto hide-scrollbar px-6 pt-[180px] md:pt-0 pb-24 md:pb-0 space-y-6 md:p-8 md:bg-[var(--card-bg)] md:border md:border-[var(--border-color)] md:rounded-[32px]">
+            <div className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar px-6 pt-[180px] pb-24 space-y-6">
               {/* NAME FIELD */}
               <div className="space-y-2">
                 <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Название</p>
@@ -379,6 +368,34 @@ export default function OrderDetailsPage() {
                     className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-[var(--text-primary)] placeholder-[#666]"
                     placeholder="Фудтех приложение"
                   />
+                </div>
+              </div>
+
+              {/* TARIFF & DESIGN FIELDS */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Тариф</p>
+                  <div className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] px-4 flex items-center">
+                    <input 
+                      value={tariff} 
+                      onChange={e => setTariff(e.target.value)} 
+                      onBlur={() => handleUpdate({ tariff })} 
+                      className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-[var(--text-primary)]"
+                      placeholder="Тариф"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Дизайн</p>
+                  <div className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] px-4 flex items-center">
+                    <input 
+                      value={design} 
+                      onChange={e => setDesign(e.target.value)} 
+                      onBlur={() => handleUpdate({ design })} 
+                      className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-[var(--text-primary)]"
+                      placeholder="Дизайн"
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -554,10 +571,10 @@ export default function OrderDetailsPage() {
 
             {/* Chat Tab content */}
             <div
-              className={`w-1/2 md:w-full h-full shrink-0 flex flex-col pt-[180px] md:pt-0 pb-[100px] md:pb-0 relative md:bg-[var(--card-bg)] md:border md:border-[var(--border-color)] md:rounded-[32px] md:overflow-hidden ${status === 'completed' || status === 'cancelled' ? 'md:hidden' : ''}`}
+              ref={chatContainerRef}
+              className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar pt-[180px] px-[24px]"
             >
-              <div ref={chatContainerRef} className="flex-1 overflow-y-auto hide-scrollbar px-[24px] md:p-8">
-                <div className="flex flex-col space-y-6 pb-32 md:pb-0">
+              <div className="flex flex-col space-y-6 pb-32">
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center pt-20 opacity-30 text-center text-[var(--text-primary)]">
                     <p className="font-bold">Сообщений пока нет</p>
@@ -598,57 +615,48 @@ export default function OrderDetailsPage() {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-
-              {/* Chat Input attached inside the chat tab for desktop, but fixed bottom for mobile */}
-              <div className={`fixed bottom-0 w-full max-w-[375px] px-[16px] pb-[34px] bg-black/40 backdrop-blur-3xl border-t border-white/5 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] left-1/2 -translate-x-1/2 z-50 ${activeTab === 'chat' ? 'translate-y-0' : 'translate-y-full'} md:static md:w-full md:max-w-none md:p-6 md:bg-[var(--card-bg)] md:translate-y-0 md:transform-none md:border-t md:border-[var(--border-color)] md:shadow-none md:backdrop-blur-none md:z-10`}>
-                {!isConnected ? (
-                   <button 
-                      onClick={connectToChat}
-                      className="w-full h-[56px] bg-[var(--border-color)] rounded-full flex items-center justify-center active:scale-[0.98] transition-all border border-[var(--border-color)]"
-                  >
-                      <span className="text-[16px] font-bold text-[var(--text-primary)] uppercase tracking-wider">Подключиться</span>
-                  </button>
-                ) : (
-                  <div className="flex items-center gap-[8px] h-[48px]">
-                    {/* Attachment Button */}
-                    <button className="w-[48px] h-[48px] rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 active:scale-90 transition-transform md:bg-[var(--border-color)] md:border-transparent">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                      </svg>
-                    </button>
-      
-                    {/* Input Area */}
-                    <div className="flex-1 bg-white/5 border border-white/10 rounded-full h-full flex items-center px-[20px] md:bg-[var(--border-color)] md:border-transparent">
-                      <input
-                        type="text"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            if (inputText.trim()) handleSendMessage();
-                          }
-                        }}
-                        placeholder="Написать ответ..."
-                        className="w-full bg-transparent text-[16px] text-[var(--text-primary)] placeholder:text-[var(--text-primary)]/40 outline-none"
-                      />
-                    </div>
-      
-                    {/* Send Button */}
-                    <button
-                      onClick={handleSendMessage}
-                      disabled={!inputText.trim()}
-                      className="w-[48px] h-[48px] rounded-full bg-white/5 border border-white/10 flex items-center justify-center transition-all shrink-0 active:scale-90 disabled:opacity-50 md:bg-[var(--border-color)] md:border-transparent"
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={inputText.trim() ? "var(--text-primary)" : "var(--text-secondary)"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 19V5M12 5l-7 7M12 5l7 7" />
-                      </svg>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </main>
+
+        <div className={`fixed bottom-0 w-full max-w-[375px] px-[16px] pb-[34px] bg-[var(--bg-color)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] left-1/2 -translate-x-1/2 z-50 ${activeTab === 'chat' ? 'translate-y-0' : 'translate-y-full'}`}>
+          {order?.sellerPhone !== 'ADMIN' ? null : (
+            <div className="flex items-center gap-[8px] h-[48px]">
+              {/* Attachment Button */}
+              <button className="w-[48px] h-[48px] rounded-full bg-[var(--border-color)] flex items-center justify-center shrink-0 active:scale-90 transition-transform">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                </svg>
+              </button>
+
+              {/* Input Area */}
+              <div className="flex-1 bg-[var(--border-color)] rounded-full h-full flex items-center px-[20px]">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      if (inputText.trim()) handleSendMessage();
+                    }
+                  }}
+                  placeholder="Написать ответ..."
+                  className="w-full bg-transparent text-[16px] text-[var(--text-primary)] placeholder:text-[var(--text-primary)]/40 outline-none"
+                />
+              </div>
+
+              {/* Send Button */}
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputText.trim()}
+                className="w-[48px] h-[48px] rounded-full bg-[var(--border-color)] flex items-center justify-center transition-all shrink-0 active:scale-90 disabled:opacity-50"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={inputText.trim() ? "var(--text-primary)" : "var(--text-secondary)"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19V5M12 5l-7 7M12 5l7 7" />
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <style jsx global>{` body { background-color: var(--bg-color); } ::-webkit-scrollbar { display: none; } .hide-scrollbar::-webkit-scrollbar { display: none; } `}</style>
     </div>

@@ -2,24 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root, .night-theme {
-  --bg-color: #0A0A0B;
-  --card-bg: #121214;
-  --accent-cyan: #92FFF4; /* Updated to TVELVI Logo color */
+:root {
+  --bg-color: #141414;
+  --card-bg: rgba(35, 35, 35, 1);
+  --accent-cyan: #1AE8E8;
   --accent-green: #4AC99B;
   --text-primary: #F5F5F5;
-  --text-secondary: #71717A;
-  --border-color: #1F1F22;
-  --glass-blur: 24px;
-  --nav-bg: #161618;
-  --nav-btn: #202024;
+  --text-secondary: #999999;
+  --border-color: #313131;
+  --glass-blur: 20px;
+  --nav-bg: #313131;
+  --nav-btn: #404040;
   --logout-color: #FF8C67;
   --accent-color: #FF8C67;
-  --accent-glow: rgba(146, 255, 244, 0.15);
-  --accent-cyan-rgb: 146, 255, 244;
-  --devin-grid-opacity: 0.05;
-  --devin-pulse-opacity: 0.2;
-  --tarif-card-bg: #0C0C0E;
+  --accent-glow: rgba(26, 232, 232, 0.4);
+  --accent-cyan-rgb: 26, 232, 232;
+  --add-btn-bg: var(--nav-bg);
+  --add-btn-icon: var(--text-primary);
+  --add-btn-icon-alt: var(--text-primary);
 
   /* Heading Scales */
   --h1-size: 48px;
@@ -40,21 +40,36 @@
 }
 
 .day-theme {
-  --bg-color: #F8F9FA;
-  --card-bg: #FFFFFF;
-  --tarif-card-bg: #FFFFFF;
+  --bg-color: #F5F5F5;
+  --card-bg: rgba(235, 235, 235, 1);
+  --tarif-card-bg: #F5F5F5;
   --text-primary: #1A1A1A;
-  --text-secondary: #52525B;
-  --border-color: #E2E4E9;
-  --nav-bg: #F1F3F5;
-  --nav-btn: #E9ECEF;
+  --text-secondary: #757575;
+  --border-color: #E0E0E0;
+  --nav-bg: #E0E0E0;
+  --nav-btn: #C2C2C2;
   --logout-color: #FF5252;
   --accent-color: #FF5252;
-  --accent-cyan: #0E7490;
-  --accent-glow: rgba(14, 116, 144, 0.2);
-  --accent-cyan-rgb: 14, 116, 144;
-  --devin-grid-opacity: 0.04;
-  --devin-pulse-opacity: 0.3;
+  --accent-glow: rgba(26, 232, 232, 0.2);
+  --accent-cyan-rgb: 26, 232, 232;
+  --add-btn-bg: rgba(20, 20, 20, 1);
+  --add-btn-icon: #FFFFFF;
+  --add-btn-icon-alt: rgba(20, 20, 20, 1);
+}
+
+.night-theme {
+  --bg-color: #141414;
+  --card-bg: rgba(35, 35, 35, 1);
+  --tarif-card-bg: #050505;
+  --text-primary: #F5F5F5;
+  --text-secondary: #999999;
+  --border-color: #313131;
+  --nav-bg: #313131;
+  --nav-btn: #404040;
+  --logout-color: #FF8C67;
+  --accent-color: #FF8C67;
+  --accent-glow: rgba(26, 232, 232, 0.4);
+  --accent-cyan-rgb: 26, 232, 232;
 }
 
 /* Global Scrollbar Hiding (Brute Force Fix for PC) */
@@ -202,102 +217,4 @@ html, body {
 
 .animate-page-fade-in {
     animation: pageFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-/* TVELF Architectural Arrow Button Style */
-.animated-button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 16px 36px;
-  border: 4px solid transparent;
-  font-size: 14px;
-  background-color: transparent;
-  border-radius: 100px;
-  font-weight: 900;
-  color: var(--text-primary);
-  box-shadow: 0 0 0 2px var(--text-primary);
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  width: 100%;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-}
-
-.animated-button:disabled {
-  opacity: 0.1;
-  cursor: not-allowed;
-  box-shadow: 0 0 0 2px var(--text-primary);
-}
-
-.animated-button svg {
-  position: absolute;
-  width: 20px;
-  fill: var(--text-primary);
-  z-index: 9;
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button .arr-1 {
-  right: 20px;
-}
-
-.animated-button .arr-2 {
-  left: -25%;
-}
-
-.animated-button .circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  background-color: var(--text-primary);
-  border-radius: 50%;
-  opacity: 0;
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button .text {
-  position: relative;
-  z-index: 10;
-  transform: translateX(-10px);
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.animated-button:hover:not(:disabled) {
-  box-shadow: 0 0 0 12px transparent;
-  color: black;
-  border-radius: 24px;
-}
-
-.animated-button:hover:not(:disabled) .arr-1 {
-  right: -25%;
-}
-
-.animated-button:hover:not(:disabled) .arr-2 {
-  left: 20px;
-}
-
-.animated-button:hover:not(:disabled) .text {
-  transform: translateX(10px);
-}
-
-.animated-button:hover:not(:disabled) svg {
-  fill: #000;
-}
-
-.animated-button:active:not(:disabled) {
-  scale: 0.98;
-  box-shadow: 0 0 0 4px var(--text-primary);
-}
-
-.animated-button:hover:not(:disabled) .circle {
-  width: 500px;
-  height: 500px;
-  opacity: 1;
 }

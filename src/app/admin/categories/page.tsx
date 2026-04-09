@@ -53,39 +53,17 @@ export default function AdminCategoriesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans flex justify-center w-full">
-      <div className="w-full max-w-[375px] md:max-w-none relative min-h-screen bg-transparent flex flex-col items-center mx-auto md:mx-0">
-        {/* Mobile Background Elements */}
-        <div className="md:hidden fixed inset-0 z-[-1] pointer-events-none opacity-[0.03]" style={{ backgroundImage: `radial-gradient(white 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
-        <div className="md:hidden fixed top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[var(--accent-cyan)]/5 blur-[100px] rounded-full pointer-events-none z-[-1]" />
-        <div className="md:hidden fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-pink-500/5 blur-[100px] rounded-full pointer-events-none z-[-1]" />
+    <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] font-sans flex justify-center">
+      <div className="w-full max-w-[375px] relative min-h-screen bg-[var(--bg-color)]">
 
-        {/* Desktop Header */}
-        <header className="hidden md:flex items-center justify-between pt-12 pb-8 px-12 top-0 z-[90] w-full">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-4xl font-black font-cera text-[var(--text-primary)] uppercase">
-              Категории <span className="text-[var(--text-secondary)] opacity-50 text-2xl ml-3">{categories.length}</span>
-            </h1>
-            <p className="text-sm font-medium text-[var(--text-secondary)] mt-1">Управление категориями и услугами</p>
-          </div>
-          <div className="flex items-center gap-4">
-             <button
-               onClick={() => router.push('/admin/categories/add')}
-               className="h-12 px-6 bg-white text-black font-bold rounded-xl active:scale-95 transition-all text-sm hover:bg-[#92FFF4] shadow-lg flex items-center gap-2"
-             >
-               + Добавить
-             </button>
-          </div>
-        </header>
-
-        {/* Mobile Header - Top Bar Exact SVG Match */}
-        <header className="fixed top-0 w-full max-w-[375px] h-[100px] z-50 bg-black/40 backdrop-blur-3xl border-b border-white/5 shadow-2xl transition-colors duration-300 md:hidden">
-          <svg width="375" height="100" viewBox="0 0 375 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full absolute -z-10 left-0 bottom-0 pointer-events-none">
+        {/* Top Bar - Exact SVG Match */}
+        <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[375px] h-[100px] z-50">
+          <svg width="375" height="100" viewBox="0 0 375 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             <mask id="path-1-inside-1_158_5456" fill="white">
               <path d="M0 0H375V100H0V0Z" />
             </mask>
-            <path d="M0 0H375V100H0V0Z" fill="transparent" />
-            <path d="M375 100V99H0V100V101H375V100Z" fill="transparent" mask="url(#path-1-inside-1_158_5456)" />
+            <path d="M0 0H375V100H0V0Z" fill="var(--bg-color)" />
+            <path d="M375 100V99H0V100V101H375V100Z" fill="var(--border-color)" mask="url(#path-1-inside-1_158_5456)" />
             <path d="M43.856 79.5L37.064 71.244V79.5H33.824V63.66H37.064V71.004L43.112 63.66H46.976L40.904 71.124L47.768 79.5H43.856ZM54.2066 67.356C55.7586 67.356 56.9906 67.796 57.9026 68.676C58.8306 69.54 59.2946 70.796 59.2946 72.444V79.5H56.3186V78.348C55.8866 78.796 55.3586 79.148 54.7346 79.404C54.1266 79.66 53.4466 79.148 53.1174 79.404C52.5094 79.66 51.8294 79.788 51.0774 79.788C49.8134 79.788 48.8134 79.46 48.0774 78.804C47.3414 78.132 46.9734 77.276 46.9734 76.236C46.9734 75.164 47.3734 74.324 48.1734 73.716C48.9894 73.092 50.0854 72.78 51.4614 72.78H54.4374V72.252C54.4374 71.596 54.2454 71.084 53.8614 70.716C53.4934 70.348 52.9494 70.164 52.2294 70.164C51.6214 70.164 51.0774 70.3 50.5974 70.572C50.1174 70.828 49.6134 71.236 49.0854 71.796L47.4054 69.804C48.7814 68.172 50.5094 67.356 52.5894 67.356ZM51.9414 77.412C52.6454 77.412 53.2374 77.196 53.7174 76.764C54.1974 76.316 54.4374 75.748 54.4374 75.06V74.916H51.8934C51.3654 74.916 50.9574 75.02 50.6694 75.228C50.3814 75.42 50.2374 75.716 50.2374 76.116C50.2374 76.516 50.3894 76.836 50.6934 77.076C51.0134 77.3 51.4294 77.412 51.9414 77.412ZM64.5543 70.356H60.9063V67.62H71.4423V70.356H67.7703V79.5H64.5543V70.356ZM84.3014 74.652H75.9734C76.1654 75.404 76.5494 75.988 77.1254 76.404C77.7174 76.804 78.4454 77.004 79.3094 77.004C80.4774 77.004 81.5814 76.604 82.6214 75.804L83.9654 78.012C82.5574 79.196 80.9734 79.788 79.2134 79.788C77.9814 79.788 76.8694 79.516 75.8774 78.972C74.8854 78.428 74.1094 77.684 73.5494 76.74C72.9894 75.78 72.7094 74.724 72.7094 73.572C72.7094 72.42 72.9814 71.372 73.5254 70.428C74.0694 69.468 74.8134 68.716 75.7574 68.172C76.7174 67.628 77.7734 67.356 78.9254 67.356C80.0134 67.356 80.9814 67.604 81.8294 68.1C82.6774 68.58 83.3334 69.244 83.7974 70.092C84.2774 70.924 84.5174 71.852 84.5174 72.876C84.5174 73.452 84.4454 74.044 84.3014 74.652ZM78.8054 69.972C78.1174 69.972 77.5174 70.188 77.0054 70.62C76.4934 71.052 76.1494 71.636 75.9734 72.372H81.3734C81.3574 71.636 81.1014 71.052 80.6054 70.62C80.1094 70.188 79.5094 69.972 78.8054 69.972ZM87.1175 67.62H95.8535V70.356H90.3335V79.5H87.1175V67.62ZM103.256 79.764C102.088 79.764 101.016 79.492 100.04 78.948C99.0804 78.388 98.3204 77.636 97.7604 76.692C97.2004 75.732 96.9204 74.684 96.9204 73.548C96.9204 72.412 97.2004 71.372 97.7604 70.428C98.3204 69.468 99.0884 68.716 100.064 68.172C101.04 67.628 102.112 67.356 103.28 67.356C104.448 67.356 105.52 67.636 106.496 68.196C107.472 68.74 108.24 69.484 108.8 70.428C109.376 71.372 109.664 72.412 109.664 73.548C109.664 74.684 109.376 75.732 108.8 76.692C108.24 77.636 107.464 78.388 106.472 78.948C105.496 79.492 104.424 79.764 103.256 79.764ZM103.28 76.788C104.16 76.788 104.888 76.484 105.464 75.876C106.056 75.268 106.352 74.5 106.352 73.572C106.352 72.644 106.056 71.868 105.464 71.244C104.888 70.62 104.16 70.308 103.28 70.308C102.384 70.308 101.648 70.62 101.072 71.244C100.496 71.852 100.208 72.628 100.208 73.572C100.208 74.5 100.496 75.268 101.072 75.876C101.648 76.484 102.384 76.788 103.28 76.788ZM118.986 67.356C120.09 67.356 121.074 67.628 121.938 68.172C122.818 68.7 123.506 69.436 124.002 70.38C124.498 71.308 124.746 72.364 124.746 73.548C124.746 74.732 124.498 75.796 124.002 76.74C123.506 77.684 122.818 78.428 121.938 78.972C121.074 79.516 120.09 79.788 118.986 79.788C118.266 79.788 117.602 79.668 116.994 79.428C116.386 79.172 115.866 78.812 115.434 78.348V83.82H112.194V67.62H115.17V69.108C115.57 68.548 116.098 68.116 116.754 67.812C117.426 67.508 118.17 67.356 118.986 67.356ZM118.386 76.836C119.25 76.836 119.978 76.54 120.57 75.948C121.162 75.34 121.458 74.548 121.458 73.572C121.458 72.58 121.162 71.788 120.57 71.196C119.994 70.588 119.266 70.284 118.386 70.284C117.57 70.284 116.866 70.564 116.274 71.124C115.682 71.668 115.386 72.476 115.386 73.548C115.386 74.604 115.674 75.42 116.25 75.996C116.842 76.556 117.554 76.836 118.386 76.836ZM138.28 67.356V79.5H135.04V73.068L128.416 79.788H127.36V67.62H130.576V74.1L137.224 67.356H138.28ZM152.553 67.356V79.5H149.313V73.068L142.689 79.788H141.633V67.62H144.849V74.1L151.497 67.356H152.553" fill="var(--text-primary)" />
             <rect x="271" y="56" width="80" height="32" rx="16" fill="var(--text-primary)" />
             <path d="M319.485 72H311M311 72H302.515M311 72V63.5147M311 72V80.4853" stroke="var(--bg-color)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -100,7 +78,7 @@ export default function AdminCategoriesPage() {
         </header>
 
         {/* Categories List */}
-        <main className="pt-[150px] md:pt-4 px-[24px] md:px-12 pb-40 flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[16px] md:gap-[20px] items-start w-full">
+        <main className="pt-[150px] px-[24px] pb-40 flex flex-col gap-[16px]">
           {categories.map((cat) => {
             const serviceCount = getServices(cat.id).length;
             const IconComponent = CategoryIcons[cat.name] || (
@@ -111,7 +89,7 @@ export default function AdminCategoriesPage() {
               <div
                 key={cat.id}
                 onClick={() => router.push(`/admin/categories/edit/${cat.id}`)}
-                className="w-full h-[88px] bg-black/40 backdrop-blur-md rounded-[24px] px-[16px] flex items-center gap-[16px] border border-white/5 shadow-lg md:bg-[var(--card-bg)] md:border-[var(--border-color)] hover:shadow-xl hover:border-white/10 md:hover:border-[#92FFF4]/30 active:scale-[0.98] transition-all cursor-pointer relative"
+                className="w-full h-[88px] bg-[var(--card-bg)] rounded-[24px] px-[16px] flex items-center gap-[16px] active:scale-[0.98] transition-all cursor-pointer relative"
               >
                 {/* Icon Box */}
                 <div className="w-[56px] h-[56px] bg-[var(--border-color)] rounded-[8px] flex items-center justify-center shrink-0">

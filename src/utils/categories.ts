@@ -12,14 +12,10 @@ export function getCategories(): Category[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw || raw.trim() === "") return [];
-    try {
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return [];
-      return parsed as Category[];
-    } catch {
-      return [];
-    }
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed as Category[];
   } catch {
     return [];
   }

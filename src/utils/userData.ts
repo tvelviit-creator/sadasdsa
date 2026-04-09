@@ -58,11 +58,6 @@ export function saveUserData(phone: string, data: Partial<UserData>): void {
       ...data,
     };
     localStorage.setItem(`user_${phone}`, JSON.stringify(updatedData));
-    
-    // Dispatch custom event for real-time UI updates
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event('user-data-change'));
-    }
   } catch (error) {
     console.error("Ошибка при сохранении данных пользователя:", error);
   }
@@ -227,9 +222,4 @@ export function formatPhone(phone: string): string {
     return `+7 (${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)} ${cleaned.slice(6, 8)}-${cleaned.slice(8, 10)}`;
   }
   return phone.startsWith('+') ? phone : `+${phone}`;
-}
-
-export function startRoleTransition(role: "client" | "seller", title?: string, subtitle?: string): void {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent('role-switch-start', { detail: { role, title, subtitle } }));
 }

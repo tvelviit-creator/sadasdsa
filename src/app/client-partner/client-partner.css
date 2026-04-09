@@ -37,7 +37,6 @@
     background: radial-gradient(442px at 189px 29px, rgba(var(--accent-cyan-rgb), 0.4) 0%, transparent 100%);
     pointer-events: none;
     z-index: 1;
-    animation: smoothGlowPulsePrimary 8s ease-in-out infinite alternate;
 }
 
 .cp-bg-glow-secondary {
@@ -49,7 +48,6 @@
     background: radial-gradient(circle at center, rgba(var(--accent-cyan-rgb), 0.1) 0%, transparent 70%);
     pointer-events: none;
     z-index: 1;
-    animation: smoothGlowPulseSecondary 10s ease-in-out infinite alternate;
 }
 
 /* Decorative Elements */
@@ -180,16 +178,6 @@
 }
 
 /* Animations */
-@keyframes smoothGlowPulsePrimary {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.1); opacity: 1; }
-}
-
-@keyframes smoothGlowPulseSecondary {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.15); opacity: 1; }
-}
-
 @keyframes pulseSubtle {
     0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
     50% { transform: translateY(-10px) scale(1.05); opacity: 1; }

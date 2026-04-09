@@ -1,0 +1,324 @@
+{
+  "orders": [
+    {
+      "id": "order_79111111111_1771622754960",
+      "title": "21321",
+      "orderNumber": 1,
+      "tariff": "3232",
+      "price": "3232322132",
+      "status": "pending",
+      "createdAt": "2026-02-20T21:25:54.960Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "ADMIN",
+      "description": "213",
+      "features": [
+        "3333"
+      ],
+      "clientName": "21321",
+      "partnerName": ""
+    },
+    {
+      "id": "order_79111111111_1771634943814",
+      "title": "21321",
+      "orderNumber": 2,
+      "tariff": "3232",
+      "price": "3232322132",
+      "status": "pending",
+      "createdAt": "2026-02-21T00:49:03.814Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "ADMIN",
+      "description": "213",
+      "features": [
+        "3333"
+      ],
+      "clientName": "21321",
+      "partnerName": ""
+    },
+    {
+      "id": "order_79111111111_1771641950037",
+      "title": "21321",
+      "orderNumber": 3,
+      "tariff": "3232",
+      "price": "3232322132",
+      "status": "pending",
+      "createdAt": "2026-02-21T02:45:50.038Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "ADMIN",
+      "description": "213",
+      "features": [
+        "3333"
+      ],
+      "clientName": "21321",
+      "partnerName": ""
+    },
+    {
+      "id": "order_79111111111_1772240656384",
+      "title": "123",
+      "orderNumber": 4,
+      "tariff": "6666",
+      "price": "10000435",
+      "status": "pending",
+      "createdAt": "2026-02-28T01:04:16.384Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "79111111111",
+      "description": "2213213",
+      "features": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientName": "21321",
+      "partnerName": "21321",
+      "stage": "processing",
+      "updatedAt": "2026-04-07T21:48:40.583Z"
+    },
+    {
+      "id": "order_79999999911_1775234431401",
+      "title": "1232",
+      "orderNumber": 1,
+      "tariff": "6666",
+      "price": "10000435",
+      "status": "pending",
+      "createdAt": "2026-04-03T16:40:31.401Z",
+      "clientPhone": "79999999911",
+      "sellerPhone": "79111111111",
+      "description": "2213213",
+      "features": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientName": "79999999911",
+      "partnerName": "ООО ТЕСТ"
+    },
+    {
+      "id": "order_79999999911_1775335071178",
+      "title": "1232",
+      "orderNumber": 2,
+      "tariff": "6666",
+      "price": "10000453543543",
+      "status": "pending",
+      "createdAt": "2026-04-04T20:37:51.179Z",
+      "clientPhone": "79999999911",
+      "sellerPhone": "79111111111",
+      "description": "2213213",
+      "features": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientName": "79999999911",
+      "partnerName": "ООО ТЕСТ"
+    },
+    {
+      "id": "order_79999999911_1775337002376",
+      "title": "444",
+      "orderNumber": 3,
+      "tariff": "11",
+      "price": "11122222",
+      "status": "pending",
+      "createdAt": "2026-04-04T21:10:02.376Z",
+      "clientPhone": "79999999911",
+      "sellerPhone": "ADMIN",
+      "description": "111",
+      "features": [],
+      "clientName": "79999999911",
+      "partnerName": ""
+    },
+    {
+      "id": "order_79777777777_1775359748969",
+      "title": "222",
+      "orderNumber": 1,
+      "tariff": "ывапыва",
+      "price": "111222",
+      "status": "pending",
+      "createdAt": "2026-04-05T03:29:08.969Z",
+      "clientPhone": "79777777777",
+      "sellerPhone": "79888888888",
+      "description": "выаыв",
+      "features": [
+        "выаыв",
+        "ываыв",
+        "выа"
+      ],
+      "clientName": "21321",
+      "partnerName": "Партнер",
+      "updatedAt": "2026-04-05T03:30:21.078Z"
+    },
+    {
+      "id": "order_79111111111_1775597837088",
+      "title": "1232",
+      "orderNumber": 5,
+      "tariff": "6666",
+      "price": "1000043543",
+      "status": "pending",
+      "createdAt": "2026-04-07T21:37:17.088Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "79111111111",
+      "description": "2213213",
+      "features": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientName": "ООО ТЕСТ",
+      "partnerName": "ООО ТЕСТ"
+    },
+    {
+      "id": "order_79111111111_1775642502343",
+      "title": "1232",
+      "orderNumber": 6,
+      "tariff": "6666",
+      "price": "10000453543543",
+      "status": "pending",
+      "createdAt": "2026-04-08T10:01:42.343Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "79111111111",
+      "description": "2213213",
+      "features": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientName": "ООО ТЕСТ",
+      "partnerName": "ООО ТЕСТ"
+    },
+    {
+      "id": "order_79111111111_1775642621722",
+      "title": "Тест тест",
+      "orderNumber": 7,
+      "tariff": "тес",
+      "price": "11111111",
+      "status": "pending",
+      "createdAt": "2026-04-08T10:03:41.722Z",
+      "clientPhone": "79111111111",
+      "sellerPhone": "79111111111",
+      "description": "выаппва",
+      "features": [
+        "вапав",
+        "вапав",
+        "вапва",
+        "вапва"
+      ],
+      "clientName": "ООО ТЕСТ",
+      "partnerName": "ООО ТЕСТ"
+    },
+    {
+      "id": "ord_1775673284530",
+      "orderNumber": 9634,
+      "title": "1232",
+      "tariff": "6666",
+      "tariffPrice": 10000,
+      "design": "43543543",
+      "designPrice": 453543543,
+      "price": 453553543,
+      "status": "pending",
+      "stage": "processing",
+      "createdAt": "2026-04-08T18:34:44.530Z",
+      "clientPhone": "79888888888",
+      "clientName": "",
+      "clientEmail": "",
+      "sellerPhone": "79999999911",
+      "partnerName": "",
+      "features": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "ord_1775673302548",
+      "orderNumber": 5978,
+      "title": "21321",
+      "tariff": "3232",
+      "tariffPrice": 323232,
+      "design": "21312",
+      "designPrice": 2132,
+      "price": 325364,
+      "status": "pending",
+      "stage": "processing",
+      "createdAt": "2026-04-08T18:35:02.548Z",
+      "clientPhone": "79222222222",
+      "clientName": "",
+      "clientEmail": "",
+      "sellerPhone": "79111111111",
+      "partnerName": "ООО ТЕСТ",
+      "features": [
+        "3333"
+      ],
+      "updatedAt": "2026-04-08T18:35:09.637Z"
+    }
+  ],
+  "users": [],
+  "messages": [
+    {
+      "id": "msg_1771641992116",
+      "orderId": "order_79111111111_1771641950037",
+      "senderPhone": "79111111111",
+      "text": "123",
+      "timestamp": "2026-02-21T02:46:32.116Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_1771642175140",
+      "orderId": "order_79111111111_1771641950037",
+      "senderPhone": "79111111111",
+      "text": "21312321",
+      "timestamp": "2026-02-21T02:49:35.140Z",
+      "isRead": true
+    },
+    {
+      "id": "1771642693111",
+      "orderId": "support_79111111111",
+      "senderPhone": "79111111111",
+      "text": "Позвать живого человека",
+      "timestamp": "2026-02-21T02:58:13.111Z",
+      "isAdminSender": false,
+      "isRead": false
+    },
+    {
+      "id": "msg_1772240679702",
+      "orderId": "order_79111111111_1772240656384",
+      "senderPhone": "79111111111",
+      "text": "222",
+      "timestamp": "2026-02-28T01:04:39.702Z",
+      "isRead": false
+    },
+    {
+      "id": "msg_sys_1772242239547",
+      "orderId": "order_79111111111_1771641950037",
+      "senderPhone": "SYSTEM",
+      "text": "Администратор подключился к чату",
+      "timestamp": "2026-02-28T01:30:39.547Z",
+      "isSystem": true,
+      "isRead": true
+    },
+    {
+      "id": "msg_1772242241071",
+      "orderId": "order_79111111111_1771641950037",
+      "senderPhone": "79999999999",
+      "text": "2132131",
+      "timestamp": "2026-02-28T01:30:41.071Z",
+      "isAdminSender": true,
+      "isRead": true
+    },
+    {
+      "id": "msg_1775621549119",
+      "orderId": "order_79111111111_1775597837088",
+      "senderPhone": "79111111111",
+      "text": "123",
+      "timestamp": "2026-04-08T04:12:29.119Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_sys_1775622250230",
+      "orderId": "order_79999999911_1775337002376",
+      "senderPhone": "SYSTEM",
+      "text": "Администратор подключился к чату",
+      "timestamp": "2026-04-08T04:24:10.230Z",
+      "isSystem": true,
+      "isRead": true
+    }
+  ],
+  "supportRequests": []
+}
