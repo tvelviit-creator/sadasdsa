@@ -17,7 +17,7 @@ export default function UserDetailsPage() {
 
   useEffect(() => {
     const init = async () => {
-      const data = getUserData(decodeURIComponent(userId));
+      const data = await getUserData(decodeURIComponent(userId));
       if (data) {
         setUser(data);
         setEditedName(data.name || "");

@@ -36,11 +36,14 @@ export default function AdminAddOrderPage() {
     const [isAdding, setIsAdding] = useState(false);
 
     useEffect(() => {
-        const allServices = getServices();
-        setServices(allServices);
-        
-        const users = getAllUsers();
-        setAllUsers(users);
+        const init = async () => {
+            const allServices = getServices();
+            setServices(allServices);
+            
+            const users = await getAllUsers();
+            setAllUsers(users);
+        };
+        init();
     }, []);
 
     const handleServiceSelect = (serviceId: string) => {
