@@ -56,26 +56,29 @@ function CodeContent() {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    if (code.every((digit) => digit !== "") && phoneNumber) {
-      const userData = getUserData(phoneNumber);
-      if (userData?.isBlocked) {
-        alert("Account blocked");
-        setCode(["", "", "", ""]);
-        return;
-      }
+    const checkCodeAndRegister = async () => {
+      if (code.every((digit) => digit !== "") && phoneNumber) {
+        const userData = await getUserData(phoneNumber);
+        if (userData?.isBlocked) {
+          alert("Account blocked");
+          setCode(["", "", "", ""]);
+          return;
+        }
 
-      // Start transition animation
-      setIsTransitioning(true);
-      
-      registerPhone(phoneNumber);
-      setCurrentUserPhone(phoneNumber);
-      
-      // If super admin, go to admin panel. Otherwise go to client-partner
-      const targetPath = phoneNumber === "79999999999" ? "/admin" : "/client-partner";
-      
-      // Delay navigation to allow animation to complete
-      setTimeout(() => router.push(targetPath), 800);
-    }
+        // Start transition animation
+        setIsTransitioning(true);
+        
+        await registerPhone(phoneNumber);
+        setCurrentUserPhone(phoneNumber);
+        
+        // If super admin, go to admin panel. Otherwise go to client-partner
+        const targetPath = phoneNumber === "79999999999" ? "/admin" : "/client-partner";
+        
+        // Delay navigation to allow animation to complete
+        setTimeout(() => router.push(targetPath), 800);
+      }
+    };
+    checkCodeAndRegister();
   }, [code, router, phoneNumber]);
 
   return (

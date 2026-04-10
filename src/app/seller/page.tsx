@@ -35,24 +35,27 @@ export default function SellerPage() {
 
     loadData();
 
-    // Get user data
+    // Determine user data
     const phone = getCurrentUserPhone();
     if (phone) {
-      const data = getUserData(phone);
-      if (data?.isBlocked) {
-        const isPermanent = data.blockedUntil === "permanent";
-        const expiration = data.blockedUntil ? new Date(data.blockedUntil) : null;
+      const fetchData = async () => {
+        const data = await getUserData(phone);
+        if (data?.isBlocked) {
+          const isPermanent = data.blockedUntil === "permanent";
+          const expiration = data.blockedUntil ? new Date(data.blockedUntil) : null;
 
-        if (isPermanent || (expiration && new Date() < expiration)) {
-          alert(isPermanent ? "Ваш аккаунт заблокирован навсегда." : `Ваш аккаунт заблокирован до ${expiration?.toLocaleDateString()}`);
-          localStorage.removeItem("currentUserPhone");
-          sessionStorage.removeItem("currentUserPhone");
-          router.replace("/registration");
-          return;
+          if (isPermanent || (expiration && new Date() < expiration)) {
+            alert(isPermanent ? "Ваш аккаунт заблокирован навсегда." : `Ваш аккаунт заблокирован до ${expiration?.toLocaleDateString()}`);
+            localStorage.removeItem("currentUserPhone");
+            sessionStorage.removeItem("currentUserPhone");
+            router.replace("/registration");
+            return;
+          }
         }
-      }
-      if (data && data.name) setUserName(data.name);
-      if (data && data.avatar) setUserAvatar(data.avatar);
+        if (data && data.name) setUserName(data.name);
+        if (data && data.avatar) setUserAvatar(data.avatar);
+      };
+      fetchData();
     }
 
     // Listen for cross-tab updates
