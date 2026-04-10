@@ -18,15 +18,18 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (currentPhone) {
-      const data = getUserData(currentPhone);
-      if (data) {
-        setName(data.name || "");
-        setEmail(data.email || "");
-        setPhone(data.phone || currentPhone);
-        setAvatar(data.avatar || null);
-      } else {
-        setPhone(currentPhone);
-      }
+      const fetchData = async () => {
+        const data = await getUserData(currentPhone);
+        if (data) {
+          setName(data.name || "");
+          setEmail(data.email || "");
+          setPhone(data.phone || currentPhone);
+          setAvatar(data.avatar || null);
+        } else {
+          setPhone(currentPhone);
+        }
+      };
+      fetchData();
     }
   }, [currentPhone]);
 

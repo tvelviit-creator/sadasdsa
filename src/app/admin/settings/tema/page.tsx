@@ -6,7 +6,7 @@ import AdminBottomNav from "@/components/AdminBottomNav";
 
 export default function AdminTemaPage() {
   const router = useRouter();
-  const [selectedTheme, setSelectedTheme] = useState<'auto' | 'day' | 'night'>('day');
+  const [selectedTheme, setSelectedTheme] = useState<'auto' | 'day' | 'night'>('night');
 
   useEffect(() => {
     const saved = localStorage.getItem('app-theme') as 'auto' | 'day' | 'night';
