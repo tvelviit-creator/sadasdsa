@@ -149,10 +149,10 @@ export default function OrderDetailsPage() {
                             </svg>
                         </button>
                         <h1 
-                            className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2] text-center"
-                            style={{ fontFamily: 'var(--font-cera)' }}
+                            className="text-[24px] font-bold text-[#F5F5F5] leading-[120%] text-center flex items-center justify-center"
+                            style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}
                         >
-                            Заказ №{orderNumStr}
+                            Заказ #{orderNumStr}
                         </h1>
                     </div>
 
@@ -221,33 +221,32 @@ export default function OrderDetailsPage() {
                                     </div>
 
                                     {/* Detailed Info Rows */}
-                                    <div className="space-y-[10px]">
-                                        <div className="flex items-end gap-[4px] h-[20px]">
-                                            <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">Партнер</span>
-                                            <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                                            <span className="text-[14px] font-bold text-[var(--text-primary)] leading-none shrink-0 text-right truncate max-w-[170px]">
-                                                {order.sellerPhone === 'ADMIN' ? 'Твэлви' : (partner?.name || order.partnerName || 'Партнер')}
+                                    <div className="flex flex-col gap-[8px]">
+                                        {/* Executor */}
+                                        <div className="flex flex-col justify-center items-start h-[37px]">
+                                            <span className="text-[11px] font-normal text-[#999999] leading-[120%] uppercase" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>Исполнитель</span>
+                                            <span className="text-[16px] font-normal text-[#F5F5F5] leading-[24px] flex items-center" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>
+                                                {order.sellerPhone === 'ADMIN' ? 'ООО ТЕСТ' : (partner?.name || order.partnerName || "ООО ТЕСТ")}
                                             </span>
                                         </div>
-                                        <div className="flex items-end gap-[4px] h-[20px]">
-                                            <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">Заказчик</span>
-                                            <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                                            <span className="text-[14px] font-bold text-[var(--text-primary)] leading-none shrink-0 text-right truncate max-w-[150px]">
-                                                {order.clientName || "Клиент"}
+
+                                        {/* Created */}
+                                        <div className="flex flex-col justify-center items-start h-[37px]">
+                                            <span className="text-[11px] font-normal text-[#999999] leading-[120%] uppercase" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>Создан</span>
+                                            <span className="text-[16px] font-normal text-[#F5F5F5] leading-[24px] flex items-center tabular-nums" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>
+                                                {order.createdAt ? new Date(order.createdAt).toLocaleDateString("ru-RU", { day: '2-digit', month: '2-digit', year: 'numeric' }) : '08.04.2026'}
                                             </span>
                                         </div>
-                                        <div className="flex items-end gap-[4px] h-[20px]">
-                                            <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">E-mail</span>
-                                            <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                                            <span className="text-[14px] font-bold text-[var(--text-primary)] leading-none shrink-0 text-right truncate max-w-[180px]">
-                                                {order.clientEmail || "mail@..."}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-end gap-[4px] h-[20px]">
-                                            <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">Телефон</span>
-                                            <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                                            <span className="text-[14px] font-bold text-[var(--text-primary)] leading-none shrink-0 tabular-nums text-right">
-                                                {order.clientPhone || "+7..."}
+
+                                        {/* Stage */}
+                                        <div className="flex flex-col justify-center items-start h-[37px]">
+                                            <span className="text-[11px] font-normal text-[#999999] leading-[120%] uppercase" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>Этап</span>
+                                            <span className="text-[16px] font-normal text-[#F5F5F5] leading-[24px] flex items-center" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>
+                                                {order.stage === 'processing' ? 'Обработка' : 
+                                                 order.stage === 'design' ? 'Дизайн' : 
+                                                 order.stage === 'development' ? 'Разработка' : 
+                                                 order.stage === 'test' ? 'Тестирование' : 
+                                                 order.stage === 'ready' ? 'Готовность' : 'Обработка'}
                                             </span>
                                         </div>
                                     </div>
