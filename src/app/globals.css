@@ -100,13 +100,13 @@ html, body {
     @apply bg-[var(--bg-color)] text-[var(--text-primary)] antialiased;
     font-size: var(--text-m);
     line-height: 1.5;
-    font-family: var(--font-gilroy), sans-serif;
+    font-family: 'Cera Pro', var(--font-cera), sans-serif;
     -webkit-overflow-scrolling: touch;
   }
 
   /* Headings */
   h1, .tvelvi-h1 {
-    font-family: var(--font-cera), sans-serif;
+    font-family: 'Cera Pro', var(--font-cera), sans-serif;
     font-size: var(--h1-size);
     font-weight: 700;
     line-height: 1.2;
@@ -114,14 +114,14 @@ html, body {
   }
 
   h2, .tvelvi-h2 {
-    font-family: var(--font-cera), sans-serif;
+    font-family: 'Cera Pro', var(--font-cera), sans-serif;
     font-size: var(--h2-size);
     font-weight: 700;
     line-height: 1.2;
   }
 
   h3, .tvelvi-h3 {
-    font-family: var(--font-cera), sans-serif;
+    font-family: 'Cera Pro', var(--font-cera), sans-serif;
     font-size: var(--h3-size);
     font-weight: 700;
     line-height: 1.2;
@@ -180,12 +180,12 @@ html, body {
     @apply neo-button bg-[var(--card-bg)] text-[var(--text-primary)] border border-[var(--border-color)];
   }
 
-  .hide-scrollbar {
+  .hide-scrollbar, .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
-  .hide-scrollbar::-webkit-scrollbar {
+  .hide-scrollbar::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 

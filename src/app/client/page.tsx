@@ -20,7 +20,7 @@ export default function ClientPage() {
 
   useEffect(() => {
     // Force theme class application on mount just in case
-    const saved = localStorage.getItem('app-theme') || 'night';
+    const saved = localStorage.getItem('app-theme') || 'day';
     const root = document.documentElement;
     if (saved === 'auto') {
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -46,9 +46,9 @@ export default function ClientPage() {
     loadData();
 
     // Determine user data
-    const phone = getCurrentUserPhone();
-    if (phone) {
-      const fetchData = async () => {
+    const initUser = async () => {
+      const phone = getCurrentUserPhone();
+      if (phone) {
         const data = await getUserData(phone);
         if (data?.isBlocked) {
           const isPermanent = data.blockedUntil === "permanent";
@@ -64,9 +64,9 @@ export default function ClientPage() {
         }
         if (data && data.name) setUserName(data.name);
         if (data && data.avatar) setUserAvatar(data.avatar);
-      };
-      fetchData();
-    }
+      }
+    };
+    initUser();
 
     // Listen for cross-tab updates
     const handleStorageChange = () => {

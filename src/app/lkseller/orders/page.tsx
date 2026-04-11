@@ -91,87 +91,103 @@ export default function SellerOrdersPage() {
                   <div
                     key={order.id}
                     onClick={() => router.push(`/lkseller/orders/${order.id}`)}
-                    className={`w-full bg-[var(--card-bg)] rounded-[24px] p-[16px] gap-[16px] flex flex-col active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden border border-[var(--border-color)] shadow-xl ${isPartnerOrder ? 'min-h-[412px]' : 'min-h-[351px]'}`}
+                    className="w-[327px] mx-auto bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[24px] p-[16px] flex flex-col gap-[12px] active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden shrink-0"
+                    style={{ height: '351px' }}
                   >
-                    <div className="flex flex-col gap-[4px] h-[84px] shrink-0">
-                      <div className="flex items-start justify-between h-[58px]">
-                        <h2 className="text-[24px] font-bold text-[var(--text-primary)] leading-[29px] line-clamp-2 max-w-[215px]">
-                          {order.title || "Без названия"}
+                    {/* 1. Header Section */}
+                    <div className="flex flex-col gap-[2px]">
+                      <div className="flex justify-between items-start">
+                        <h2 
+                          className="text-[24px] font-bold text-[var(--text-primary)] leading-[120%] flex-1 line-clamp-1"
+                          style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                        >
+                          {order.title || "Фудтех-приложение"}
                         </h2>
-                        <span className="text-[24px] font-bold text-[var(--text-secondary)] leading-[29px] tabular-nums shrink-0">
+                        <span 
+                          className="text-[24px] font-bold text-[var(--text-secondary)] leading-[120%]"
+                          style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                        >
                           №{orderNumStr}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between h-[22px]">
-                        <span className="text-[18px] font-bold text-[var(--text-secondary)] leading-[22px] truncate">
+
+                      <div className="flex justify-between items-center h-[22px]">
+                        <span 
+                          className="text-[18px] font-bold text-[var(--text-secondary)] leading-[120%]"
+                          style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                        >
                           {order.tariff || "Базовый"}
                         </span>
-                        <span className="text-[18px] font-bold text-[var(--text-secondary)] leading-[22px] tabular-nums">
-                          {Number(order.price || 0).toLocaleString()} ₽
+                        <span 
+                          className="text-[18px] font-bold text-[var(--text-secondary)] leading-[120%] tabular-nums"
+                          style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                        >
+                          {order.price ? Number(order.price).toLocaleString() : "0"} ₽
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-[8px] mb-[32px] shrink-0">
-                      {tags.slice(0, 3).map((tag, i) => (
-                        <div key={i} className="px-[12px] h-[24px] flex items-center bg-[var(--nav-bg)] rounded-full border border-[var(--border-color)]">
-                          <span className="text-[var(--text-primary)] text-[11px] font-bold tracking-tight opacity-60 uppercase">{tag}</span>
+                    {/* 2. Divider */}
+                    <div className="w-full h-0 border-t-2 border-[var(--border-color)]" />
+
+                    {/* 3. Tags */}
+                    <div className="flex flex-wrap gap-[6px]">
+                      {(order.features || ["Общее"]).map((tag, idx) => (
+                        <div key={idx} className="bg-[var(--text-secondary)] px-[8px] h-[20px] rounded-full flex items-center justify-center">
+                          <span className="text-[var(--bg-color)] text-[13px] font-bold leading-none">{tag}</span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="flex flex-col gap-[8px] shrink-0">
+                    {/* 4. Info Rows */}
+                    <div className="flex flex-col gap-[6px] mt-[4px]">
                       {isPartnerOrder && (
-                        <div className="flex items-center gap-[4px] h-[24px]">
-                          <span className="text-[13px] font-normal text-[var(--text-secondary)] leading-none shrink-0">Партнер</span>
-                          <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[12px] opacity-50" />
-                          <span className="text-[16px] font-normal text-[var(--text-primary)] leading-none shrink-0 truncate max-w-[160px] text-right">
-                            {order.partnerName}
-                          </span>
+                        <div className="flex items-end gap-2">
+                          <span className="text-[14px] text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Партнер</span>
+                          <div className="flex-1 border-b border-dotted border-[var(--border-color)] mb-1" />
+                          <span className="text-[16px] text-[var(--text-primary)] font-normal truncate max-w-[150px]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{order.partnerName}</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-[4px] h-[24px]">
-                        <span className="text-[13px] font-normal text-[var(--text-secondary)] leading-none shrink-0">Заказчик</span>
-                        <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[12px] opacity-50" />
-                        <span className="text-[16px] font-normal text-[var(--text-primary)] leading-none shrink-0 text-right truncate max-w-[160px]">
-                          {order.clientName || "—"}
-                        </span>
+                      <div className="flex items-end gap-2">
+                        <span className="text-[14px] text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Заказчик</span>
+                        <div className="flex-1 border-b border-dotted border-[var(--border-color)] mb-1" />
+                        <span className="text-[16px] text-[var(--text-primary)] font-normal truncate max-w-[150px]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{order.clientName || "—"}</span>
                       </div>
-                      <div className="flex items-center gap-[4px] h-[24px]">
-                        <span className="text-[13px] font-normal text-[var(--text-secondary)] leading-none shrink-0">Телефон</span>
-                        <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[12px] opacity-50" />
-                        <span className="text-[16px] font-normal text-[var(--text-primary)] leading-none shrink-0 tabular-nums text-right">
-                          {formatPhone(order.clientPhone)}
-                        </span>
-                      </div>
-
-                      <div className="flex gap-[32px] mt-[4px] h-[44px]">
-                        <div className="flex flex-col gap-[0px]">
-                          <span className="text-[13px] font-normal text-[var(--text-secondary)] leading-[20px]">Создан</span>
-                          <span className="text-[16px] font-normal text-[var(--text-primary)] leading-[24px] tabular-nums">
-                            {new Date(order.createdAt).toLocaleDateString("ru-RU")}
-                          </span>
-                        </div>
-                        <div className="flex flex-col gap-[0px]">
-                          <span className="text-[13px] font-normal text-[var(--text-secondary)] leading-[20px]">Обновлен</span>
-                          <span className="text-[16px] font-normal text-[var(--text-primary)] leading-[24px] tabular-nums">
-                            {order.updatedAt ? new Date(order.updatedAt).toLocaleDateString("ru-RU") : new Date(order.createdAt).toLocaleDateString("ru-RU")}
-                          </span>
-                        </div>
+                      <div className="flex items-end gap-2">
+                        <span className="text-[14px] text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Телефон</span>
+                        <div className="flex-1 border-b border-dotted border-[var(--border-color)] mb-1" />
+                        <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{formatPhone(order.clientPhone)}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-auto h-[24px]">
-                      <div className="flex gap-[4px]">
+                    {/* 5. Dates Section */}
+                    <div className="flex gap-[24px] mt-[4px]">
+                      <div className="flex flex-col gap-[2px]">
+                        <span className="text-[14px] text-[var(--text-secondary)]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Создан</span>
+                        <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                          {order.createdAt ? new Date(order.createdAt).toLocaleDateString("ru-RU") : "—"}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-[2px]">
+                        <span className="text-[14px] text-[var(--text-secondary)]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Обновлен</span>
+                        <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                          {order.updatedAt ? new Date(order.updatedAt).toLocaleDateString("ru-RU") : (order.createdAt ? new Date(order.createdAt).toLocaleDateString("ru-RU") : "—")}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 6. Footer: Progress & Status */}
+                    <div className="flex justify-between items-center mt-auto pt-[4px]">
+                      <div className="flex gap-[6px]">
                         {[1, 2, 3, 4, 5].map((step) => (
-                          <div
-                            key={step}
-                            className={`h-[12px] w-[32px] rounded-full transition-colors duration-500 ${step <= progress ? 'bg-[var(--text-primary)] [html.day-theme_&]:bg-[#141414]' : 'bg-[var(--nav-bg)] border border-[var(--border-color)]'}`}
+                          <div 
+                            key={step} 
+                            className={`w-[36px] h-[12px] rounded-full transition-all duration-500 ${step <= progress ? 'bg-[var(--text-primary)]' : 'bg-[var(--border-color)]'}`}
                           />
                         ))}
                       </div>
-                      <div className={`px-[12px] h-[24px] rounded-full border border-[var(--text-primary)] flex items-center justify-center shrink-0 ${statusInfo.bg} shadow-sm`}>
-                        <span className="text-[var(--bg-color)] text-[12px] font-bold leading-none">
+                      <div className={`${statusInfo.bg} px-[8px] py-[2px] rounded-full flex items-center justify-center transform translate-x-[-6px]`}>
+                        <span className="text-[var(--bg-color)] text-[12px] font-bold" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
                           {statusInfo.text}
                         </span>
                       </div>

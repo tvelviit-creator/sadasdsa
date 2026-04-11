@@ -110,8 +110,8 @@ export default function ServicesPage() {
 
                                         {/* Partner Badge */}
                                         {(service.id === 'foodtech' || !!service.partnerName) && (
-                                            <div className="absolute top-2.5 right-2.5 h-[24px] min-w-[76px] px-3 bg-[var(--bg-color)] flex items-center justify-center rounded-full transition-colors duration-300 shadow-sm border border-[var(--border-color)]">
-                                                <span className="text-[11px] font-medium text-[var(--text-primary)] whitespace-nowrap pt-[1px]">Партнер</span>
+                                            <div className="absolute top-2 right-2 h-[20px] px-3 bg-[#141414] flex items-center justify-center rounded-[10px] shadow-lg">
+                                                <span className="text-[11px] font-medium text-[#F5F5F5] whitespace-nowrap pt-[0.5px]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Партнер</span>
                                             </div>
                                         )}
                                     </div>
@@ -208,8 +208,8 @@ export default function ServicesPage() {
                                         
                                         {/* Partner Badge */}
                                         {(service.id === 'foodtech' || !!service.partnerName) && (
-                                            <div className="absolute top-2.5 right-2.5 h-[24px] min-w-[76px] px-3 bg-[var(--bg-color)] flex items-center justify-center rounded-full transition-colors duration-300 shadow-sm border border-[var(--border-color)]">
-                                                <span className="text-[11px] font-medium text-[var(--text-primary)] whitespace-nowrap pt-[1px]">Партнер</span>
+                                            <div className="absolute top-2 right-2 h-[20px] px-3 bg-[#141414] flex items-center justify-center rounded-[10px] shadow-lg">
+                                                <span className="text-[11px] font-medium text-[#F5F5F5] whitespace-nowrap pt-[0.5px]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Партнер</span>
                                             </div>
                                         )}
                                     </div>

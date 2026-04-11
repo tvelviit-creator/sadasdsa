@@ -93,7 +93,7 @@ export default function OrderDetailsPage() {
         }
     }, [messages, activeTab]);
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!inputText.trim() || !orderId || !currentPhone) return;
         const newMessage: ChatMessage = {
             id: `msg_${Date.now()}`,
@@ -102,7 +102,7 @@ export default function OrderDetailsPage() {
             text: inputText.trim(),
             timestamp: new Date().toISOString()
         };
-        sendChatMessage(newMessage);
+        await sendChatMessage(newMessage);
         setMessages(prev => [...prev, newMessage]);
         setInputText("");
     };
@@ -112,7 +112,8 @@ export default function OrderDetailsPage() {
     // Helper functions
     const getStatusInfo = (order: Order) => {
         const s = order.status;
-        if (s === 'cancelled' || s === 'completed') return { text: 'Остановлен', bg: 'bg-[var(--accent-color)]' };
+        if (s === 'cancelled') return { text: 'Отмена', bg: 'bg-[#FF8C67]' };
+        if (s === 'completed') return { text: 'Готов', bg: 'bg-[#4AC99B]' };
         if (s === 'pending') return { text: 'Ожидает', bg: 'bg-[#FFC700]' };
         return { text: 'В работе', bg: 'bg-[#4AC99B]' };
     };
@@ -137,45 +138,57 @@ export default function OrderDetailsPage() {
     return (
         <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] flex justify-center font-sans overflow-x-hidden transition-colors duration-300">
             <div className="w-full max-w-[375px] relative h-screen flex flex-col">
-                {/* Header - Centered fixed positioning */}
-        <header className="fixed top-0 w-full max-w-[375px] h-[160px] bg-[var(--bg-color)] z-50 px-[24px] pt-[64px] pb-[16px] flex flex-col justify-between left-1/2 -translate-x-1/2 border-b border-[var(--border-color)] transition-colors duration-300">
-                    <div className="relative flex items-center justify-center w-full h-[32px]">
-                        <button
-                            onClick={() => router.push("/client")}
-                            className="absolute left-0 w-[32px] h-[32px] flex items-center justify-center active:scale-95 transition-all text-[var(--text-primary)]"
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M19 12H5M12 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <h1 
-                            className="text-[24px] font-bold text-[#F5F5F5] leading-[120%] text-center flex items-center justify-center"
-                            style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}
-                        >
-                            Заказ #{orderNumStr}
-                        </h1>
-                    </div>
+                {/* Header - Fixed 24px Bold, centered positioning */}
+                <header className="fixed top-0 w-full max-w-[375px] h-[150px] bg-[var(--bg-color)] z-50 flex flex-col left-1/2 -translate-x-1/2 border-b border-[var(--border-color)] transition-colors duration-300">
+                    <button
+                        onClick={() => router.back()}
+                        className="absolute left-[29px] top-[63px] w-[22px] h-[18px] flex items-center justify-center active:scale-95 transition-all text-[var(--text-primary)]"
+                    >
+                        <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 9H0M0 9L9.42857 18M0 9L9.42857 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                    
+                    <h1 
+                        className="absolute left-1/2 -translate-x-1/2 top-[57.5px] w-[127px] h-[29px] flex items-center justify-center overflow-visible whitespace-nowrap"
+                        style={{ 
+                            fontFamily: "'Cera Pro', sans-serif",
+                            fontWeight: 700,
+                            fontSize: '24px',
+                            lineHeight: '120%',
+                            letterSpacing: '0%',
+                            textAlign: 'center',
+                            verticalAlign: 'middle',
+                            color: 'var(--text-primary)'
+                        }}
+                    >
+                        Заказ №{orderNumStr}
+                    </h1>
 
-                    <div className="relative flex bg-[var(--bg-color)] rounded-full border border-[var(--border-color)] h-[56px] w-full p-[4px] mt-[24px]">
-                        {/* Sliding Border for Active Tab */}
+                    <div className="absolute left-[24.5px] top-[104.5px] w-[326px] h-[31px]">
+                        <div className="absolute inset-0 border border-[var(--border-color)] rounded-full" />
+                        
                         <div
-                            className={`absolute top-[4px] bottom-[4px] w-[calc(50%-4px)] rounded-full transition-all duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] border border-[var(--text-primary)] ${activeTab === 'details' ? 'left-[4px]' : 'left-[50%]'}`}
+                            className={`absolute top-0 bottom-0 w-1/2 rounded-full border border-[var(--text-primary)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${activeTab === 'details' ? 'left-0' : 'left-1/2'}`}
                         />
-                        <button
-                            onClick={() => setActiveTab('details')}
-                            className={`relative z-10 flex-1 rounded-full text-[17px] font-semibold transition-all duration-500 flex items-center justify-center ${activeTab === 'details' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]/40'}`}
-                        >
-                            Детали
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('chat')}
-                            className={`relative z-10 flex-1 rounded-full text-[17px] font-semibold transition-all duration-500 flex items-center justify-center ${activeTab === 'chat' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]/40'}`}
-                        >
-                            Чат
-                            {activeTab !== 'chat' && hasUnreadInOrder && (
-                                <div className="absolute top-[16px] right-[24px] w-[8px] h-[8px] bg-[var(--accent-color)] rounded-full border border-[var(--bg-color)] shadow-[0_0_10px_rgba(255,140,103,0.5)]" />
-                            )}
-                        </button>
+                        
+                        <div className="relative flex h-full items-center">
+                            <button
+                                onClick={() => setActiveTab('details')}
+                                className={`flex-1 text-[13px] font-bold transition-all duration-300 ${activeTab === 'details' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+                            >
+                                Детали
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('chat')}
+                                className={`flex-1 text-[13px] font-bold transition-all duration-300 flex items-center justify-center gap-1 ${activeTab === 'chat' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+                            >
+                                Чат
+                                {activeTab !== 'chat' && hasUnreadInOrder && (
+                                    <div className="w-[5px] h-[6px] bg-[#FF8C67] rounded-full shadow-[0_0_10px_rgba(255,140,103,0.5)]" />
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </header>
 
@@ -188,111 +201,130 @@ export default function OrderDetailsPage() {
                         }}
                     >
                         {/* Details Tab */}
-                        <div className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar pt-[180px] pb-10 px-[24px]">
-                            <div className="pb-20">
-
-                                {/* Simplified Order Details - No borders/background as requested */}
-                                <div className="flex flex-col space-y-[24px] transition-colors duration-300">
-                                    
-                                    {/* Header Section */}
-                                    <div className="space-y-[6px]">
-                                        <div className="flex justify-between items-start">
-                                            <h2 className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2] flex-1 max-w-[210px]" style={{ fontFamily: 'var(--font-cera)' }}>{order.title}</h2>
-                                            <div className={`px-[8px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-1.5 ${statusInfo.text === 'Ожидает' ? 'bg-[#FFD700]' : statusInfo.bg}`}>
-                                                <span className="text-[#141414] text-[10px] font-black uppercase tracking-wider">{statusInfo.text}</span>
-                                            </div>
-                                        </div>
-
-                                         <div className="flex justify-between items-center h-[22px]">
-                                             <span className="text-[var(--text-secondary)] text-[18px] font-bold leading-[120%]">{order.tariff}{order.design ? ` + ${order.design}` : ""}</span>
-                                             <span className="text-[var(--text-secondary)] text-[18px] font-bold leading-[120%] tabular-nums">{Number(order.price || 0).toLocaleString()} ₽</span>
-                                         </div>
-                                    </div>
-
-                                    <div className="w-full h-[1px] bg-[var(--border-color)]/50" />
-
-                                    {/* Tags Section */}
-                                    <div className="flex flex-wrap gap-[6px]">
-                                        {(order.features && order.features.length > 0 ? order.features : ["Внутренние покупки", "Авторизация"]).slice(0, 3).map((tag, idx) => (
-                                            <div key={idx} className="bg-[var(--text-secondary)]/20 px-[10px] h-[22px] rounded-full flex items-center justify-center border border-[var(--text-secondary)]/10">
-                                                <span className="text-[var(--text-primary)] text-[11px] font-bold leading-none">{tag}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Detailed Info Rows */}
-                                    <div className="flex flex-col gap-[8px]">
-                                        {/* Executor */}
-                                        <div className="flex flex-col justify-center items-start h-[37px]">
-                                            <span className="text-[11px] font-normal text-[#999999] leading-[120%] uppercase" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>Исполнитель</span>
-                                            <span className="text-[16px] font-normal text-[#F5F5F5] leading-[24px] flex items-center" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>
-                                                {order.sellerPhone === 'ADMIN' ? 'ООО ТЕСТ' : (partner?.name || order.partnerName || "ООО ТЕСТ")}
-                                            </span>
-                                        </div>
-
-                                        {/* Created */}
-                                        <div className="flex flex-col justify-center items-start h-[37px]">
-                                            <span className="text-[11px] font-normal text-[#999999] leading-[120%] uppercase" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>Создан</span>
-                                            <span className="text-[16px] font-normal text-[#F5F5F5] leading-[24px] flex items-center tabular-nums" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>
-                                                {order.createdAt ? new Date(order.createdAt).toLocaleDateString("ru-RU", { day: '2-digit', month: '2-digit', year: 'numeric' }) : '08.04.2026'}
-                                            </span>
-                                        </div>
-
-                                        {/* Stage */}
-                                        <div className="flex flex-col justify-center items-start h-[37px]">
-                                            <span className="text-[11px] font-normal text-[#999999] leading-[120%] uppercase" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>Этап</span>
-                                            <span className="text-[16px] font-normal text-[#F5F5F5] leading-[24px] flex items-center" style={{ fontFamily: "'Cera Pro', var(--font-cera), sans-serif" }}>
-                                                {order.stage === 'processing' ? 'Обработка' : 
-                                                 order.stage === 'design' ? 'Дизайн' : 
-                                                 order.stage === 'development' ? 'Разработка' : 
-                                                 order.stage === 'test' ? 'Тестирование' : 
-                                                 order.stage === 'ready' ? 'Готовность' : 'Обработка'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                     {/* Date Block - 2 Cols */}
-                                    <div className="flex gap-[28px]">
-                                        <div className="flex flex-col gap-0.5">
-                                            <span className="text-[var(--text-secondary)] text-[12px] font-bold">Создан</span>
-                                            <span className="text-[var(--text-primary)] text-[15px] font-bold tabular-nums">
-                                                {new Date(order.createdAt).toLocaleDateString("ru-RU")}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-col gap-0.5">
-                                            <span className="text-[var(--text-secondary)] text-[12px] font-bold">Обновлен</span>
-                                            <span className="text-[var(--text-primary)] text-[15px] font-bold tabular-nums">
-                                                {new Date(order.updatedAt || order.createdAt).toLocaleDateString("ru-RU")}
+                        <div className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar pt-[180px] pb-32 px-[24px]">
+                            <div className="flex flex-col gap-[24px] pb-24">
+                                {/* 1. Header Section: Title & Status Badge */}
+                                <div className="flex flex-col gap-[8px]">
+                                    <div className="flex justify-between items-start gap-4">
+                                        <h2 
+                                            className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2] flex-1 line-clamp-2"
+                                            style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                                        >
+                                            {order.title || "Обучающее приложение"}
+                                        </h2>
+                                        <div className={`${statusInfo.bg} h-[20px] px-[8px] rounded-[10px] flex items-center justify-center shrink-0`}>
+                                            <span className="text-[var(--bg-color)] text-[13px] font-normal leading-none whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                                {statusInfo.text}
                                             </span>
                                         </div>
                                     </div>
 
-                                    {/* Footer Section: Progress only */}
-                                    <div className="flex flex-col gap-[8px] pt-4">
-                                        <div className="flex gap-[4px]">
-                                            {[1, 2, 3, 4, 5].map((step) => (
-                                                <div
-                                                    key={step}
-                                                    className={`h-[12px] flex-1 rounded-full transition-colors duration-300 ${step <= progress ? 'bg-[var(--text-primary)]' : 'bg-[var(--border-color)]'}`}
-                                                />
-                                            ))}
-                                        </div>
+                                    {/* 2. Tariff and Price Row */}
+                                    <div className="flex justify-between items-center h-[22px]">
+                                        <span 
+                                            className="text-[18px] font-bold text-[var(--text-secondary)] leading-[1.2]"
+                                            style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                                        >
+                                            {order.tariff || "Базовый"}
+                                        </span>
+                                        <span 
+                                            className="text-[18px] font-bold text-[var(--text-secondary)] leading-[1.2] tabular-nums"
+                                            style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                                        >
+                                            {order.price ? Number(order.price).toLocaleString() : "240 000"} ₽
+                                        </span>
                                     </div>
-
-                                    {order.isDisputed && (
-                                        <div className="flex items-center justify-center gap-2 py-4 border-t border-[var(--border-color)] mt-4">
-                                            <div className="w-2 h-2 rounded-full bg-[var(--accent-color)] animate-pulse" />
-                                            <span className="text-[var(--accent-color)] font-bold uppercase tracking-widest text-[12px]">В процессе спора</span>
-                                        </div>
-                                    )}
-
                                 </div>
+
+                                {/* 3. Tags / Features */}
+                                <div className="flex flex-wrap gap-[8px]">
+                                    {(order.features && order.features.length > 0 ? order.features : ["Авторизация", "Профиль", "Отслеживание заказа"]).map((tag, idx) => (
+                                        <div key={idx} className="bg-[var(--text-secondary)] px-[12px] h-[20px] rounded-full flex items-center justify-center">
+                                            <span className="text-[var(--bg-color)] text-[13px] font-medium leading-none">{tag}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* 4. Info Sections (Stacks) */}
+                                <div className="flex flex-col gap-[12px]">
+                                    {/* Executor (Seller) */}
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.05em]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                            Исполнитель
+                                        </span>
+                                        <span className="text-[16px] text-[var(--text-primary)] font-normal leading-[1.5]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                            {partner?.name || (order.sellerPhone === 'ADMIN' ? 'Администрация' : partner?.phone || "В поиске...")}
+                                        </span>
+                                    </div>
+
+                                    {/* Created Date */}
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.05em]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                            Создан
+                                        </span>
+                                        <span className="text-[16px] text-[var(--text-primary)] font-normal leading-[1.5] tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                            {order.createdAt ? new Date(order.createdAt).toLocaleDateString("ru-RU") : "02.08.2025"}
+                                        </span>
+                                    </div>
+
+                                    {/* Stage Name */}
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.05em]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                            Этап
+                                        </span>
+                                        <span className="text-[16px] text-[var(--text-primary)] font-normal leading-[1.5]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                            {(() => {
+                                                switch(order.stage) {
+                                                    case 'processing': return "Обработка";
+                                                    case 'design': return "Дизайн";
+                                                    case 'development': return "Разработка";
+                                                    case 'test': return "Тестирование";
+                                                    case 'ready': return "Готов";
+                                                    default: return "Обработка";
+                                                }
+                                            })()}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* 5. Progress Bar Section */}
+                                <div className="flex flex-col gap-[16px]">
+                                    <div className="flex justify-between items-center w-full gap-[8.3px]">
+                                        {[1, 2, 3, 4, 5].map((step) => {
+                                            const isActive = step < progress;
+                                            const isCurrent = step === progress;
+                                            return (
+                                                <div 
+                                                    key={step} 
+                                                    className="flex-1 h-[12px] bg-[var(--border-color)] rounded-full overflow-hidden relative"
+                                                >
+                                                    {/* White Fill Segment */}
+                                                    <div 
+                                                        className="absolute inset-0 bg-[var(--text-primary)] transition-all duration-700 ease-out"
+                                                        style={{ 
+                                                            width: isActive ? '100%' : isCurrent ? '50%' : '0%',
+                                                            borderRadius: 'inherit'
+                                                        }}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {order.isDisputed && (
+                                    <div className="flex items-center justify-center gap-2 py-2 mt-2 border-t border-[#FFF]/10">
+                                        <div className="w-2 h-2 rounded-full bg-[#FF8C67] animate-pulse" />
+                                        <span className="text-[#FF8C67] font-bold uppercase tracking-widest text-[12px]">Спор открыт</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         {/* Chat Tab */}
                         <div
                             ref={chatContainerRef}
-                            className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar pt-[180px] px-[24px]"
+                            className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar pt-[170px] px-[24px]"
                         >
                             <div className="flex flex-col space-y-6 pb-32">
                                 {messages.length === 0 ? (
@@ -315,15 +347,12 @@ export default function OrderDetailsPage() {
                                         return (
                                             <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"} animate-in zoom-in-95 duration-300`}>
                                                 <div className={`
-                                                    max-w-[85%] px-[20px] py-[14px] text-[15px] leading-[1.4] break-words whitespace-pre-wrap flex flex-col gap-1 relative transition-all duration-300
-                                                    ${isMe 
-                                                        ? "bg-[var(--nav-btn)] text-[var(--text-primary)] rounded-[20px] rounded-tr-[4px]" 
-                                                        : "bg-[var(--nav-bg)] text-[var(--text-primary)] rounded-[20px] rounded-tl-[4px] border border-[var(--border-color)]/30"
-                                                    }
+                                                    max-w-[85%] px-[24px] py-[18px] flex flex-col gap-1.5 relative transition-all duration-300
+                                                    bg-[var(--nav-btn)] text-[var(--text-primary)] rounded-[32px] shadow-sm
+                                                    ${isMe ? "rounded-br-[8px]" : "rounded-bl-[8px]"}
                                                 `}>
-                                                    {msg.text}
-                                                    <div className={`text-[10px] mt-1 opacity-40 font-medium tabular-nums ${isMe ? "text-right" : "text-left"}`}>
-                                                        {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    <div className="text-[15px] leading-[1.6] break-words whitespace-pre-wrap opacity-90" style={{ fontFamily: "'Cera Pro', sans-serif", fontWeight: 300 }}>
+                                                        {msg.text}
                                                     </div>
                                                 </div>
                                             </div>

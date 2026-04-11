@@ -31,7 +31,9 @@ export default function AdminBottomNav() {
 
     const isChat = searchParams?.get('tab') === 'chat' || pathname.includes("/aichat");
     const isSupportChat = pathname.includes("/admin/support");
-    const isHidden = !pathname.startsWith("/admin") || isChat || isSupportChat || scrolled;
+    const isOrderAction = pathname.startsWith("/admin/orders/") && (pathname.includes("/add") || pathname.split("/").length > 3);
+    const isUserAction = pathname.startsWith("/admin/users/") && (pathname.includes("/add") || pathname.split("/").length > 3);
+    const isHidden = !pathname.startsWith("/admin") || isChat || isSupportChat || scrolled || isOrderAction || isUserAction;
 
     const activeIndex = pathname === "/admin" ? 0
         : pathname.startsWith("/admin/orders") ? 1

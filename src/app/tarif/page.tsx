@@ -529,7 +529,7 @@ function TarifContent() {
               disabled={!isContinueEnabled}
               className={`
                 w-full h-[56px] rounded-full text-[16px] font-bold transition-all flex items-center justify-center tracking-tight pointer-events-auto transition-colors duration-300
-                ${isContinueEnabled ? 'bg-[var(--text-primary)] text-[var(--bg-color)] active:scale-95 shadow-xl' : 'bg-[var(--tarif-card-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] cursor-not-allowed'}
+                ${isContinueEnabled ? 'bg-[var(--text-primary)] text-[var(--bg-color)] active:scale-95 shadow-xl' : 'bg-[#313131] text-[var(--text-secondary)] border border-[var(--border-color)] cursor-not-allowed'}
               `}
             >
               Продолжить

@@ -56,7 +56,7 @@ function CodeContent() {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const checkCodeAndRegister = async () => {
+    const handleVerify = async () => {
       if (code.every((digit) => digit !== "") && phoneNumber) {
         const userData = await getUserData(phoneNumber);
         if (userData?.isBlocked) {
@@ -78,7 +78,7 @@ function CodeContent() {
         setTimeout(() => router.push(targetPath), 800);
       }
     };
-    checkCodeAndRegister();
+    handleVerify();
   }, [code, router, phoneNumber]);
 
   return (

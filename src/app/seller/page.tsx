@@ -35,10 +35,10 @@ export default function SellerPage() {
 
     loadData();
 
-    // Determine user data
-    const phone = getCurrentUserPhone();
-    if (phone) {
-      const fetchData = async () => {
+    // Get user data
+    const initUser = async () => {
+      const phone = getCurrentUserPhone();
+      if (phone) {
         const data = await getUserData(phone);
         if (data?.isBlocked) {
           const isPermanent = data.blockedUntil === "permanent";
@@ -54,9 +54,10 @@ export default function SellerPage() {
         }
         if (data && data.name) setUserName(data.name);
         if (data && data.avatar) setUserAvatar(data.avatar);
-      };
-      fetchData();
-    }
+      }
+    };
+
+    initUser();
 
     // Listen for cross-tab updates
     const handleStorageChange = () => {

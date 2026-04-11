@@ -20,8 +20,8 @@ export default function AdminUsersPage() {
         const allUsers = await getAllUsers();
         const allOrders = await getAllOrders();
         if (isMounted) {
-          setUsers(allUsers || []);
-          setOrders(allOrders || []);
+          setUsers(allUsers);
+          setOrders(allOrders);
           setLoading(false);
         }
       } catch (e) {

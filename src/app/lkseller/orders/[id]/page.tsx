@@ -103,7 +103,7 @@ export default function OrderDetailsPage() {
         if (updates.stage) setStage(updates.stage);
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!inputText.trim() || !orderId || !currentPhone) return;
         const newMessage: ChatMessage = {
             id: `msg_${Date.now()}`,
@@ -112,7 +112,7 @@ export default function OrderDetailsPage() {
             text: inputText.trim(),
             timestamp: new Date().toISOString()
         };
-        sendChatMessage(newMessage);
+        await sendChatMessage(newMessage);
         setMessages(prev => [...prev, newMessage]);
         setInputText("");
     };
@@ -133,45 +133,59 @@ export default function OrderDetailsPage() {
         <div className="min-h-screen bg-[var(--bg-color)] text-[var(--text-primary)] flex justify-center font-cera overflow-hidden transition-colors duration-300">
             <div className="w-full max-w-[375px] relative h-screen flex flex-col">
 
-                {/* Header - Fixed 24px Bold, centered positioning */}
-                <header className="fixed top-0 w-full max-w-[375px] h-[160px] bg-[var(--bg-color)] z-50 px-[24px] pt-[64px] pb-[16px] flex flex-col justify-between left-1/2 -translate-x-1/2 border-b border-[var(--border-color)] transition-colors duration-300">
-                    <div className="relative flex items-center justify-center w-full h-[32px]">
-                        <button
-                            onClick={() => router.push("/seller")}
-                            className="absolute left-0 w-[32px] h-[32px] flex items-center justify-center active:scale-95 transition-all text-[var(--text-primary)]"
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M19 12H5M12 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <h1 
-                            className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2]"
-                            style={{ fontFamily: 'var(--font-cera)' }}
-                        >
-                            Заказ №{orderNumStr}
-                        </h1>
-                    </div>
+                {/* Header - Fixed 24px Bold, centered positioning (Copied from Client view) */}
+                <header className="fixed top-0 w-full max-w-[375px] h-[150px] bg-[var(--bg-color)] z-50 flex flex-col left-1/2 -translate-x-1/2 border-b border-[var(--border-color)] transition-colors duration-300">
+                    <button
+                        onClick={() => router.back()}
+                        className="absolute left-[29px] top-[63px] w-[22px] h-[18px] flex items-center justify-center active:scale-95 transition-all text-[var(--text-primary)]"
+                    >
+                        <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 9H0M0 9L9.42857 18M0 9L9.42857 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                    
+                    <h1 
+                        className="absolute left-1/2 -translate-x-1/2 top-[57.5px] w-[127px] h-[29px] flex items-center justify-center overflow-visible whitespace-nowrap"
+                        style={{ 
+                            fontFamily: "'Cera Pro', sans-serif",
+                            fontWeight: 700,
+                            fontSize: '24px',
+                            lineHeight: '120%',
+                            letterSpacing: '0%',
+                            textAlign: 'center',
+                            verticalAlign: 'middle',
+                            color: 'var(--text-primary)'
+                        }}
+                    >
+                        Заказ №{orderNumStr}
+                    </h1>
 
-                    <div className="relative flex bg-[var(--bg-color)] rounded-full border border-[var(--border-color)] h-[56px] w-full p-[4px] mt-[24px]">
-                        {/* Sliding Border for Active Tab */}
+                    <div className="absolute left-[24.5px] top-[104.5px] w-[326px] h-[31px]">
+                        <div className="absolute inset-0 border border-[var(--border-color)] rounded-full" />
+                        
                         <div
-                            className={`absolute top-[4px] bottom-[4px] w-[calc(50%-4px)] rounded-full transition-all duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] border border-[var(--text-primary)] ${activeTab === 'details' ? 'left-[4px]' : 'left-[50%]'}`}
+                            className={`absolute top-0 bottom-0 w-1/2 rounded-full border border-[var(--text-primary)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${activeTab === 'details' ? 'left-0' : 'left-1/2'}`}
                         />
-                        <button
-                            onClick={() => setActiveTab('details')}
-                            className={`relative z-10 flex-1 rounded-full text-[17px] font-semibold transition-all duration-500 flex items-center justify-center ${activeTab === 'details' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]/40'}`}
-                        >
-                            Детали
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('chat')}
-                            className={`relative z-10 flex-1 rounded-full text-[17px] font-semibold transition-all duration-500 flex items-center justify-center ${activeTab === 'chat' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]/40'}`}
-                        >
-                            Чат
-                            {activeTab !== 'chat' && hasUnreadInOrder && (
-                                <div className="absolute top-[16px] right-[24px] w-[8px] h-[8px] bg-[var(--accent-color)] rounded-full border border-[var(--bg-color)] shadow-[0_0_10px_rgba(255,140,103,0.5)]" />
-                            )}
-                        </button>
+                        
+                        <div className="relative flex h-full items-center">
+                            <button
+                                onClick={() => setActiveTab('details')}
+                                className={`flex-1 text-[13px] font-bold transition-all duration-300 ${activeTab === 'details' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+                                style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                            >
+                                Детали
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('chat')}
+                                className={`flex-1 text-[13px] font-bold transition-all duration-300 flex items-center justify-center gap-1 ${activeTab === 'chat' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+                                style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                            >
+                                Чат
+                                {activeTab !== 'chat' && hasUnreadInOrder && (
+                                    <div className="w-[6px] h-[6px] bg-[#FF8C67] rounded-full" />
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </header>
 
@@ -184,115 +198,117 @@ export default function OrderDetailsPage() {
                         }}
                     >
                         {/* Details Tab */}
-                        <div className="w-1/2 h-full shrink-0 overflow-y-auto no-scrollbar pt-[180px] pb-10 px-[24px]">
-                            <div className="space-y-[24px] pb-24">
+                        <div className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar pt-[180px] pb-32 px-[24px]">
+                            <div className="flex flex-col gap-[16px] pb-80">
+                                <div className="flex justify-between items-start gap-4">
+                                     <h2 
+                                         className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2] flex-1 line-clamp-2"
+                                         style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                                     >
+                                         {order.title || "Обучающее приложение"}
+                                     </h2>
+                                     {(() => {
+                                         const getStatusInfo = (s: string) => {
+                                             if (s === 'cancelled') return { text: 'Отмена', bg: 'bg-[#FF8C67]' };
+                                             if (s === 'completed') return { text: 'Готов', bg: 'bg-[#4AC99B]' };
+                                             if (s === 'pending') return { text: 'Ожидает', bg: 'bg-[#FFC700]' };
+                                             return { text: 'В работе', bg: 'bg-[#4AC99B]' };
+                                         };
+                                         const info = getStatusInfo(status);
+                                         return (
+                                             <div className={`${info.bg} h-[20px] px-[8px] rounded-[10px] flex items-center justify-center shrink-0`}>
+                                                 <span className="text-[#141414] text-[13px] font-normal leading-none whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                                     {info.text}
+                                                 </span>
+                                             </div>
+                                         );
+                                     })()}
+                                 </div>
 
-                                {/* Summary Card Area */}
-                                <div className="space-y-[24px]">
-                                    <div className="space-y-[8px] px-[8px]">
-                                        <div className="flex justify-between items-start gap-[12px]">
-                                            <h2 className="text-[24px] font-semibold text-[var(--text-primary)] leading-[120%] flex-1 line-clamp-2">{order.title}</h2>
-                                            <div className="flex items-center gap-[12px] shrink-0 h-[20px]">
-                                                <div className={`px-[10px] h-[20px] rounded-full flex items-center justify-center border border-[var(--border-color)] ${status === 'pending' ? 'bg-[#FFC700]' : (status === 'completed' || status === 'cancelled') ? 'bg-[var(--accent-color)]' : 'bg-[#4AC99B]'}`}>
-                                                    <span className="text-[var(--bg-color)] text-[11px] font-bold leading-none">
-                                                        {status === 'in_progress' ? 'В работе' : status === 'pending' ? 'Ожидает' : 'Остановлен'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                 {/* Tariff & Price Row */}
+                                 <div className="flex justify-between items-center -mt-2">
+                                     <span 
+                                         className="text-[18px] font-bold text-[var(--text-secondary)] leading-none"
+                                         style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                                     >
+                                         {order.tariff || "Базовый"}
+                                     </span>
+                                     <span 
+                                         className="text-[18px] font-bold text-[var(--text-secondary)] opacity-100 leading-none tabular-nums"
+                                         style={{ 
+                                             fontFamily: "'Cera Pro', sans-serif",
+                                             color: 'var(--text-secondary)'
+                                         }}
+                                     >
+                                         {order.price ? Number(order.price).toLocaleString('ru-RU').replace(/,/g, ' ') : "170 000"} ₽
+                                     </span>
+                                 </div>
 
-                                         <div className="flex justify-between items-center h-[22px]">
-                                             <span className="text-[var(--text-secondary)] text-[18px] font-bold leading-[120%]">{order.tariff}{order.design ? ` + ${order.design}` : ""}</span>
-                                             <span className="text-[var(--text-secondary)] text-[18px] font-bold leading-[120%] tabular-nums">{Number(order.price || 0).toLocaleString()} ₽</span>
+                                 {/* Tags Block */}
+                                 <div className="flex flex-wrap gap-[6px]">
+                                     {(order.features && order.features.length > 0 ? order.features : ["Уникальный дизайн", "Внутренние покупки", "Авторизация", "Подписка", "Геймификация"]).map((tag, idx) => (
+                                         <div key={idx} className="bg-[var(--text-secondary)] px-[10px] h-[22px] rounded-full flex items-center justify-center">
+                                             <span className="text-[var(--bg-color)] text-[12px] font-bold leading-none">{tag}</span>
                                          </div>
-                                    </div>
+                                     ))}
+                                 </div>
 
-                                    <div className="flex flex-wrap gap-[8px] px-[8px]">
-                                        {(order.features && order.features.length > 0 ? order.features : ["Общее"]).map((tag, idx) => (
-                                            <div key={idx} className="bg-[var(--nav-bg)] px-[8px] py-0 h-[20px] rounded-full flex items-center justify-center border border-[var(--border-color)]">
-                                                <span className="text-[var(--text-primary)] text-[13px] font-normal leading-[20px]">{tag}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                 {/* Info Block: Client, Created */}
+                                 <div className="flex flex-col gap-[12px] mt-1">
+                                     <div className="flex flex-col gap-[2px]">
+                                         <span className="text-[13px] text-[var(--text-secondary)]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Заказчик</span>
+                                         <span className="text-[16px] text-[var(--text-primary)] font-normal" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{order.clientName || "Иван Петров"}</span>
+                                     </div>
+                                     <div className="flex flex-col gap-[2px]">
+                                         <span className="text-[13px] text-[var(--text-secondary)]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Создан</span>
+                                         <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
+                                             {order.createdAt ? new Date(order.createdAt).toLocaleDateString("ru-RU") : "02.08.2025"}
+                                         </span>
+                                     </div>
+                                 </div>
 
-                                    {/* Info rows with Dots Layout and Professional Terms from Mockup */}
-                                    <div className="space-y-[8px] px-[8px]">
-                                        <div className="flex items-center gap-[4px] h-[24px]">
-                                            <span className="text-[13px] font-bold text-[var(--text-secondary)] leading-none shrink-0">Клиент</span>
-                                            <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[12px] opacity-50" />
-                                            <span className="text-[16px] font-normal text-[var(--text-primary)] leading-none shrink-0 text-right truncate max-w-[170px]">
-                                                {order.clientName || "—"}
-                                            </span>
+                                {/* Controls Block: Status & Stage Toggles */}
+                                <div className="flex flex-col gap-[16px] mt-4">
+                                    <div className="flex flex-col gap-[8px]">
+                                        <h3 className="text-[var(--text-primary)] text-[15px] font-normal leading-none" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Статус</h3>
+                                        <div className="relative flex bg-[var(--nav-bg)] rounded-full h-[40px] p-[2px] overflow-hidden border border-[var(--border-color)]">
+                                            {(['in_progress', 'pending', 'cancelled'] as const).map((s) => {
+                                                const isActive = status === s;
+                                                const getStatusColor = (st: string) => {
+                                                    if (st === 'in_progress') return 'bg-[#4AC99B]';
+                                                    if (st === 'pending') return 'bg-[#FFC700]';
+                                                    return 'bg-[#FF8C67]';
+                                                };
+                                                return (
+                                                    <button
+                                                        key={s}
+                                                        onClick={() => handleUpdate({ status: s })}
+                                                        className={`relative z-10 flex-1 rounded-full text-[16px] font-normal transition-all duration-300 flex items-center justify-center ${isActive ? `${getStatusColor(s)} text-[#141414]` : 'text-[var(--text-secondary)]'}`}
+                                                    >
+                                                        {s === 'in_progress' ? 'В работе' : s === 'pending' ? 'Ожидает' : 'Остановлен'}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
-                                        <div className="flex items-center gap-[4px] h-[24px]">
-                                            <span className="text-[13px] font-bold text-[var(--text-secondary)] leading-none shrink-0">Телефон</span>
-                                            <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[12px] opacity-50" />
-                                            <span className="text-[16px] font-normal text-[var(--text-primary)] leading-none shrink-0 tabular-nums text-right">
-                                                {formatPhone(order.clientPhone)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-[4px] h-[24px]">
-                                            <span className="text-[13px] font-bold text-[var(--text-secondary)] leading-none shrink-0">Создан</span>
-                                            <div className="flex-1 border-b border-dotted border-[var(--border-color)] h-[12px] opacity-50" />
-                                            <span className="text-[16px] font-normal text-[var(--text-primary)] leading-none shrink-0 tabular-nums text-right">
-                                                {new Date(order.createdAt).toLocaleDateString("ru-RU")}
-                                            </span>
+                                    </div>
+                                    <div className="flex flex-col gap-[8px]">
+                                        <h3 className="text-[var(--text-primary)] text-[15px] font-normal leading-none" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Этап</h3>
+                                        <div className="relative flex bg-[var(--nav-bg)] rounded-full h-[40px] p-[2px] overflow-hidden border border-[var(--border-color)]">
+                                            {(['processing', 'design', 'development', 'test', 'ready'] as const).map((s) => {
+                                                const isActive = stage === s;
+                                                return (
+                                                    <button
+                                                        key={s}
+                                                        onClick={() => handleUpdate({ stage: s })}
+                                                        className={`relative z-10 flex-1 rounded-full text-[13px] font-normal transition-all duration-300 flex items-center justify-center ${isActive ? 'border border-[var(--text-primary)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+                                                    >
+                                                        {s === 'processing' ? 'Обраб.' : s === 'design' ? 'Дизайн' : s === 'development' ? 'Разраб.' : s === 'test' ? 'Тест' : 'Готов'}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Status Control Section */}
-                                <div className="space-y-[8px]">
-                                    <h3 className="text-[var(--text-primary)] text-[16px] font-normal leading-[24px] px-[8px] flex items-end h-[24px]">Статус</h3>
-                                    <div className="relative flex bg-[var(--bg-color)] rounded-full border border-[var(--border-color)] h-[32px] p-[2px] overflow-hidden">
-                                        {/* Sliding Indicator */}
-                                        <div
-                                            className={`absolute top-[2px] bottom-[2px] w-[calc(33.33%-2px)] rounded-full transition-all duration-300 ease-in-out border border-[var(--text-primary)] ${status === 'in_progress' ? 'left-[2px] bg-[#4AC99B]' :
-                                                status === 'pending' ? 'left-[33.33%] bg-[#FFC700]' :
-                                                    'left-[66.66%] bg-[var(--accent-color)]'
-                                                }`}
-                                        />
-                                        {(['in_progress', 'pending', 'cancelled'] as const).map((s) => {
-                                            const isActive = status === s;
-                                            return (
-                                                <button
-                                                    key={s}
-                                                    onClick={() => handleUpdate({ status: s })}
-                                                    className={`relative z-10 flex-1 rounded-full text-[13px] font-bold transition-all duration-300 flex items-center justify-center ${isActive ? 'text-[var(--bg-color)]' : 'text-[var(--text-primary)]'}`}
-                                                >
-                                                    {s === 'in_progress' ? 'В работе' : s === 'pending' ? 'Ожидает' : 'Остановлен'}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
-                                {/* Stage Control Section */}
-                                <div className="space-y-[8px]">
-                                    <h3 className="text-[var(--text-primary)] text-[16px] font-normal leading-[24px] px-[8px] flex items-end h-[24px]">Этап</h3>
-                                    <div className="relative flex bg-[var(--bg-color)] rounded-full border border-[var(--border-color)] h-[32px] p-[2px] overflow-hidden">
-                                        {/* Sliding Indicator */}
-                                        <div
-                                            className="absolute top-[2px] bottom-[2px] w-[calc(20%-2px)] rounded-full transition-all duration-300 ease-in-out border border-[var(--text-primary)] bg-[var(--text-primary)]"
-                                            style={{
-                                                left: `calc(${(['processing', 'design', 'development', 'test', 'ready'] as const).indexOf(stage as any) * 20}% + ${(['processing', 'design', 'development', 'test', 'ready'] as const).indexOf(stage as any) === 0 ? '2px' : '0px'})`
-                                            }}
-                                        />
-                                        {(['processing', 'design', 'development', 'test', 'ready'] as const).map((s) => {
-                                            const isActive = stage === s;
-                                            return (
-                                                <button
-                                                    key={s}
-                                                    onClick={() => handleUpdate({ stage: s })}
-                                                    className={`relative z-10 flex-1 rounded-full text-[11px] font-bold transition-all duration-300 flex items-center justify-center ${isActive ? 'text-[var(--bg-color)]' : 'text-[var(--text-primary)]'}`}
-                                                >
-                                                    {s === 'processing' ? 'Обраб.' : s === 'design' ? 'Дизайн' : s === 'development' ? 'Разраб.' : s === 'test' ? 'Тест' : 'Готов'}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
 
@@ -312,15 +328,12 @@ export default function OrderDetailsPage() {
                                         return (
                                             <div key={index} className={`flex flex-col ${isMe ? "items-end" : "items-start"} animate-in zoom-in-95 duration-300`}>
                                                 <div className={`
-                                                    max-w-[85%] px-[20px] py-[14px] text-[15px] leading-[1.4] break-words whitespace-pre-wrap flex flex-col gap-1 relative transition-all duration-300
-                                                    ${isMe 
-                                                        ? "bg-[#EDEDED] text-[#141414] rounded-[20px] rounded-tr-[4px]" 
-                                                        : "bg-[#D6D6D6] text-[#141414] rounded-[20px] rounded-tl-[4px]"
-                                                    }
+                                                    max-w-[85%] px-[24px] py-[18px] flex flex-col gap-1.5 relative transition-all duration-300
+                                                    bg-[var(--nav-btn)] text-[var(--text-primary)] rounded-[32px] shadow-sm
+                                                    ${isMe ? "rounded-br-[8px]" : "rounded-bl-[8px]"}
                                                 `}>
-                                                    {msg.text}
-                                                    <div className={`text-[10px] mt-1 opacity-40 font-medium tabular-nums ${isMe ? "text-right" : "text-left"}`}>
-                                                        {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    <div className="text-[15px] leading-[1.6] break-words whitespace-pre-wrap opacity-90" style={{ fontFamily: "'Cera Pro', sans-serif", fontWeight: 300 }}>
+                                                        {msg.text}
                                                     </div>
                                                 </div>
                                             </div>
