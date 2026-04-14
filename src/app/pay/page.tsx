@@ -53,7 +53,7 @@ function PayContent() {
 
     const orderId = `order_${currentPhone}_${Date.now()}`;
     const features = selectedPackages.tariffFeatures?.map(f => f.text) || [];
-    const clientData = await getUserData(currentPhone);
+    const clientData = getUserData(currentPhone);
 
     const newOrder: Order = {
       id: orderId,

@@ -112,98 +112,107 @@ function OrderCard({ order, router, role, unreadCount }: { order: Order, router:
         <div
             key={order.id}
             onClick={() => router.push(`${baseRoute}/${order.id}`)}
-            className="w-full bg-[var(--card-bg)] rounded-[32px] p-[24px] flex flex-col active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden shadow-2xl min-h-[412px]"
+            className="w-[327px] mx-auto bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[24px] p-[16px] flex flex-col gap-[12px] active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden h-[351px]"
         >
-            {/* Header row */}
-            <div className="flex justify-between items-start mb-[4px]">
-                <h2 className="text-[var(--text-primary)] text-[22px] font-bold leading-[1.2] flex-1 line-clamp-1" style={{ fontFamily: 'var(--font-cera)' }}>
-                    {order.title || "Проект"}
-                </h2>
-                <div className="flex items-center gap-1 opacity-40 shrink-0 ml-4">
-                    <span className="text-[var(--text-secondary)] text-[20px] font-bold">№</span>
-                    <span className="text-[var(--text-secondary)] text-[20px] font-bold tabular-nums">{orderNumStr}</span>
+            {/* 1. Header Section */}
+            <div className="flex flex-col gap-[2px]">
+                <div className="flex justify-between items-start">
+                    <h2 
+                        className="text-[24px] font-bold text-[var(--text-primary)] leading-[120%] flex-1 line-clamp-1"
+                        style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                    >
+                        {order.title || "Проект"}
+                    </h2>
+                    <span 
+                        className="text-[24px] font-bold text-[var(--text-secondary)] leading-[120%]"
+                        style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                    >
+                        №{orderNumStr}
+                    </span>
+                </div>
+
+                <div className="flex justify-between items-center h-[22px]">
+                    <span 
+                        className="text-[18px] font-bold text-[var(--text-secondary)] leading-[120%]"
+                        style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                    >
+                        {order.tariff || "Базовый"}
+                    </span>
+                    <span 
+                        className="text-[18px] font-bold text-[var(--text-secondary)] leading-[120%] tabular-nums"
+                        style={{ fontFamily: "'Cera Pro', sans-serif" }}
+                    >
+                        {Number(order.price || 0).toLocaleString()} ₽
+                    </span>
                 </div>
             </div>
 
-            {/* Subheader: Tariff & Price */}
-            <div className="flex justify-between items-center mb-[16px]">
-                <span className="text-[var(--text-secondary)] text-[15px] font-bold">{order.tariff || "Базовый"}</span>
-                <span className="text-[var(--text-secondary)] text-[15px] font-bold tabular-nums">
-                    {Number(order.price || 0).toLocaleString()} ₽
-                </span>
-            </div>
+            {/* 2. Divider */}
+            <div className="w-full h-0 border-t-2 border-[var(--border-color)]" />
 
-            <div className="w-full h-[1px] bg-[var(--border-color)] mb-[20px]" />
-
-            {/* Tags - smaller */}
-            <div className="flex flex-wrap gap-[6px] mb-[20px]">
+            {/* 3. Tags */}
+            <div className="flex flex-wrap gap-[6px]">
                 {(order.features && order.features.length > 0 ? order.features : ["Внутренние покупки", "Авторизация"]).slice(0, 3).map((tag, idx) => (
-                    <div key={idx} className="bg-[var(--text-secondary)]/10 rounded-full px-[10px] h-[22px] flex items-center border border-[var(--text-secondary)]/10">
-                        <span className="text-[var(--text-primary)] text-[11px] font-bold leading-none">{tag}</span>
+                    <div key={idx} className="bg-[var(--text-secondary)] px-[8px] h-[20px] rounded-full flex items-center justify-center">
+                        <span className="text-[var(--bg-color)] text-[13px] font-bold leading-none">{tag}</span>
                     </div>
                 ))}
             </div>
 
-            {/* Compact Info Rows */}
-            <div className="space-y-[10px] mb-[24px]">
-                <div className="flex items-end gap-[4px] h-[18px]">
-                    <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">Партнер</span>
-                    <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                    <span className="text-[14px] font-bold text-[var(--text-primary)] leading-none shrink-0 truncate max-w-[140px] text-right">
-                        {partnerDisplayName}
-                    </span>
+            {/* 4. Info Rows */}
+            <div className="flex flex-col gap-[6px] mt-[4px]">
+                <div className="flex items-end gap-2">
+                    <span className="text-[14px] text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Партнер</span>
+                    <div className="flex-1 border-b border-dotted border-[var(--border-color)] mb-1" />
+                    <span className="text-[16px] text-[var(--text-primary)] font-normal truncate max-w-[150px]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{partnerDisplayName}</span>
                 </div>
-                <div className="flex items-end gap-[4px] h-[18px]">
-                    <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">Заказчик</span>
-                    <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                    <span className="text-[14px] font-bold text-[var(--text-primary)] leading-none shrink-0 truncate max-w-[130px] text-right">
-                        {order.clientName || "Клиент"}
-                    </span>
+                <div className="flex items-end gap-2">
+                    <span className="text-[14px] text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Заказчик</span>
+                    <div className="flex-1 border-b border-dotted border-[var(--border-color)] mb-1" />
+                    <span className="text-[16px] text-[var(--text-primary)] font-normal truncate max-w-[150px]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{order.clientName || "Клиент"}</span>
                 </div>
-                <div className="flex items-end gap-[4px] h-[18px]">
-                    <span className="text-[12px] font-bold text-[var(--text-secondary)] leading-none shrink-0 mb-[2px]">Телефон</span>
-                    <div className="flex-1 border-b-[1px] border-dotted border-[var(--border-color)] h-[1px] mb-[3px]" />
-                    <span className="text-[var(--text-primary)] text-[14px] font-bold leading-none shrink-0 tabular-nums text-right">
-                        {order.clientPhone || "+7..."}
-                    </span>
+                <div className="flex items-end gap-2">
+                    <span className="text-[14px] text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Телефон</span>
+                    <div className="flex-1 border-b border-dotted border-[var(--border-color)] mb-1" />
+                    <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>{order.clientPhone || "+7..."}</span>
                 </div>
             </div>
 
-            {/* Dates row - compact */}
-            <div className="flex gap-[28px] mb-[28px]">
-                <div className="flex flex-col gap-0.5">
-                    <span className="text-[var(--text-secondary)] text-[12px] font-bold">Создан</span>
-                    <span className="text-[var(--text-primary)] text-[15px] font-bold tabular-nums">
+            {/* 5. Dates Section */}
+            <div className="flex gap-[24px] mt-[4px]">
+                <div className="flex flex-col gap-[2px]">
+                    <span className="text-[14px] text-[var(--text-secondary)]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Создан</span>
+                    <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
                         {new Date(order.createdAt).toLocaleDateString("ru-RU")}
                     </span>
                 </div>
-                <div className="flex flex-col gap-0.5">
-                    <span className="text-[var(--text-secondary)] text-[12px] font-bold">Обновлен</span>
-                    <span className="text-[var(--text-primary)] text-[15px] font-bold tabular-nums">
+                <div className="flex flex-col gap-[2px]">
+                    <span className="text-[14px] text-[var(--text-secondary)]" style={{ fontFamily: "'Cera Pro', sans-serif" }}>Обновлен</span>
+                    <span className="text-[16px] text-[var(--text-primary)] font-normal tabular-nums" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
                         {new Date(order.updatedAt || order.createdAt).toLocaleDateString("ru-RU")}
                     </span>
                 </div>
             </div>
 
-            {/* Bottom Bar: Progress and Badge - Compact */}
-            <div className="mt-auto flex justify-between items-center h-[28px]">
-                <div className="flex gap-[4px]">
+            {/* 6. Footer: Progress & Status */}
+            <div className="flex justify-between items-center mt-auto pt-[4px]">
+                <div className="flex gap-[6px]">
                     {[1, 2, 3, 4, 5].map((step) => (
-                        <div
-                            key={step}
-                            className={`h-[10px] w-[34px] rounded-full transition-colors duration-500 ${step <= progress ? 'bg-[var(--text-primary)]' : 'bg-[var(--border-color)]'}`}
+                        <div 
+                            key={step} 
+                            className={`w-[36px] h-[12px] rounded-full transition-all duration-500 ${step <= progress ? 'bg-[var(--text-primary)]' : 'bg-[var(--border-color)]'}`}
                         />
                     ))}
                 </div>
-                <div className={`px-[8px] h-[22px] rounded-full flex items-center justify-center shrink-0 ${statusInfo.text === 'Ожидает' ? 'bg-[#FFD700]' : statusInfo.bg}`}>
-                    <span className="text-[#141414] text-[10px] font-black uppercase tracking-wider">
+                <div className={`${statusInfo.bg} px-[8px] py-[2px] rounded-full flex items-center justify-center transform translate-x-[-6px]`}>
+                    <span className="text-[var(--bg-color)] text-[12px] font-bold" style={{ fontFamily: "'Cera Pro', sans-serif" }}>
                         {statusInfo.text}
                     </span>
                 </div>
             </div>
 
             {unreadCount > 0 && (
-                <div className="absolute top-[24px] right-[24px] w-2 h-2 bg-[#FF8C67] rounded-full" />
+                <div className="absolute top-[16px] right-[16px] w-2 h-2 bg-[#FF8C67] rounded-full" />
             )}
         </div>
     );

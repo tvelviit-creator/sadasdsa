@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function TemaPage() {
   const router = useRouter();
-  const [selectedTheme, setSelectedTheme] = useState<'auto' | 'day' | 'night'>('night');
+  const [selectedTheme, setSelectedTheme] = useState<'auto' | 'day' | 'night'>('day');
 
   useEffect(() => {
     const saved = localStorage.getItem('app-theme') as 'auto' | 'day' | 'night';

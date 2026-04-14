@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
@@ -8,7 +12,11 @@ export async function GET(request: Request) {
     
     let services = db.data.services || [];
     if (categoryId) {
+<<<<<<< HEAD
         services = services.filter((s: any) => s.categoryId === categoryId);
+=======
+        services = services.filter(s => s.categoryId === categoryId);
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     }
     
     return NextResponse.json(services);
@@ -35,7 +43,11 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, ...updates } = body;
 
+<<<<<<< HEAD
     const index = db.data.services.findIndex((s: any) => s.id === id);
+=======
+    const index = db.data.services.findIndex(s => s.id === id);
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     if (index !== -1) {
         db.data.services[index] = { ...db.data.services[index], ...updates };
         await db.write();
@@ -52,7 +64,11 @@ export async function DELETE(request: Request) {
 
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
 
+<<<<<<< HEAD
     db.data.services = db.data.services.filter((s: any) => s.id !== id);
+=======
+    db.data.services = db.data.services.filter(s => s.id !== id);
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     await db.write();
 
     return NextResponse.json({ success: true });

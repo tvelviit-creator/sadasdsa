@@ -15,16 +15,27 @@ export default function CatigoriyPage() {
     const [services, setServices] = useState<any[]>([]);
 
     useEffect(() => {
+<<<<<<< HEAD
         async function load() {
+=======
+        async function loadData() {
+            setRole(getActiveRole());
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
             const [cats, allServices] = await Promise.all([
                 getCategories(),
                 getServices()
             ]);
             setCategories(cats);
+<<<<<<< HEAD
             setRole(getActiveRole());
             setServices(allServices);
         }
         load();
+=======
+            setServices(allServices);
+        }
+        loadData();
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     }, []);
 
     const isSeller = role === "seller";

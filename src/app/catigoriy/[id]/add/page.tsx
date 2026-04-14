@@ -136,11 +136,11 @@ export default function PartnerAddServicePage() {
     tariffs.length > 0 && 
     designs.length > 0;
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!isFormValid) return;
 
     const currentPhone = getCurrentUserPhone();
-    const userData = currentPhone ? await getUserData(currentPhone) : null;
+    const userData = currentPhone ? getUserData(currentPhone) : null;
 
     const newService = {
       id: `service_${Date.now()}`,

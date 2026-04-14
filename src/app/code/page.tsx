@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { registerPhone, setCurrentUserPhone, getUserData } from "@/utils/userData";
 import "../registration/registration.css";
@@ -22,10 +22,29 @@ function CodeContent() {
     }
   }, [phoneNumber]);
 
+<<<<<<< HEAD
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "").slice(0, 4);
     const newCode = ["", "", "", ""];
     for (let i = 0; i < val.length; i++) {
+=======
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Focus input on load
+    inputRef.current?.focus();
+    
+    // Maintain focus on click anywhere
+    const handleGlobalClick = () => inputRef.current?.focus();
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+    const newCode = ["", "", "", ""];
+    for (let i = 0 ; i < val.length; i++) {
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
         newCode[i] = val[i];
     }
     setCode(newCode);
@@ -41,29 +60,26 @@ function CodeContent() {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const checkCodeAndRegister = async () => {
-      if (code.every((digit) => digit !== "") && phoneNumber) {
-        const userData = await getUserData(phoneNumber);
-        if (userData?.isBlocked) {
-          alert("Account blocked");
-          setCode(["", "", "", ""]);
-          return;
-        }
-
-        // Start transition animation
-        setIsTransitioning(true);
-        
-        await registerPhone(phoneNumber);
-        setCurrentUserPhone(phoneNumber);
-        
-        // If super admin, go to admin panel. Otherwise go to client-partner
-        const targetPath = phoneNumber === "79999999999" ? "/admin" : "/client-partner";
-        
-        // Delay navigation to allow animation to complete
-        setTimeout(() => router.push(targetPath), 800);
+    if (code.every((digit) => digit !== "") && phoneNumber) {
+      const userData = getUserData(phoneNumber);
+      if (userData?.isBlocked) {
+        alert("Account blocked");
+        setCode(["", "", "", ""]);
+        return;
       }
-    };
-    checkCodeAndRegister();
+
+      // Start transition animation
+      setIsTransitioning(true);
+      
+      registerPhone(phoneNumber);
+      setCurrentUserPhone(phoneNumber);
+      
+      // If super admin, go to admin panel. Otherwise go to client-partner
+      const targetPath = phoneNumber === "79999999999" ? "/admin" : "/client-partner";
+      
+      // Delay navigation to allow animation to complete
+      setTimeout(() => router.push(targetPath), 800);
+    }
   }, [code, router, phoneNumber]);
 
   return (
@@ -88,6 +104,7 @@ function CodeContent() {
             Введите код из СМС, отправленное на номер <span className="text-[var(--text-primary)] font-medium">{maskedPhone}</span>
           </p>
 
+<<<<<<< HEAD
           <div className="relative">
             <input
               type="tel"
@@ -108,6 +125,29 @@ function CodeContent() {
                 </div>
               ))}
             </div>
+=======
+          <div className="code-inputs relative">
+            {/* Hidden Input for Mobile Keyboard */}
+            <input
+              ref={inputRef}
+              type="tel"
+              pattern="[0-9]*"
+              inputMode="numeric"
+              maxLength={4}
+              value={code.join("")}
+              onChange={handleInputChange}
+              className="absolute inset-0 opacity-0 w-full h-full cursor-default caret-transparent pointer-events-none"
+              autoFocus
+            />
+            {code.map((digit, index) => (
+              <div 
+                key={index} 
+                className={`code-box ${code.findIndex(d => d === "") === index ? 'active' : ''} ${digit !== "" ? 'filled' : ''}`}
+              >
+                {digit}
+              </div>
+            ))}
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
           </div>
 
           <div className="code-timer-container">

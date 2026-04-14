@@ -22,6 +22,7 @@ export default function EditCategoryPage() {
   const iconInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+<<<<<<< HEAD
     async function init() {
         const categories = await getCategories();
         const cat = categories.find((c) => c.id === categoryId);
@@ -36,6 +37,22 @@ export default function EditCategoryPage() {
         }
     }
     init();
+=======
+    async function loadData() {
+        const categories = await getCategories();
+        const cat = categories.find((c) => c.id === categoryId);
+        if (cat) {
+          setName(cat.name);
+          setCoverImage(cat.coverImage || null);
+          setIconImage(cat.iconImage || null);
+          const loadedServices = await getServices(categoryId);
+          setServices(loadedServices);
+        } else {
+          router.push("/admin/categories");
+        }
+    }
+    loadData();
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
   }, [categoryId, router]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'icon' | 'cover') => {

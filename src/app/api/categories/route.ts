@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
@@ -16,7 +20,10 @@ export async function POST(request: Request) {
         iconImage: body.iconImage,
         coverImage: body.coverImage,
         createdAt: new Date().toISOString(),
+<<<<<<< HEAD
         order: body.order ?? (db.data.categories.length > 0 ? Math.max(...db.data.categories.map((c: any) => c.order || 0)) + 1 : 0),
+=======
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     };
 
     db.data.categories.push(newCategory);
@@ -30,7 +37,11 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, ...updates } = body;
 
+<<<<<<< HEAD
     const index = db.data.categories.findIndex((c: any) => c.id === id);
+=======
+    const index = db.data.categories.findIndex(c => c.id === id);
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     if (index !== -1) {
         db.data.categories[index] = { ...db.data.categories[index], ...updates };
         await db.write();
@@ -47,11 +58,16 @@ export async function DELETE(request: Request) {
 
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
 
+<<<<<<< HEAD
     db.data.categories = db.data.categories.filter((c: any) => c.id !== id);
+=======
+    db.data.categories = db.data.categories.filter(c => c.id !== id);
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     await db.write();
 
     return NextResponse.json({ success: true });
 }
+<<<<<<< HEAD
 export async function PATCH(request: Request) {
     const db = await getDb();
     const body = await request.json(); // Expecting { ids: string[] }
@@ -71,3 +87,5 @@ export async function PATCH(request: Request) {
     await db.write();
     return NextResponse.json({ success: true });
 }
+=======
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf

@@ -20,11 +20,12 @@ export default function SellerPage() {
 
 
   useEffect(() => {
-    const loadData = () => {
-      const cats = getCategories();
+    const loadData = async () => {
+      const [cats, srvs] = await Promise.all([
+        getCategories(),
+        getServices()
+      ]);
       setCategories(cats);
-
-      const srvs = getServices();
       setAllServices(srvs);
 
       setSelectedCategoryId(prev => {
@@ -35,41 +36,25 @@ export default function SellerPage() {
 
     loadData();
 
-    // Determine user data
+    // Get user data
     const phone = getCurrentUserPhone();
     if (phone) {
-      const fetchData = async () => {
-        const data = await getUserData(phone);
-        if (data?.isBlocked) {
-          const isPermanent = data.blockedUntil === "permanent";
-          const expiration = data.blockedUntil ? new Date(data.blockedUntil) : null;
+      const data = getUserData(phone);
+      if (data?.isBlocked) {
+        const isPermanent = data.blockedUntil === "permanent";
+        const expiration = data.blockedUntil ? new Date(data.blockedUntil) : null;
 
-          if (isPermanent || (expiration && new Date() < expiration)) {
-            alert(isPermanent ? "Ваш аккаунт заблокирован навсегда." : `Ваш аккаунт заблокирован до ${expiration?.toLocaleDateString()}`);
-            localStorage.removeItem("currentUserPhone");
-            sessionStorage.removeItem("currentUserPhone");
-            router.replace("/registration");
-            return;
-          }
+        if (isPermanent || (expiration && new Date() < expiration)) {
+          alert(isPermanent ? "Ваш аккаунт заблокирован навсегда." : `Ваш аккаунт заблокирован до ${expiration?.toLocaleDateString()}`);
+          localStorage.removeItem("currentUserPhone");
+          sessionStorage.removeItem("currentUserPhone");
+          router.replace("/registration");
+          return;
         }
-        if (data && data.name) setUserName(data.name);
-        if (data && data.avatar) setUserAvatar(data.avatar);
-      };
-      fetchData();
+      }
+      if (data && data.name) setUserName(data.name);
+      if (data && data.avatar) setUserAvatar(data.avatar);
     }
-
-    // Listen for cross-tab updates
-    const handleStorageChange = () => {
-      loadData();
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("local-storage-update", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("local-storage-update", handleStorageChange);
-    };
   }, [router]);
 
   // Handle derived filtering directly automatically on render

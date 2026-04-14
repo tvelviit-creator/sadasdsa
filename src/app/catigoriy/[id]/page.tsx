@@ -18,7 +18,11 @@ export default function ServicesPage() {
     const isSeller = role === "seller";
 
     useEffect(() => {
+<<<<<<< HEAD
         async function load() {
+=======
+        async function loadData() {
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
             setRole(getActiveRole());
             const [cats, loadedServices] = await Promise.all([
                 getCategories(),
@@ -28,7 +32,11 @@ export default function ServicesPage() {
             setCategory(currentCat || null);
             setServices(loadedServices);
         }
+<<<<<<< HEAD
         load();
+=======
+        loadData();
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
     }, [categoryId]);
 
     const patternColors = [

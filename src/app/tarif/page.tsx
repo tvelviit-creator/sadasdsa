@@ -175,16 +175,28 @@ function TarifContent() {
   const ITEM_WIDTH = CARD_WIDTH + CARD_GAP;
 
   useEffect(() => {
+<<<<<<< HEAD
     async function load() {
+=======
+    async function loadData() {
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
         const services = await getServices();
         const id = searchParams.get("id");
 
         if (services.length > 0) {
+<<<<<<< HEAD
             let targetService = id ? services.find(s => s.id === id) : services[0];
             if (targetService) setServiceData(targetService);
         }
     }
     load();
+=======
+          let targetService = id ? services.find(s => s.id === id) : services[0];
+          if (targetService) setServiceData(targetService);
+        }
+    }
+    loadData();
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
   }, [searchParams]);
 
   // Handle stage changes or initial load

@@ -11,8 +11,12 @@ export async function getCategories(): Promise<Category[]> {
   try {
     const res = await fetch('/api/categories', { cache: 'no-store' });
     if (!res.ok) return [];
+<<<<<<< HEAD
     const data: Category[] = await res.json();
     return data.sort((a, b) => (a.order || 0) - (b.order || 0));
+=======
+    return await res.json();
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
   } catch (e) {
     console.error("Failed to fetch categories", e);
     return [];
@@ -53,6 +57,7 @@ export async function deleteCategory(categoryId: string): Promise<void> {
   }
 }
 
+<<<<<<< HEAD
 export async function reorderCategories(categoryIds: string[]): Promise<void> {
   try {
     await fetch('/api/categories', {
@@ -83,4 +88,18 @@ export async function moveCategoryDown(categoryId: string): Promise<void> {
     [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
     await reorderCategories(newOrder.map(c => c.id));
   }
+=======
+// These might be more complex to implement via API if they rely on local order,
+// but for now let's just make placeholders or simple implementations.
+export async function reorderCategories(categoryIds: string[]): Promise<void> {
+  // Implementation omitted for brevity, could be a bulk update API
+}
+
+export async function moveCategoryUp(categoryId: string): Promise<void> {
+  // Implementation omitted
+}
+
+export async function moveCategoryDown(categoryId: string): Promise<void> {
+  // Implementation omitted
+>>>>>>> f0ae42b902bf138f49fc2fb21aade7312fa498cf
 }
