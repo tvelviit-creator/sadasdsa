@@ -9,7 +9,8 @@
     color: var(--text-primary);
     font-family: var(--font-inter), sans-serif;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -21,12 +22,24 @@
     height: 100dvh;
     margin: 0 auto;
     background: var(--bg-color);
-    overflow: hidden;
     padding: 0;
     display: flex;
     flex-direction: column;
     z-index: 10;
     transition: background-color 0.3s ease;
+}
+
+.welcome-view-scroll {
+    overflow-y: auto !important;
+    display: block !important;
+}
+
+.welcome-inner-content {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    /* Aspect ratio will be determined by the relative children */
 }
 
 /* Background Atmosphere System */
@@ -105,11 +118,10 @@
 
 .svg-button-trigger-welcome {
     position: absolute;
-    top: 91.3%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 87%;
-    height: 7.2%;
+    top: 87.8%;
+    left: 6.4%;
+    width: 87.2%;
+    height: 7.07%;
     background: transparent;
     border: none;
     outline: none;
@@ -146,6 +158,8 @@
     position: absolute;
     width: 100%;
     max-width: 375px;
+    top: 55.6%; /* Aligned with circle in SVG: cy=441, 441/792=55.6% */
+    left: 0;
     z-index: 10;
     pointer-events: none;
     filter: blur(20px);

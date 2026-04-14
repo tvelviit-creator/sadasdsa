@@ -17,7 +17,7 @@ export default function AdminUsersPage() {
     let isMounted = true;
     async function init() {
       try {
-        const allUsers = await getAllUsers();
+        const allUsers = getAllUsers();
         const allOrders = await getAllOrders();
         if (isMounted) {
           setUsers(allUsers);

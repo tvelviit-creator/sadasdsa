@@ -47,43 +47,38 @@ export function getCurrentUserPhone(): string | null {
   }
 }
 
-const API_URL = '/api/users';
-
-// Сохранение данных пользователя в общую БД
-export async function saveUserData(phone: string, data: Partial<UserData>): Promise<void> {
+// Сохранение данных пользователя в localStorage
+export function saveUserData(phone: string, data: Partial<UserData>): void {
   if (typeof window === "undefined") return;
   try {
-    const existingData = await getUserData(phone) || { phone };
+    const existingData = getUserData(phone) || {};
     const updatedData: UserData = {
+      phone,
       ...existingData,
       ...data,
-      phone,
     };
-    
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedData),
-    });
+    localStorage.setItem(`user_${phone}`, JSON.stringify(updatedData));
   } catch (error) {
     console.error("Ошибка при сохранении данных пользователя:", error);
   }
 }
 
-// Получение данных пользователя по номеру телефона из общей БД
-export async function getUserData(phone: string): Promise<UserData | null> {
+// Получение данных пользователя по номеру телефона
+export function getUserData(phone: string): UserData | null {
   if (typeof window === "undefined") return null;
   try {
-    const res = await fetch(`${API_URL}?phone=${encodeURIComponent(phone)}`);
-    if (!res.ok) return null;
-    return await res.json();
+    const data = localStorage.getItem(`user_${phone}`);
+    if (data) {
+      return JSON.parse(data) as UserData;
+    }
+    return null;
   } catch (error) {
     console.error("Ошибка при получении данных пользователя:", error);
     return null;
   }
 }
 
-// Получение текущего пользователя (из sessionStorage) - остается локальным (авторизация)
+// Получение текущего пользователя (из sessionStorage)
 export function getCurrentUser(): string | null {
   if (typeof window === "undefined") return null;
   try {
@@ -105,33 +100,52 @@ export function setCurrentUser(phone: string): void {
 }
 
 // Сохранение номера телефона при регистрации
-export async function registerPhone(phone: string): Promise<void> {
+export function registerPhone(phone: string): void {
   if (typeof window === "undefined") return;
   try {
-    // Устанавливаем текущего пользователя локально
+    // Сохраняем номер в список зарегистрированных
+    const registeredPhones = getRegisteredPhones();
+    if (!registeredPhones.includes(phone)) {
+      registeredPhones.push(phone);
+      localStorage.setItem("registeredPhones", JSON.stringify(registeredPhones));
+    }
+
+    // Создаем запись пользователя, если её еще нет
+    if (!getUserData(phone)) {
+      saveUserData(phone, { phone });
+    }
+
+    // Устанавливаем текущего пользователя (и в localStorage, и в sessionStorage)
     setCurrentUserPhone(phone);
     setCurrentUser(phone);
-    
-    // Сохраняем в общую базу на сервере
-    await saveUserData(phone, { phone });
-    
-    console.log("✅ Пользователь зарегистрирован в общей БД:", phone);
+    console.log("✅ Пользователь зарегистрирован и установлен как текущий:", phone);
   } catch (error) {
     console.error("Ошибка при регистрации номера:", error);
   }
 }
 
-// Список зарегистрированных номеров (из общей БД)
-export async function getRegisteredPhones(): Promise<string[]> {
-  const users = await getAllUsers();
-  return users.map(u => u.phone);
+// Получение списка зарегистрированных номеров
+export function getRegisteredPhones(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const phones = localStorage.getItem("registeredPhones");
+    if (phones) {
+      return JSON.parse(phones) as string[];
+    }
+    return [];
+  } catch (error) {
+    console.error("Ошибка при получении списка номеров:", error);
+    return [];
+  }
 }
 
 // Выход из профиля (очистка текущей сессии)
 export function logout(): void {
   if (typeof window === "undefined") return;
   try {
+    // Очищаем текущую сессию
     sessionStorage.removeItem("currentUserPhone");
+    // Очищаем постоянное хранение текущего пользователя
     localStorage.removeItem("currentUserPhone");
     console.log("✅ Выход из профиля выполнен");
   } catch (error) {
@@ -139,30 +153,44 @@ export function logout(): void {
   }
 }
 
-// Получение всех пользователей из общей БД
-export async function getAllUsers(): Promise<UserData[]> {
+// Получение всех пользователей из localStorage
+export function getAllUsers(): UserData[] {
+  if (typeof window === "undefined") return [];
   try {
-    const res = await fetch(API_URL);
-    if (!res.ok) return [];
-    return await res.json();
+    const users: UserData[] = [];
+    const registeredPhones = getRegisteredPhones();
+
+    for (const phone of registeredPhones) {
+      const userData = getUserData(phone);
+      if (userData) {
+        users.push(userData);
+      }
+    }
+
+    return users;
   } catch (error) {
     console.error("Ошибка при получении всех пользователей:", error);
     return [];
   }
 }
 
-// Удаление пользователя из общей БД
-export async function deleteUser(phone: string): Promise<void> {
+// Удаление пользователя
+export function deleteUser(phone: string): void {
+  if (typeof window === "undefined") return;
   try {
-    await fetch(`${API_URL}?phone=${encodeURIComponent(phone)}`, {
-      method: 'DELETE',
-    });
+    // Удаляем данные пользователя
+    localStorage.removeItem(`user_${phone}`);
+
+    // Удаляем телефон из списка зарегистрированных
+    const registeredPhones = getRegisteredPhones();
+    const updatedPhones = registeredPhones.filter((p) => p !== phone);
+    localStorage.setItem("registeredPhones", JSON.stringify(updatedPhones));
   } catch (error) {
     console.error("Ошибка при удалении пользователя:", error);
   }
 }
 
-// Управление активной ролью (client / seller) - остается локальным
+// Управление активной ролью (client / seller)
 export function setActiveRole(role: "client" | "seller"): void {
   if (typeof window === "undefined") return;
   try {

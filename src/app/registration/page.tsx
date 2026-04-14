@@ -11,6 +11,7 @@ export default function RegistrationPage() {
   const [showPhoneInput, setShowPhoneInput] = useState(false);
 
   useEffect(() => {
+    // Force set theme to light for registration if needed, or just follow system
     const phone = getCurrentUserPhone();
     if (phone) {
       if (phone === "79999999999") {
@@ -45,30 +46,32 @@ export default function RegistrationPage() {
 
 function WelcomeView({ onContinue }: { onContinue: () => void }) {
   return (
-    <div className="registration-container flex items-center justify-center">
-      <div className="svg-background">
-        <RegistrationWelcomeSVG className="w-full h-auto" />
-      </div>
+    <div className="registration-container welcome-view-scroll">
+      <div className="welcome-inner-content">
+        <div className="svg-background">
+          <RegistrationWelcomeSVG className="w-full h-auto" />
+        </div>
 
-      {/* Precise SVG Glow provided by User */}
-      <div className="reg-user-glow animate-pulse-slow">
-        <svg width="375" height="225" viewBox="0 0 375 225" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-          <ellipse cx="187" cy="112.5" rx="197" ry="112.5" fill="url(#paint0_radial_user_glow)"/>
-          <defs>
-            <radialGradient id="paint0_radial_user_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(187 112.5) rotate(90) scale(112.5 197)">
-              <stop stop-color="#70FFFF" stop-opacity="0.8"/>
-              <stop offset="1" stop-color="#70FFFF" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-        </svg>
-      </div>
+        {/* Precise SVG Glow */}
+        <div className="reg-user-glow animate-pulse-slow">
+          <svg width="375" height="225" viewBox="0 0 375 225" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+            <ellipse cx="187" cy="112.5" rx="197" ry="112.5" fill="url(#paint0_radial_user_glow)"/>
+            <defs>
+              <radialGradient id="paint0_radial_user_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(187 112.5) rotate(90) scale(112.5 197)">
+                <stop stop-color="#70FFFF" stop-opacity="0.8"/>
+                <stop offset="1" stop-color="#70FFFF" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
 
-      <button
-        type="button"
-        onClick={onContinue}
-        className="svg-button-trigger-welcome pulse-button"
-        aria-label="Продолжить"
-      />
+        <button
+          type="button"
+          onClick={onContinue}
+          className="svg-button-trigger-welcome pulse-button"
+          aria-label="Продолжить"
+        />
+      </div>
     </div>
   );
 }

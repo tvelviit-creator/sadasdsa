@@ -47,9 +47,18 @@ const CategoryIcons: Record<string, React.ReactNode> = {
 export default function AdminCategoriesPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    setCategories(getCategories());
+    async function loadData() {
+      const [cats, servs] = await Promise.all([
+        getCategories(),
+        getServices()
+      ]);
+      setCategories(cats);
+      setServices(servs);
+    }
+    loadData();
   }, []);
 
   return (
@@ -80,7 +89,7 @@ export default function AdminCategoriesPage() {
         {/* Categories List */}
         <main className="pt-[150px] px-[24px] pb-40 flex flex-col gap-[16px]">
           {categories.map((cat) => {
-            const serviceCount = getServices(cat.id).length;
+            const serviceCount = services.filter(s => s.categoryId === cat.id).length;
             const IconComponent = CategoryIcons[cat.name] || (
               <div className="w-[32px] h-[32px] border-2 border-[var(--border-color)] rounded-md" />
             );

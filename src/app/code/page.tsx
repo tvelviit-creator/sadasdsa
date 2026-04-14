@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { registerPhone, setCurrentUserPhone, getUserData } from "@/utils/userData";
 import "../registration/registration.css";
@@ -22,29 +22,26 @@ function CodeContent() {
     }
   }, [phoneNumber]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key >= "0" && e.key <= "9") {
-        const newCode = [...code];
-        const emptyIndex = newCode.findIndex((digit) => digit === "");
-        if (emptyIndex !== -1) {
-          newCode[emptyIndex] = e.key;
-          setCode(newCode);
-        }
-      }
-      if (e.key === "Backspace") {
-        const newCode = [...code];
-        const lastFilledIndex = newCode.findLastIndex((digit) => digit !== "");
-        if (lastFilledIndex !== -1) {
-          newCode[lastFilledIndex] = "";
-          setCode(newCode);
-        }
-      }
-    };
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [code]);
+  useEffect(() => {
+    // Focus input on load
+    inputRef.current?.focus();
+    
+    // Maintain focus on click anywhere
+    const handleGlobalClick = () => inputRef.current?.focus();
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+    const newCode = ["", "", "", ""];
+    for (let i = 0 ; i < val.length; i++) {
+        newCode[i] = val[i];
+    }
+    setCode(newCode);
+  };
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -56,29 +53,26 @@ function CodeContent() {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const handleVerify = async () => {
-      if (code.every((digit) => digit !== "") && phoneNumber) {
-        const userData = await getUserData(phoneNumber);
-        if (userData?.isBlocked) {
-          alert("Account blocked");
-          setCode(["", "", "", ""]);
-          return;
-        }
-
-        // Start transition animation
-        setIsTransitioning(true);
-        
-        await registerPhone(phoneNumber);
-        setCurrentUserPhone(phoneNumber);
-        
-        // If super admin, go to admin panel. Otherwise go to client-partner
-        const targetPath = phoneNumber === "79999999999" ? "/admin" : "/client-partner";
-        
-        // Delay navigation to allow animation to complete
-        setTimeout(() => router.push(targetPath), 800);
+    if (code.every((digit) => digit !== "") && phoneNumber) {
+      const userData = getUserData(phoneNumber);
+      if (userData?.isBlocked) {
+        alert("Account blocked");
+        setCode(["", "", "", ""]);
+        return;
       }
-    };
-    handleVerify();
+
+      // Start transition animation
+      setIsTransitioning(true);
+      
+      registerPhone(phoneNumber);
+      setCurrentUserPhone(phoneNumber);
+      
+      // If super admin, go to admin panel. Otherwise go to client-partner
+      const targetPath = phoneNumber === "79999999999" ? "/admin" : "/client-partner";
+      
+      // Delay navigation to allow animation to complete
+      setTimeout(() => router.push(targetPath), 800);
+    }
   }, [code, router, phoneNumber]);
 
   return (
@@ -103,7 +97,19 @@ function CodeContent() {
             Введите код из СМС, отправленное на номер <span className="text-[var(--text-primary)] font-medium">{maskedPhone}</span>
           </p>
 
-          <div className="code-inputs">
+          <div className="code-inputs relative">
+            {/* Hidden Input for Mobile Keyboard */}
+            <input
+              ref={inputRef}
+              type="tel"
+              pattern="[0-9]*"
+              inputMode="numeric"
+              maxLength={4}
+              value={code.join("")}
+              onChange={handleInputChange}
+              className="absolute inset-0 opacity-0 w-full h-full cursor-default caret-transparent pointer-events-none"
+              autoFocus
+            />
             {code.map((digit, index) => (
               <div 
                 key={index} 

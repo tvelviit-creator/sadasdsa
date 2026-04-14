@@ -38,8 +38,7 @@ export default function BottomNav() {
     const isSeller = role === "seller";
     const isChat = searchParams?.get('tab') === 'chat' || pathname.includes("/aichat");
     const hiddenRoutes = ["/admin", "/onboarding", "/registration", "/seller-menu2", "/pay", "/final", "/code", "/client-partner", "/tarif"];
-    const exactHiddenRoutes = ["/profile", "/lkseller"];
-    const isHidden = hiddenRoutes.some(route => pathname.startsWith(route)) || exactHiddenRoutes.includes(pathname) || isChat || scrolled;
+    const isHidden = hiddenRoutes.some(route => pathname.startsWith(route)) || isChat || scrolled;
 
     if (isSeller) {
         let activeX = -100;

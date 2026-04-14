@@ -175,13 +175,16 @@ function TarifContent() {
   const ITEM_WIDTH = CARD_WIDTH + CARD_GAP;
 
   useEffect(() => {
-    const services = getServices();
-    const id = searchParams.get("id");
+    async function loadData() {
+        const services = await getServices();
+        const id = searchParams.get("id");
 
-    if (services.length > 0) {
-      let targetService = id ? services.find(s => s.id === id) : services[0];
-      if (targetService) setServiceData(targetService);
+        if (services.length > 0) {
+          let targetService = id ? services.find(s => s.id === id) : services[0];
+          if (targetService) setServiceData(targetService);
+        }
     }
+    loadData();
   }, [searchParams]);
 
   // Handle stage changes or initial load
@@ -529,7 +532,7 @@ function TarifContent() {
               disabled={!isContinueEnabled}
               className={`
                 w-full h-[56px] rounded-full text-[16px] font-bold transition-all flex items-center justify-center tracking-tight pointer-events-auto transition-colors duration-300
-                ${isContinueEnabled ? 'bg-[var(--text-primary)] text-[var(--bg-color)] active:scale-95 shadow-xl' : 'bg-[#313131] text-[var(--text-secondary)] border border-[var(--border-color)] cursor-not-allowed'}
+                ${isContinueEnabled ? 'bg-[var(--text-primary)] text-[var(--bg-color)] active:scale-95 shadow-xl' : 'bg-[var(--tarif-card-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] cursor-not-allowed'}
               `}
             >
               Продолжить

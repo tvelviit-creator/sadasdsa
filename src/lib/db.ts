@@ -58,14 +58,65 @@ export type SupportRequest = {
     orderId?: string;
 };
 
+export interface Feature {
+  id: string;
+  text: string;
+}
+
+export interface Tariff {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  features: Feature[];
+}
+
+export interface Design {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+}
+
+export interface Service {
+  id: string;
+  categoryId: string;
+  name: string;
+  price: string;
+  coverImage?: string;
+  tariffs: Tariff[];
+  designs: Design[];
+  createdAt: string;
+  sellerPhone: string;
+  partnerName?: string;
+  partnerAvatar?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  iconImage: string;
+  coverImage?: string;
+  createdAt: string;
+}
+
 type Data = {
     orders: Order[];
     users: UserData[];
     messages: ChatMessage[];
     supportRequests: SupportRequest[];
+    categories: Category[];
+    services: Service[];
 };
 
-const defaultData: Data = { orders: [], users: [], messages: [], supportRequests: [] };
+const defaultData: Data = { 
+    orders: [], 
+    users: [], 
+    messages: [], 
+    supportRequests: [],
+    categories: [],
+    services: []
+};
 
 // Singleton references on globalThis to survive HMR
 const globalForDb = globalThis as unknown as {

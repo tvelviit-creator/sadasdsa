@@ -22,15 +22,14 @@ export default function OrderDetailsPage() {
   const [features, setFeatures] = useState<string[]>([]);
   const [partnerName, setPartnerName] = useState("");
   const [clientName, setClientName] = useState("");
+  const [tariff, setTariff] = useState("");
+  const [tariffPrice, setTariffPrice] = useState(0);
+  const [design, setDesign] = useState("");
+  const [designPrice, setDesignPrice] = useState(0);
+  const [price, setPrice] = useState(0);
   const [newFeature, setNewFeature] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [focusedFeatureIdx, setFocusedFeatureIdx] = useState<number | null>(null);
-
-  const hasChanges = 
-    title !== order?.title || 
-    status !== order?.status || 
-    stage !== (order?.stage || "processing") || 
-    JSON.stringify(features) !== JSON.stringify(order?.features || []);
 
   // Tab State
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
@@ -58,13 +57,15 @@ export default function OrderDetailsPage() {
   useEffect(() => {
     if (messages.length === 0) return;
     const lastConnectIdx = [...messages].reverse().findIndex(m => m.text === "Администратор подключился к чату");
+    // For regular orders we don't really have "close request" in the same way, but we can assume once connected, always connected for this session or until refresh.
+    // Or we can just check if any message from admin exists.
     if (lastConnectIdx !== -1) {
       setIsConnected(true);
     }
   }, [messages]);
 
   const connectToChat = async () => {
-    if (isConnected || !orderId || !currentPhone) return;
+    if (isConnected || !orderId || !currentPhone || order?.sellerPhone !== 'ADMIN') return;
 
     const systemMsg: ChatMessage = {
       id: `msg_sys_${Date.now()}`,
@@ -102,6 +103,11 @@ export default function OrderDetailsPage() {
           setFeatures(orderData.features || []);
           setPartnerName(orderData.partnerName || "");
           setClientName(orderData.clientName || "");
+          setTariff(orderData.tariff || "");
+          setTariffPrice(orderData.tariffPrice || 0);
+          setDesign(orderData.design || "");
+          setDesignPrice(orderData.designPrice || 0);
+          setPrice(orderData.price || 0);
         }
       } catch (err) {
         console.error("Error fetching order:", err);
@@ -170,7 +176,7 @@ export default function OrderDetailsPage() {
     setInputText("");
   };
 
-  const handleUpdate = async (updates: Partial<Order> = {}) => {
+  const handleUpdate = async (updates: Partial<Order>) => {
     if (!order) return;
     
     const updatedOrder: Order = { 
@@ -181,6 +187,11 @@ export default function OrderDetailsPage() {
       features, 
       partnerName, 
       clientName, 
+      tariff,
+      tariffPrice,
+      design,
+      designPrice,
+      price,
       ...updates,
       updatedAt: new Date().toISOString() 
     };
@@ -297,8 +308,8 @@ export default function OrderDetailsPage() {
               </svg>
             </button>
             <h1 
-              className="text-[24px] font-bold text-[var(--text-primary)] leading-[120%]"
-              style={{ fontFamily: 'Cera Pro, sans-serif' }}
+              className="text-[24px] font-bold text-[var(--text-primary)] leading-[1.2]"
+              style={{ fontFamily: 'var(--font-cera)' }}
             >
               Заказ № {order.orderNumber || order.id.slice(-2)}
             </h1>
@@ -348,20 +359,49 @@ export default function OrderDetailsPage() {
             <div className="w-1/2 h-full shrink-0 overflow-y-auto hide-scrollbar px-6 pt-[180px] pb-24 space-y-6">
               {/* NAME FIELD */}
               <div className="space-y-2">
-                <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Название</p>
+                <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Название</p>
                 <div className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] flex items-center px-6">
                   <input 
                     value={title} 
                     onChange={e => setTitle(e.target.value)} 
+                    onBlur={() => handleUpdate({ title })} 
                     className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-[var(--text-primary)] placeholder-[#666]"
                     placeholder="Фудтех приложение"
                   />
                 </div>
               </div>
+
+              {/* TARIFF & DESIGN FIELDS */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Тариф</p>
+                  <div className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] px-4 flex items-center">
+                    <input 
+                      value={tariff} 
+                      onChange={e => setTariff(e.target.value)} 
+                      onBlur={() => handleUpdate({ tariff })} 
+                      className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-[var(--text-primary)]"
+                      placeholder="Тариф"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Дизайн</p>
+                  <div className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] px-4 flex items-center">
+                    <input 
+                      value={design} 
+                      onChange={e => setDesign(e.target.value)} 
+                      onBlur={() => handleUpdate({ design })} 
+                      className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-[var(--text-primary)]"
+                      placeholder="Дизайн"
+                    />
+                  </div>
+                </div>
+              </div>
               
               {/* STATUS SECTION */}
               <div className="space-y-2">
-                <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Статус</p>
+                <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Статус</p>
                 <div className="relative h-[31px] w-full border border-[var(--border-color)] rounded-full flex items-center p-0">
                   {(['in_progress', 'pending', 'cancelled'] as const).map((s) => {
                     const isActive = status === s;
@@ -377,7 +417,7 @@ export default function OrderDetailsPage() {
                           />
                         )}
                         <button 
-                          onClick={() => { setStatus(s); }} 
+                          onClick={() => { setStatus(s); handleUpdate({ status: s }); }} 
                           className={`relative z-10 w-full h-full text-[12px] font-bold transition-all duration-300 ${isActive ? 'text-[var(--bg-color)]' : 'text-[var(--text-primary)]/40'}`}
                         >
                           {label}
@@ -390,7 +430,7 @@ export default function OrderDetailsPage() {
 
               {/* STAGE SECTION */}
               <div className="space-y-2">
-                <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Этап</p>
+                <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Этап</p>
                 <div className="relative h-[31px] w-full border border-[var(--border-color)] rounded-full flex items-center px-[2px]">
                   {(['processing', 'design', 'development', 'test', 'ready'] as const).map((s) => {
                     const isActive = stage === s;
@@ -401,7 +441,7 @@ export default function OrderDetailsPage() {
                             <div className="absolute inset-x-0 h-full border border-[var(--text-primary)] rounded-full bg-transparent z-0" />
                           )}
                           <button 
-                            onClick={() => { setStage(s); }} 
+                            onClick={() => { setStage(s); handleUpdate({ stage: s }); }} 
                             className={`relative z-10 w-full h-full text-[10px] font-bold transition-all duration-300 ${isActive ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)]/20'}`}
                           >
                             {label}
@@ -414,7 +454,7 @@ export default function OrderDetailsPage() {
 
               {/* FUNCTIONS SECTION */}
               <div className="space-y-3">
-                <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Функции</p>
+                <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Функции</p>
                 <div className="space-y-2">
                   {features.map((f, i) => (
                     <div 
@@ -426,6 +466,7 @@ export default function OrderDetailsPage() {
                         onFocus={() => setFocusedFeatureIdx(i)}
                         onBlur={() => {
                             setFocusedFeatureIdx(null);
+                            handleUpdate({ features });
                         }}
                         onChange={e => {
                           const updated = [...features];
@@ -472,7 +513,7 @@ export default function OrderDetailsPage() {
 
               {/* PARTNER FIELD */}
               <div className="space-y-2">
-                <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Партнер</p>
+                <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Партнер</p>
                 <div 
                   onClick={() => order.sellerPhone && router.push(`/admin/users/${encodeURIComponent(order.sellerPhone)}`)}
                   className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] flex items-center px-6 cursor-pointer active:scale-[0.98] transition-all hover:bg-[#383838] border border-transparent hover:border-[var(--border-color)] group"
@@ -490,7 +531,7 @@ export default function OrderDetailsPage() {
 
               {/* CLIENT FIELD */}
               <div className="space-y-2">
-                <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Клиент</p>
+                <p className="text-[13px] font-medium text-[var(--text-secondary)] ml-1">Клиент</p>
                 <div 
                   onClick={() => order.clientPhone && router.push(`/admin/users/${encodeURIComponent(order.clientPhone)}`)}
                   className="w-full h-[56px] bg-[var(--border-color)] rounded-[16px] flex items-center px-6 cursor-pointer active:scale-[0.98] transition-all hover:bg-[#383838] border border-transparent hover:border-[var(--border-color)] group"
@@ -509,7 +550,7 @@ export default function OrderDetailsPage() {
               {/* DISPUTE MANAGEMENT - Simple and consistent with the app design */}
               {order.isDisputed && (
                 <div className="space-y-3 pt-4">
-                  <p className="text-[16px] font-normal text-[#F5F5F5] ml-1" style={{ fontFamily: 'var(--font-cera)', lineHeight: '24px' }}>Разрешение спора</p>
+                  <p className="text-[13px] font-medium text-[#FF8C67] ml-1">Разрешение спора</p>
                   <div className="space-y-2">
                     <button
                       onClick={handleCompleteOrder}
@@ -578,14 +619,7 @@ export default function OrderDetailsPage() {
         </main>
 
         <div className={`fixed bottom-0 w-full max-w-[375px] px-[16px] pb-[34px] bg-[var(--bg-color)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] left-1/2 -translate-x-1/2 z-50 ${activeTab === 'chat' ? 'translate-y-0' : 'translate-y-full'}`}>
-          {!isConnected ? (
-             <button 
-                onClick={connectToChat}
-                className="w-full h-[56px] bg-[var(--border-color)] rounded-full flex items-center justify-center active:scale-[0.98] transition-all border border-[var(--border-color)]"
-            >
-                <span className="text-[16px] font-bold text-[var(--text-primary)] uppercase tracking-wider">Подключиться</span>
-            </button>
-          ) : (
+          {order?.sellerPhone !== 'ADMIN' ? null : (
             <div className="flex items-center gap-[8px] h-[48px]">
               {/* Attachment Button */}
               <button className="w-[48px] h-[48px] rounded-full bg-[var(--border-color)] flex items-center justify-center shrink-0 active:scale-90 transition-transform">
@@ -624,22 +658,6 @@ export default function OrderDetailsPage() {
           )}
         </div>
       </div>
-
-      {/* Sticky Save Button - Using Provided SVG - Only on Details Tab */}
-      {activeTab === 'details' && (
-        <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${hasChanges ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-[120%] opacity-0 scale-95 pointer-events-none'}`}>
-            <button
-                onClick={() => handleUpdate({})} 
-                className="w-[327px] h-[56px] relative flex items-center justify-center active:scale-95 transition-all"
-            >
-                <svg width="327" height="56" viewBox="0 0 327 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0">
-                    <rect width="327" height="56" rx="28" fill="#F5F5F5"/>
-                    <path d="M128.122 32.692C127.088 32.692 126.138 32.452 125.274 31.972C124.421 31.492 123.744 30.836 123.242 30.004C122.752 29.1613 122.506 28.2333 122.506 27.22C122.506 26.2067 122.757 25.284 123.258 24.452C123.76 23.6093 124.437 22.948 125.29 22.468C126.154 21.988 127.104 21.748 128.138 21.748C129.141 21.748 130.048 21.9827 130.858 22.452C131.68 22.9107 132.325 23.5507 132.794 24.372L131.162 25.524C130.416 24.34 129.408 23.748 128.138 23.748C127.488 23.748 126.901 23.8973 126.378 24.196C125.866 24.4947 125.461 24.9107 125.162 25.444C124.874 25.9667 124.73 26.564 124.73 27.236C124.73 27.908 124.874 28.5053 125.162 29.028C125.461 29.5507 125.866 29.9613 126.378 30.26C126.901 30.548 127.488 30.692 128.138 30.692C129.408 30.692 130.048 30.1 131.162 28.916L132.794 30.068C132.336 30.8893 131.696 31.5347 130.874 32.004C130.053 32.4627 129.136 32.692 128.122 32.692ZM138.106 32.676C137.327 32.676 136.612 32.4947 135.962 32.132C135.322 31.7587 134.815 31.2573 134.442 30.628C134.068 29.988 133.882 29.2893 133.882 28.532C133.882 27.7747 134.068 27.0813 134.442 26.452C134.815 25.812 135.327 25.3107 135.978 24.948C136.628 24.5853 137.343 24.404 138.122 24.404C138.9 24.404 139.615 24.5907 140.266 24.964C140.916 25.3267 141.428 25.8227 141.802 26.452C142.186 27.0813 142.378 27.7747 142.378 28.532C142.378 29.2893 142.186 29.988 141.802 30.628C141.428 31.2573 140.911 31.7587 140.25 32.132C139.599 32.4947 138.884 32.676 138.106 32.676ZM138.122 30.692C138.708 30.692 139.194 30.4893 139.578 30.084C139.972 29.6787 140.17 29.1667 140.17 28.548C140.17 27.9293 139.972 27.412 139.578 26.996C139.194 26.58 138.708 26.372 138.122 26.372C137.524 26.372 137.034 26.58 136.65 26.996C136.266 27.4013 136.074 27.9187 136.074 28.548C136.074 29.1667 136.266 29.6787 136.65 30.084C137.034 30.4893 137.524 30.692 138.122 30.692ZM148.71 32.5L147.014 29.972L145.302 32.5H142.886L145.782 28.42L143.078 24.58H145.494L147.014 26.868L148.518 24.58H150.934L148.214 28.404L151.126 32.5H148.71ZM156.858 24.404C157.594 24.404 158.25 24.5853 158.826 24.948C159.412 25.3 159.871 25.7907 160.202 26.42C160.532 27.0387 160.698 27.7427 160.698 28.532C160.698 29.3213 160.532 30.0307 160.202 30.66C159.871 31.2893 159.412 31.7853 158.826 32.148C158.25 32.5107 157.594 32.692 156.858 32.692C156.378 32.692 155.935 32.612 155.53 32.452C155.124 32.2813 154.778 32.0413 154.49 31.732V35.38H152.33V24.58H154.314V25.572C154.58 25.1987 154.932 24.9107 155.37 24.708C155.818 24.5053 156.314 24.404 156.858 24.404ZM156.458 30.724C157.034 30.724 157.519 30.5267 157.914 30.132C158.308 29.7267 158.506 29.1987 158.506 28.548C158.506 27.8867 158.308 27.3587 157.914 26.964C157.53 26.5587 157.044 26.356 156.458 26.356C155.914 26.356 155.444 26.5427 155.05 26.916C154.655 27.2787 154.458 27.8173 154.458 28.532C154.458 29.236 154.65 29.78 155.034 30.164C155.428 30.5373 155.903 30.724 156.458 30.724ZM165.64 24.404C166.675 24.404 167.496 24.6973 168.104 25.284C168.723 25.86 169.032 26.6973 169.032 27.796V32.5H167.048V31.732C166.76 32.0307 166.408 32.2653 165.992 32.436C165.587 32.6067 165.134 32.692 164.632 32.692C163.79 32.692 163.123 32.4733 162.632 32.036C162.142 31.588 161.896 31.0173 161.896 30.324C161.896 29.6093 162.163 29.0493 162.696 28.644C163.24 28.228 163.971 28.02 164.888 28.02H166.872V27.668C166.872 27.2307 166.744 26.8893 166.488 26.644C166.243 26.3987 165.88 26.276 165.4 26.276C164.995 26.276 164.632 26.3667 164.312 26.548C163.992 26.7187 163.656 26.9907 163.304 27.364L162.184 26.036C163.102 24.948 164.254 24.404 165.64 24.404ZM165.208 31.108C165.678 31.108 166.072 30.964 166.392 30.676C166.712 30.3773 166.872 29.9987 166.872 29.54V29.444H165.176C164.824 29.444 164.552 29.5133 164.36 29.652C164.168 29.78 164.072 29.9773 164.072 30.244C164.072 30.5107 164.174 30.724 164.376 30.884C164.59 31.0333 164.867 31.108 165.208 31.108ZM171.159 24.58H173.303V27.476H176.231V24.58H178.375V32.5H176.231V29.316H173.303V32.5H171.159V24.58ZM187.892 24.404V32.5H185.732V28.212L181.316 32.692H180.612V24.58H182.756V28.9L187.188 24.404H187.892ZM191.664 26.404H189.232V24.58H196.256V26.404H193.808V32.5H191.664V26.404ZM197.597 24.58H199.741V26.868H201.181C202.151 26.868 202.941 27.1187 203.549 27.62C204.167 28.1213 204.477 28.804 204.477 29.668C204.477 30.5427 204.167 31.236 203.549 31.748C202.941 32.2493 202.151 32.5 201.181 32.5H197.597V24.58ZM201.117 30.676C201.479 30.676 201.762 30.596 201.965 30.436C202.178 30.2653 202.285 30.02 202.285 29.7C202.285 29.3907 202.178 29.1453 201.965 28.964C201.751 28.7827 201.469 28.692 201.117 28.692H199.741V30.676H201.117Z" fill="#141414"/>
-                </svg>
-            </button>
-        </div>
-      )}
-
       <style jsx global>{` body { background-color: var(--bg-color); } ::-webkit-scrollbar { display: none; } .hide-scrollbar::-webkit-scrollbar { display: none; } `}</style>
     </div>
   );

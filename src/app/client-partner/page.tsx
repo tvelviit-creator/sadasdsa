@@ -9,10 +9,10 @@ export default function ClientPartnerPage() {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
 
-  const handlePartnerSelect = async () => {
+  const handlePartnerSelect = () => {
     const phone = getCurrentUserPhone();
     if (phone) {
-      await saveUserData(phone, { isPartner: true });
+      saveUserData(phone, { isPartner: true });
       setActiveRole("seller");
     }
     setIsExiting(true);
