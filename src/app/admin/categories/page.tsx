@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCategories, Category, deleteCategory } from "@/utils/categories";
-import { getServices } from "@/utils/services";
+import { getCategories, Category, deleteCategory, moveCategoryUp, moveCategoryDown } from "@/utils/categories";
+import { getServices, Service } from "@/utils/services";
 
 // Exact SVG Paths from the design
 const CategoryIcons: Record<string, React.ReactNode> = {
@@ -47,9 +47,18 @@ const CategoryIcons: Record<string, React.ReactNode> = {
 export default function AdminCategoriesPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [allServices, setAllServices] = useState<Service[]>([]);
 
   useEffect(() => {
-    setCategories(getCategories());
+    async function loadData() {
+        const [cats, servs] = await Promise.all([
+            getCategories(),
+            getServices()
+        ]);
+        setCategories(cats);
+        setAllServices(servs);
+    }
+    loadData();
   }, []);
 
   return (
@@ -80,7 +89,7 @@ export default function AdminCategoriesPage() {
         {/* Categories List */}
         <main className="pt-[150px] px-[24px] pb-40 flex flex-col gap-[16px]">
           {categories.map((cat) => {
-            const serviceCount = getServices(cat.id).length;
+            const serviceCount = allServices.filter(s => s.categoryId === cat.id).length;
             const IconComponent = CategoryIcons[cat.name] || (
               <div className="w-[32px] h-[32px] border-2 border-[var(--border-color)] rounded-md" />
             );
@@ -101,7 +110,7 @@ export default function AdminCategoriesPage() {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 flex flex-col justify-center min-w-0">
+                <div className="flex-1 flex flex-col justify-center min-w-0 mr-12">
                   <h3 className="text-[18px] font-bold text-[var(--text-primary)] truncate leading-none mb-4">
                     {cat.name}
                   </h3>
@@ -120,6 +129,32 @@ export default function AdminCategoriesPage() {
                     />
                     <span className="text-[15px] text-[var(--text-primary)] font-bold shrink-0">{serviceCount}</span>
                   </div>
+                </div>
+
+                {/* Reorder Controls */}
+                <div className="absolute right-4 flex flex-col gap-2">
+                  <button 
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      await moveCategoryUp(cat.id);
+                      const updated = await getCategories();
+                      setCategories(updated);
+                    }}
+                    className="w-8 h-8 rounded-full bg-[var(--border-color)] flex items-center justify-center active:scale-95"
+                  >
+                    ↑
+                  </button>
+                  <button 
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      await moveCategoryDown(cat.id);
+                      const updated = await getCategories();
+                      setCategories(updated);
+                    }}
+                    className="w-8 h-8 rounded-full bg-[var(--border-color)] flex items-center justify-center active:scale-95"
+                  >
+                    ↓
+                  </button>
                 </div>
               </div>
             );

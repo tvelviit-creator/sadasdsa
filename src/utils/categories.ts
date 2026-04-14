@@ -4,111 +4,83 @@ export interface Category {
   iconImage: string; // base64 или URL (маленькая иконка)
   coverImage?: string; // base64 или URL (обложка для карточки категории)
   createdAt: string;
+  order: number;
 }
 
-const STORAGE_KEY = "categories";
-
-export function getCategories(): Category[] {
-  if (typeof window === "undefined") return [];
+export async function getCategories(): Promise<Category[]> {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed as Category[];
-  } catch {
+    const res = await fetch('/api/categories', { cache: 'no-store' });
+    if (!res.ok) return [];
+    const data: Category[] = await res.json();
+    return data.sort((a, b) => (a.order || 0) - (b.order || 0));
+  } catch (e) {
+    console.error("Failed to fetch categories", e);
     return [];
   }
 }
 
-export function saveCategory(category: Category): void {
-  if (typeof window === "undefined") return;
+export async function saveCategory(category: Category): Promise<void> {
   try {
-    const list = getCategories();
-    list.push({
-      id: category.id,
-      name: category.name,
-      iconImage: category.iconImage,
-      coverImage: category.coverImage,
-      createdAt: category.createdAt,
+    await fetch('/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(category),
     });
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   } catch (e) {
-    console.error("Failed to save categories to localStorage", e);
+    console.error("Failed to save category", e);
   }
 }
 
-export function updateCategory(categoryId: string, updates: Partial<Category>): void {
-  if (typeof window === "undefined") return;
+export async function updateCategory(categoryId: string, updates: Partial<Category>): Promise<void> {
   try {
-    const list = getCategories();
-    const index = list.findIndex((cat) => cat.id === categoryId);
-    if (index !== -1) {
-      list[index] = { ...list[index], ...updates };
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
-  } catch (e) {
-    console.error("Failed to update category in localStorage", e);
-  }
-}
-
-export function deleteCategory(categoryId: string): void {
-  if (typeof window === "undefined") return;
-  try {
-    const list = getCategories();
-    const filtered = list.filter((cat) => cat.id !== categoryId);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-  } catch (e) {
-    console.error("Failed to delete category from localStorage", e);
-  }
-}
-
-export function reorderCategories(categoryIds: string[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    const list = getCategories();
-    const reordered = categoryIds
-      .map((id) => list.find((cat) => cat.id === id))
-      .filter((cat): cat is Category => cat !== undefined);
-    // Добавляем категории, которых нет в новом порядке (на случай ошибок)
-    const existingIds = new Set(categoryIds);
-    list.forEach((cat) => {
-      if (!existingIds.has(cat.id)) {
-        reordered.push(cat);
-      }
+    await fetch('/api/categories', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: categoryId, ...updates }),
     });
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(reordered));
   } catch (e) {
-    console.error("Failed to reorder categories in localStorage", e);
+    console.error("Failed to update category", e);
   }
 }
 
-export function moveCategoryUp(categoryId: string): void {
-  if (typeof window === "undefined") return;
+export async function deleteCategory(categoryId: string): Promise<void> {
   try {
-    const list = getCategories();
-    const index = list.findIndex((cat) => cat.id === categoryId);
-    if (index > 0) {
-      [list[index - 1], list[index]] = [list[index], list[index - 1]];
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
+    await fetch(`/api/categories?id=${categoryId}`, {
+      method: 'DELETE',
+    });
   } catch (e) {
-    console.error("Failed to move category up in localStorage", e);
+    console.error("Failed to delete category", e);
   }
 }
 
-export function moveCategoryDown(categoryId: string): void {
-  if (typeof window === "undefined") return;
+export async function reorderCategories(categoryIds: string[]): Promise<void> {
   try {
-    const list = getCategories();
-    const index = list.findIndex((cat) => cat.id === categoryId);
-    if (index >= 0 && index < list.length - 1) {
-      [list[index], list[index + 1]] = [list[index + 1], list[index]];
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
+    await fetch('/api/categories', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: categoryIds }),
+    });
   } catch (e) {
-    console.error("Failed to move category down in localStorage", e);
+    console.error("Failed to reorder categories", e);
   }
 }
 
+export async function moveCategoryUp(categoryId: string): Promise<void> {
+  const cats = await getCategories();
+  const index = cats.findIndex(c => c.id === categoryId);
+  if (index > 0) {
+    const newOrder = [...cats];
+    [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
+    await reorderCategories(newOrder.map(c => c.id));
+  }
+}
 
+export async function moveCategoryDown(categoryId: string): Promise<void> {
+  const cats = await getCategories();
+  const index = cats.findIndex(c => c.id === categoryId);
+  if (index !== -1 && index < cats.length - 1) {
+    const newOrder = [...cats];
+    [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+    await reorderCategories(newOrder.map(c => c.id));
+  }
+}

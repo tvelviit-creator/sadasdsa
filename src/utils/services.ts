@@ -27,62 +27,46 @@ export interface Service {
   tariffs: Tariff[];
   designs: Design[];
   createdAt: string;
-  sellerPhone: string; // Телефон владельца услуги (Admin или Partner)
-  partnerName?: string; // Имя партнера (если применимо)
-  partnerAvatar?: string; // Аватарка партнера (если применимо)
+  sellerPhone: string;
+  partnerName?: string;
+  partnerAvatar?: string;
 }
 
-const SERVICES_STORAGE_KEY = "services";
-
-export function getServices(categoryId?: string): Service[] {
-  if (typeof window === "undefined") return [];
+export async function getServices(categoryId?: string): Promise<Service[]> {
   try {
-    const raw = window.localStorage.getItem(SERVICES_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-
-    const services = parsed as Service[];
-    if (categoryId) {
-      return services.filter(s => s.categoryId === categoryId);
-    }
-    return services;
-  } catch {
+    const url = categoryId ? `/api/services?categoryId=${categoryId}` : '/api/services';
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (e) {
+    console.error("Failed to fetch services", e);
     return [];
   }
 }
 
-export function getServiceById(serviceId: string): Service | undefined {
-  if (typeof window === "undefined") return undefined;
-  const services = getServices();
+export async function getServiceById(serviceId: string): Promise<Service | undefined> {
+  const services = await getServices();
   return services.find(s => s.id === serviceId);
 }
 
-export function saveService(service: Service): void {
-  if (typeof window === "undefined") return;
+export async function saveService(service: Service): Promise<void> {
   try {
-    const services = getServices();
-    // Check if exists to update
-    const index = services.findIndex(s => s.id === service.id);
-    if (index !== -1) {
-      services[index] = service;
-    } else {
-      services.push(service);
-    }
-    window.localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(services));
+    await fetch('/api/services', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(service),
+    });
   } catch (e) {
     console.error("Failed to save service", e);
   }
 }
 
-export function deleteService(serviceId: string): void {
-  if (typeof window === "undefined") return;
+export async function deleteService(serviceId: string): Promise<void> {
   try {
-    const services = getServices();
-    const filtered = services.filter(s => s.id !== serviceId);
-    window.localStorage.setItem(SERVICES_STORAGE_KEY, JSON.stringify(filtered));
+    await fetch(`/api/services?id=${serviceId}`, {
+      method: 'DELETE',
+    });
   } catch (e) {
     console.error("Failed to delete service", e);
   }
 }
-

@@ -17,16 +17,22 @@
     position: relative;
     width: 100%;
     max-width: 430px;
-    height: 100vh;
-    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
     margin: 0 auto;
     background: var(--bg-color);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 0;
     display: flex;
     flex-direction: column;
     z-index: 10;
     transition: background-color 0.3s ease;
+    scrollbar-width: none; /* Hide for clean look */
+}
+
+.registration-container::-webkit-scrollbar {
+    display: none;
 }
 
 /* Background Atmosphere System */
@@ -88,28 +94,21 @@
 
 /* Welcome View Content */
 .svg-background {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    width: 100%;
     pointer-events: none;
     z-index: 5;
     opacity: 0;
-    transform: scale(1.05);
-    animation: fadeInScale 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.svg-background img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
+    animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .svg-button-trigger-welcome {
     position: absolute;
-    top: 91.3%;
+    bottom: 24px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     width: 87%;
-    height: 7.2%;
+    height: 56px;
     background: transparent;
     border: none;
     outline: none;

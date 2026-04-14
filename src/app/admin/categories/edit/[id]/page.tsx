@@ -22,30 +22,34 @@ export default function EditCategoryPage() {
   const iconInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const categories = getCategories();
-    const cat = categories.find((c) => c.id === categoryId);
-    if (cat) {
-      setName(cat.name);
-      setCoverImage(cat.coverImage || null);
-      setIconImage(cat.iconImage || null);
-      setServices(getServices(categoryId));
-    } else {
-      router.push("/admin/categories");
+    async function init() {
+        const categories = await getCategories();
+        const cat = categories.find((c) => c.id === categoryId);
+        if (cat) {
+            setName(cat.name);
+            setCoverImage(cat.coverImage || null);
+            setIconImage(cat.iconImage || null);
+            const servs = await getServices(categoryId);
+            setServices(servs);
+        } else {
+            router.push("/admin/categories");
+        }
     }
+    init();
   }, [categoryId, router]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'icon' | 'cover') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'icon' | 'cover') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const result = event.target?.result as string;
         if (type === 'icon') {
           setIconImage(result);
-          updateCategory(categoryId, { iconImage: result });
+          await updateCategory(categoryId, { iconImage: result });
         } else if (type === 'cover') {
           setCoverImage(result);
-          updateCategory(categoryId, { coverImage: result });
+          await updateCategory(categoryId, { coverImage: result });
         }
       };
       reader.readAsDataURL(file);
@@ -54,15 +58,15 @@ export default function EditCategoryPage() {
     e.target.value = "";
   };
 
-  const handleNameBlur = () => {
+  const handleNameBlur = async () => {
     if (name.trim()) {
-      updateCategory(categoryId, { name: name.trim() });
+      await updateCategory(categoryId, { name: name.trim() });
     }
   };
 
-  const handleDeleteCategory = () => {
+  const handleDeleteCategory = async () => {
     if (confirm("Вы уверены, что хотите удалить эту категорию?")) {
-      deleteCategory(categoryId);
+      await deleteCategory(categoryId);
       router.push("/admin/categories");
     }
   };

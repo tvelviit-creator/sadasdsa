@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCategories, Category } from "@/utils/categories";
+import { getServices } from "@/utils/services";
 import { getActiveRole } from "@/utils/userData"
 import { DefaultCategoryCover } from "@/components/DefaultCategoryCover";
 import { getCategoryCover } from "@/components/CategoryCovers";
@@ -14,11 +15,16 @@ export default function CatigoriyPage() {
     const [services, setServices] = useState<any[]>([]);
 
     useEffect(() => {
-        setCategories(getCategories());
-        setRole(getActiveRole());
-        // Load all services to count them per category
-        const allServices = (typeof window !== "undefined") ? JSON.parse(localStorage.getItem("services") || "[]") : [];
-        setServices(allServices);
+        async function load() {
+            const [cats, allServices] = await Promise.all([
+                getCategories(),
+                getServices()
+            ]);
+            setCategories(cats);
+            setRole(getActiveRole());
+            setServices(allServices);
+        }
+        load();
     }, []);
 
     const isSeller = role === "seller";

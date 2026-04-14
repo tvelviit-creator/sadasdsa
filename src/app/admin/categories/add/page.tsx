@@ -38,10 +38,10 @@ export default function AddCategoryPage() {
     e.target.value = "";
   };
 
-  const handleNameBlur = () => {
+  const handleNameBlur = async () => {
     if (name.trim()) {
       const newId = `cat_${Date.now()}`;
-      saveCategory({
+      await saveCategory({
         id: newId,
         name: name.trim(),
         iconImage: iconImage || "",
@@ -54,10 +54,10 @@ export default function AddCategoryPage() {
 
   const isFormValid = name.trim().length > 0;
 
-  const handleSaveAndAddService = () => {
+  const handleSaveAndAddService = async () => {
     if (!isFormValid) return;
     const newId = `cat_${Date.now()}`;
-    saveCategory({
+    await saveCategory({
       id: newId,
       name: name.trim(),
       iconImage: iconImage || "",

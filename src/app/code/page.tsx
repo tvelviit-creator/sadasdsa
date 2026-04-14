@@ -22,29 +22,14 @@ function CodeContent() {
     }
   }, [phoneNumber]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key >= "0" && e.key <= "9") {
-        const newCode = [...code];
-        const emptyIndex = newCode.findIndex((digit) => digit === "");
-        if (emptyIndex !== -1) {
-          newCode[emptyIndex] = e.key;
-          setCode(newCode);
-        }
-      }
-      if (e.key === "Backspace") {
-        const newCode = [...code];
-        const lastFilledIndex = newCode.findLastIndex((digit) => digit !== "");
-        if (lastFilledIndex !== -1) {
-          newCode[lastFilledIndex] = "";
-          setCode(newCode);
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [code]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+    const newCode = ["", "", "", ""];
+    for (let i = 0; i < val.length; i++) {
+        newCode[i] = val[i];
+    }
+    setCode(newCode);
+  };
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -103,15 +88,26 @@ function CodeContent() {
             Введите код из СМС, отправленное на номер <span className="text-[var(--text-primary)] font-medium">{maskedPhone}</span>
           </p>
 
-          <div className="code-inputs">
-            {code.map((digit, index) => (
-              <div 
-                key={index} 
-                className={`code-box ${code.findIndex(d => d === "") === index ? 'active' : ''} ${digit !== "" ? 'filled' : ''}`}
-              >
-                {digit}
-              </div>
-            ))}
+          <div className="relative">
+            <input
+              type="tel"
+              pattern="[0-9]*"
+              inputMode="numeric"
+              autoFocus
+              className="absolute inset-0 opacity-0 cursor-default"
+              value={code.join("")}
+              onChange={handleInputChange}
+            />
+            <div className="code-inputs pointer-events-none">
+              {code.map((digit, index) => (
+                <div 
+                  key={index} 
+                  className={`code-box ${code.findIndex(d => d === "") === index ? 'active' : ''} ${digit !== "" ? 'filled' : ''}`}
+                >
+                  {digit}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="code-timer-container">
